@@ -1,0 +1,640 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "id": "c8081071",
+      "metadata": {
+        "id": "c8081071"
+      },
+      "source": [
+        "# MongoDB Aggregation Questions"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install pymongo"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yed3VM6uoP9t",
+        "outputId": "3a29bcb0-7905-43b4-9f05-5d7544e937a9"
+      },
+      "id": "yed3VM6uoP9t",
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting pymongo\n",
+            "  Downloading pymongo-4.17.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (10 kB)\n",
+            "Collecting dnspython<3.0.0,>=2.6.1 (from pymongo)\n",
+            "  Downloading dnspython-2.8.0-py3-none-any.whl.metadata (5.7 kB)\n",
+            "Downloading pymongo-4.17.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (2.1 MB)\n",
+            "\u001b[?25l   \u001b[90mââââââââââââââââââââââââââââââââââââââââ\u001b[0m \u001b[32m0.0/2.1 MB\u001b[0m \u001b[31m?\u001b[0m eta \u001b[36m-:--:--\u001b[0m\r\u001b[2K   \u001b[91mââââââââââââââââââ\u001b[0m\u001b[91mâ¸\u001b[0m\u001b[90mâââââââââââââââââââââ\u001b[0m \u001b[32m1.0/2.1 MB\u001b[0m \u001b[31m29.3 MB/s\u001b[0m eta \u001b[36m0:00:01\u001b[0m\r\u001b[2K   \u001b[90mââââââââââââââââââââââââââââââââââââââââ\u001b[0m \u001b[32m2.1/2.1 MB\u001b[0m \u001b[31m33.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading dnspython-2.8.0-py3-none-any.whl (331 kB)\n",
+            "\u001b[2K   \u001b[90mââââââââââââââââââââââââââââââââââââââââ\u001b[0m \u001b[32m331.1/331.1 kB\u001b[0m \u001b[31m20.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hInstalling collected packages: dnspython, pymongo\n",
+            "Successfully installed dnspython-2.8.0 pymongo-4.17.0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "4339caaf",
+      "metadata": {
+        "id": "4339caaf",
+        "outputId": "42aaceec-18c8-41ff-863f-04ca1eb3c087",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Pinged your deployment. You successfully connected to MongoDB!\n"
+          ]
+        }
+      ],
+      "source": [
+        "from pymongo.mongo_client import MongoClient\n",
+        "from pymongo.server_api import ServerApi\n",
+        "\n",
+        "# create you own MongoDB atlas cluster and add you URI here:\n",
+        "uri = \"mongodb+srv://user:marc123@inclass-demos.drylssv.mongodb.net/?appName=Inclass-demos\"\n",
+        "\n",
+        "# Create a new client and connect to the server\n",
+        "client = MongoClient(uri, server_api=ServerApi('1'))\n",
+        "\n",
+        "# Send a ping to confirm a successful connection\n",
+        "try:\n",
+        "    client.admin.command('ping')\n",
+        "    print(\"Pinged your deployment. You successfully connected to MongoDB!\")\n",
+        "except Exception as e:\n",
+        "    print(e)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "f104940b",
+      "metadata": {
+        "id": "f104940b"
+      },
+      "outputs": [],
+      "source": [
+        "db = client[\"inclass-demos-2025\"]"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "373a7972",
+      "metadata": {
+        "id": "373a7972"
+      },
+      "source": [
+        "Some useful reusable funtions"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "8ba3b5fa",
+      "metadata": {
+        "id": "8ba3b5fa"
+      },
+      "outputs": [],
+      "source": [
+        "from pprint import pprint\n",
+        "\n",
+        "# output cursor documents\n",
+        "def output_cursor(cursor):\n",
+        "  for doc in cursor:\n",
+        "    print(doc)\n",
+        "\n",
+        "def run(collection, pipeline, upto=None, limit=None, pretty=False):\n",
+        "    \"\"\"Run `pipeline` against `collection`, optionally truncated to the first\n",
+        "    `upto` stages. This is the single most useful debugging habit for\n",
+        "    aggregation: build the pipeline one stage at a time and look at what\n",
+        "    each stage hands to the next.\"\"\"\n",
+        "    stages = pipeline if upto is None else pipeline[:upto]\n",
+        "    if limit is not None:\n",
+        "        stages = stages + [{\"$limit\": limit}]\n",
+        "    print(f\"--- {len(stages)} stage(s) ---\")\n",
+        "    for doc in collection.aggregate(stages):\n",
+        "        pprint(doc) if pretty else print(doc)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "7ab8e984",
+      "metadata": {
+        "id": "7ab8e984"
+      },
+      "source": [
+        "**Insert sample data for the Online Learning Platform example.**"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "fcb1e0ec",
+      "metadata": {
+        "id": "fcb1e0ec",
+        "outputId": "ce7fb869-2a71-41dc-ae9b-b2f0e71ee5a3",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "courses: 10\n",
+            "students: 9\n",
+            "enrolments: 25\n"
+          ]
+        }
+      ],
+      "source": [
+        "db.courses.drop()\n",
+        "db.students.drop()\n",
+        "db.enrolments.drop()\n",
+        "\n",
+        "db.courses.insert_many([\n",
+        "    {\"title\": \"Intro to Python\", \"instructor\": \"Alice\", \"price\": 100,\n",
+        "     \"category\": \"Programming\", \"tags\": [\"coding\", \"python\", \"beginner\"]},\n",
+        "    {\"title\": \"Data Analysis with MongoDB\", \"instructor\": \"Bob\", \"price\": 150,\n",
+        "     \"category\": \"Databases\", \"tags\": [\"data\", \"mongodb\", \"nosql\"]},\n",
+        "    {\"title\": \"Web Development Basics\", \"instructor\": \"Carol\", \"price\": 120,\n",
+        "     \"category\": \"Web\", \"tags\": [\"html\", \"css\", \"javascript\"]},\n",
+        "    {\"title\": \"Advanced Python\", \"instructor\": \"Alice\", \"price\": 200,\n",
+        "     \"category\": \"Programming\", \"tags\": [\"python\", \"advanced\"]},\n",
+        "    {\"title\": \"JavaScript Deep Dive\", \"instructor\": \"Carol\", \"price\": 180,\n",
+        "     \"category\": \"Web\", \"tags\": [\"javascript\", \"advanced\", \"coding\"]},\n",
+        "    {\"title\": \"SQL Fundamentals\", \"instructor\": \"Bob\", \"price\": 90,\n",
+        "     \"category\": \"Databases\", \"tags\": [\"sql\", \"data\", \"beginner\"]},\n",
+        "    {\"title\": \"Data Visualisation\", \"instructor\": \"Dan\", \"price\": 160,\n",
+        "     \"category\": \"Data Science\", \"tags\": [\"data\", \"python\", \"charts\"]},\n",
+        "    {\"title\": \"Statistics for Data Science\", \"instructor\": \"Dan\", \"price\": 140,\n",
+        "     \"category\": \"Data Science\", \"tags\": [\"stats\", \"data\", \"beginner\"]},\n",
+        "    # No enrolments: these disappear from any pipeline starting at `enrolments`.\n",
+        "    {\"title\": \"Machine Learning Foundations\", \"instructor\": \"Bob\", \"price\": 250,\n",
+        "     \"category\": \"Data Science\", \"tags\": [\"ml\", \"python\", \"advanced\"]},\n",
+        "    {\"title\": \"Database Design\", \"instructor\": \"Erin\", \"price\": 130,\n",
+        "     \"category\": \"Databases\", \"tags\": [\"sql\", \"design\", \"nosql\"]},\n",
+        "])\n",
+        "\n",
+        "db.students.insert_many([\n",
+        "    {\"student_id\": \"S001\", \"name\": \"John Doe\", \"country\": \"USA\"},\n",
+        "    {\"student_id\": \"S002\", \"name\": \"Jane Smith\", \"country\": \"UK\"},\n",
+        "    {\"student_id\": \"S003\", \"name\": \"Ali Khan\", \"country\": \"UAE\"},\n",
+        "    {\"student_id\": \"S004\", \"name\": \"Maria Garcia\", \"country\": \"Spain\"},\n",
+        "    {\"student_id\": \"S005\", \"name\": \"Chen Wei\", \"country\": \"China\"},\n",
+        "    {\"student_id\": \"S006\", \"name\": \"Sipho Ndlovu\", \"country\": \"South Africa\"},\n",
+        "    {\"student_id\": \"S007\", \"name\": \"Emma Brown\", \"country\": \"UK\"},\n",
+        "    # Registered but never enrolled in anything.\n",
+        "    {\"student_id\": \"S008\", \"name\": \"Priya Patel\", \"country\": \"India\"},\n",
+        "    {\"student_id\": \"S009\", \"name\": \"Tom Becker\", \"country\": \"USA\"},\n",
+        "])\n",
+        "\n",
+        "db.enrolments.insert_many([\n",
+        "    {\"student_id\": \"S001\", \"course_title\": \"Intro to Python\",\n",
+        "     \"progress\": 85, \"completed\": True},\n",
+        "    {\"student_id\": \"S001\", \"course_title\": \"Data Analysis with MongoDB\",\n",
+        "     \"progress\": 40, \"completed\": False},\n",
+        "    {\"student_id\": \"S001\", \"course_title\": \"SQL Fundamentals\",\n",
+        "     \"progress\": 100, \"completed\": True},\n",
+        "    {\"student_id\": \"S002\", \"course_title\": \"Intro to Python\",\n",
+        "     \"progress\": 95, \"completed\": True},\n",
+        "    {\"student_id\": \"S002\", \"course_title\": \"Web Development Basics\",\n",
+        "     \"progress\": 70, \"completed\": True},\n",
+        "    {\"student_id\": \"S002\", \"course_title\": \"JavaScript Deep Dive\",\n",
+        "     \"progress\": 45, \"completed\": False},\n",
+        "    {\"student_id\": \"S003\", \"course_title\": \"Advanced Python\",\n",
+        "     \"progress\": 30, \"completed\": False},\n",
+        "    {\"student_id\": \"S003\", \"course_title\": \"Statistics for Data Science\",\n",
+        "     \"progress\": 80, \"completed\": False},\n",
+        "    {\"student_id\": \"S004\", \"course_title\": \"Web Development Basics\",\n",
+        "     \"progress\": 100, \"completed\": True},\n",
+        "    {\"student_id\": \"S004\", \"course_title\": \"Data Visualisation\",\n",
+        "     \"progress\": 60, \"completed\": False},\n",
+        "    {\"student_id\": \"S005\", \"course_title\": \"Intro to Python\",\n",
+        "     \"progress\": 90, \"completed\": True},\n",
+        "    {\"student_id\": \"S005\", \"course_title\": \"Advanced Python\",\n",
+        "     \"progress\": 75, \"completed\": False},\n",
+        "    {\"student_id\": \"S005\", \"course_title\": \"Data Visualisation\",\n",
+        "     \"progress\": 100, \"completed\": True},\n",
+        "    {\"student_id\": \"S006\", \"course_title\": \"SQL Fundamentals\",\n",
+        "     \"progress\": 80, \"completed\": False},\n",
+        "    {\"student_id\": \"S006\", \"course_title\": \"Data Analysis with MongoDB\",\n",
+        "     \"progress\": 88, \"completed\": True},\n",
+        "    {\"student_id\": \"S007\", \"course_title\": \"JavaScript Deep Dive\",\n",
+        "     \"progress\": 92, \"completed\": True},\n",
+        "    {\"student_id\": \"S007\", \"course_title\": \"Statistics for Data Science\",\n",
+        "     \"progress\": 55, \"completed\": False},\n",
+        "    {\"student_id\": \"S001\", \"course_title\": \"Web Development Basics\",\n",
+        "     \"progress\": 65, \"completed\": False},\n",
+        "    {\"student_id\": \"S002\", \"course_title\": \"SQL Fundamentals\",\n",
+        "     \"progress\": 100, \"completed\": True},\n",
+        "    {\"student_id\": \"S005\", \"course_title\": \"Statistics for Data Science\",\n",
+        "     \"progress\": 82, \"completed\": True},\n",
+        "    {\"student_id\": \"S005\", \"course_title\": \"Data Analysis with MongoDB\",\n",
+        "     \"progress\": 35, \"completed\": False},\n",
+        "    # Orphans: these courses are no longer in the catalogue.\n",
+        "    {\"student_id\": \"S003\", \"course_title\": \"Retired Course\",\n",
+        "     \"progress\": 55, \"completed\": False},\n",
+        "    {\"student_id\": \"S007\", \"course_title\": \"Intro to Ruby\",\n",
+        "     \"progress\": 20, \"completed\": False},\n",
+        "    # Enrolled, but `progress` was never recorded.\n",
+        "    {\"student_id\": \"S004\", \"course_title\": \"Intro to Python\",\n",
+        "     \"completed\": False},\n",
+        "    {\"student_id\": \"S006\", \"course_title\": \"Web Development Basics\",\n",
+        "     \"completed\": False},\n",
+        "])\n",
+        "\n",
+        "print(f\"courses: {db.courses.count_documents({})}\")\n",
+        "print(f\"students: {db.students.count_documents({})}\")\n",
+        "print(f\"enrolments: {db.enrolments.count_documents({})}\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Grouping with None**"
+      ],
+      "metadata": {
+        "id": "d87vImI24uX9"
+      },
+      "id": "d87vImI24uX9"
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cursor = db.courses.aggregate([\n",
+        "    {\"$group\": {\n",
+        "        \"_id\": None,\n",
+        "        \"courseCount\": {\"$sum\": 1},\n",
+        "        \"catalogueValue\": {\"$sum\": \"$price\"},\n",
+        "        \"avgPrice\": {\"$avg\": \"$price\"},\n",
+        "        \"cheapest\": {\"$min\": \"$price\"},\n",
+        "        \"most_expensive\": {\"$max\": \"$price\"}}},\n",
+        "    {\"$project\": {\"_id\": 0}}\n",
+        "])\n",
+        "output_cursor(cursor)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "jAXCRDxhTjCA",
+        "outputId": "68437e06-d4a7-47d8-88f3-580d24fa5df6"
+      },
+      "id": "jAXCRDxhTjCA",
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'courseCount': 10, 'catalogueValue': 1520, 'avgPrice': 152.0, 'cheapest': 90, 'most_expensive': 250}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "b746ad09",
+      "metadata": {
+        "id": "b746ad09"
+      },
+      "source": [
+        "**What is the average price per category and sum of course per category? Order your results by average price descending.**"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cursor = db.courses.aggregate([\n",
+        "    {\"$group\" : {\n",
+        "        \"_id\" : \"$category\",\n",
+        "        \"avgPrice\" : { \"$avg\" : \"$price\"},\n",
+        "        \"totalCourses\" : { \"$sum\" : 1}\n",
+        "      }\n",
+        "    },\n",
+        "    {\"$sort\" : {\"avgPrice\" : -1}}\n",
+        "])\n",
+        "\n",
+        "output_cursor(cursor)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "LIC36TDnw7jn",
+        "outputId": "d22723f5-e227-4d4b-b620-891a84a87c8c"
+      },
+      "id": "LIC36TDnw7jn",
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'_id': 'Data Science', 'avgPrice': 183.33333333333334, 'totalCourses': 3}\n",
+            "{'_id': 'Programming', 'avgPrice': 150.0, 'totalCourses': 2}\n",
+            "{'_id': 'Web', 'avgPrice': 150.0, 'totalCourses': 2}\n",
+            "{'_id': 'Databases', 'avgPrice': 123.33333333333333, 'totalCourses': 3}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "940ff226",
+      "metadata": {
+        "id": "940ff226"
+      },
+      "source": [
+        "**Write an aggregation that identifies all courses in the Programming category and calculates a 10% discount on their price. Display the course title, instructor, and the discounted price.**"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cursor = db.courses.aggregate([\n",
+        "    {\"$match\" : {\"category\" : \"Programming\"}},\n",
+        "    {\"$project\" : {\n",
+        "        \"title\" : 1, \"instructor\" : 1, \"_id\" : 0,\n",
+        "        \"discountedPrice\" : { \"$multiply\" : [\"$price\", 0.9]}\n",
+        "    }}\n",
+        "])\n",
+        "\n",
+        "output_cursor(cursor)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "8hpqsSerzksQ",
+        "outputId": "0a193f67-ffbc-4c7d-8844-bcbe6303679e"
+      },
+      "id": "8hpqsSerzksQ",
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'title': 'Intro to Python', 'instructor': 'Alice', 'discountedPrice': 90.0}\n",
+            "{'title': 'Advanced Python', 'instructor': 'Alice', 'discountedPrice': 180.0}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Same computation with `$set` â notice everything else survives."
+      ],
+      "metadata": {
+        "id": "GJAKE7ur94UZ"
+      },
+      "id": "GJAKE7ur94UZ"
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cursor = db.courses.aggregate([\n",
+        "    {\"$match\": {\"category\": \"Programming\"}},\n",
+        "    {\"$set\": {\"discountedPrice\": {\"$multiply\": [\"$price\", 0.9]}}}\n",
+        "])\n",
+        "output_cursor(cursor)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "H3Ibfk8rT0g7",
+        "outputId": "35753fd7-9c8f-4562-b9c5-10e192999e63"
+      },
+      "id": "H3Ibfk8rT0g7",
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'_id': ObjectId('6a96b366ca6abc68a5e77be7'), 'title': 'Intro to Python', 'instructor': 'Alice', 'price': 100, 'category': 'Programming', 'tags': ['coding', 'python', 'beginner'], 'discountedPrice': 90.0}\n",
+            "{'_id': ObjectId('6a96b366ca6abc68a5e77bea'), 'title': 'Advanced Python', 'instructor': 'Alice', 'price': 200, 'category': 'Programming', 'tags': ['python', 'advanced'], 'discountedPrice': 180.0}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "ad734053",
+      "metadata": {
+        "id": "ad734053"
+      },
+      "source": [
+        "**Each course has an array of tags. Determine how many times each tag appears across all courses, and order results from most to least frequent.**"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cursor = db.courses.aggregate([\n",
+        "    {\"$unwind\" : \"$tags\"},\n",
+        "    {\"$group\" : {\n",
+        "        \"_id\" : \"$tags\",\n",
+        "        \"tagCount\" : {\"$sum\" : 1}\n",
+        "    }},\n",
+        "    {\"$sort\" : {\"tagCount\" : -1}}\n",
+        "])\n",
+        "\n",
+        "output_cursor(cursor)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "DRycrVT81g_W",
+        "outputId": "bcdffb9c-8c52-4913-e180-08ab28a400fa"
+      },
+      "id": "DRycrVT81g_W",
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'_id': 'data', 'tagCount': 4}\n",
+            "{'_id': 'python', 'tagCount': 4}\n",
+            "{'_id': 'beginner', 'tagCount': 3}\n",
+            "{'_id': 'advanced', 'tagCount': 3}\n",
+            "{'_id': 'nosql', 'tagCount': 2}\n",
+            "{'_id': 'javascript', 'tagCount': 2}\n",
+            "{'_id': 'coding', 'tagCount': 2}\n",
+            "{'_id': 'sql', 'tagCount': 2}\n",
+            "{'_id': 'charts', 'tagCount': 1}\n",
+            "{'_id': 'html', 'tagCount': 1}\n",
+            "{'_id': 'ml', 'tagCount': 1}\n",
+            "{'_id': 'css', 'tagCount': 1}\n",
+            "{'_id': 'mongodb', 'tagCount': 1}\n",
+            "{'_id': 'stats', 'tagCount': 1}\n",
+            "{'_id': 'design', 'tagCount': 1}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "f9863a9e",
+      "metadata": {
+        "id": "f9863a9e"
+      },
+      "source": [
+        "**Write an aggregation that calculates the total amount each student spent on their courses, using information from the relevant collections.**"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cursor = db.enrolments.aggregate([\n",
+        "    {\"$lookup\" : {\n",
+        "        \"from\" : \"courses\",\n",
+        "        \"localField\" : \"course_title\",\n",
+        "        \"foreignField\" : \"title\",\n",
+        "        \"as\" : \"course_info\"\n",
+        "    }},\n",
+        "    {\"$unwind\" : \"$course_info\"},\n",
+        "    {\"$group\" : {\n",
+        "        \"_id\" : \"$student_id\",\n",
+        "        \"total\" : {\"$sum\" : \"$course_info.price\"}\n",
+        "    }}\n",
+        "])\n",
+        "\n",
+        "output_cursor(cursor)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dCaX61IY3l6C",
+        "outputId": "5d85a85e-45c7-46bd-e053-1225e0d73c42",
+        "collapsed": true
+      },
+      "id": "dCaX61IY3l6C",
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'_id': 'S001', 'total': 460}\n",
+            "{'_id': 'S003', 'total': 340}\n",
+            "{'_id': 'S004', 'total': 380}\n",
+            "{'_id': 'S005', 'total': 750}\n",
+            "{'_id': 'S006', 'total': 360}\n",
+            "{'_id': 'S007', 'total': 320}\n",
+            "{'_id': 'S002', 'total': 490}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "dc904764",
+      "metadata": {
+        "id": "dc904764"
+      },
+      "source": [
+        "**Q: Find the top-performing students (progress > 80) and calculate their average progress per course category (Include the student IDs of top performing students for each category).**"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "cursor = db.enrolments.aggregate([\n",
+        "    {\"$lookup\" : {\n",
+        "        \"from\" : \"courses\",\n",
+        "        \"localField\" : \"course_title\",\n",
+        "        \"foreignField\" : \"title\",\n",
+        "        \"as\" : \"course_info\"\n",
+        "    }},\n",
+        "    {\"$unwind\" : \"$course_info\"},\n",
+        "    {\"$match\" : {\"progress\" : {\"$gt\" : 80}}},\n",
+        "    {\"$group\" : {\n",
+        "        \"_id\" : \"$course_info.category\"\n",
+        "    }}\n",
+        "])\n",
+        "\n",
+        "output_cursor(cursor)"
+      ],
+      "metadata": {
+        "id": "P9n-spdn-1lv",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "c0d4e2d8-7162-4a81-e905-27913dd89d3d"
+      },
+      "id": "P9n-spdn-1lv",
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "{'_id': 'Programming'}\n",
+            "{'_id': 'Databases'}\n",
+            "{'_id': 'Web'}\n",
+            "{'_id': 'Data Science'}\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "c225ade6",
+      "metadata": {
+        "id": "c225ade6"
+      },
+      "source": [
+        "**Which instructor generated the most revenue across their courses? Include the total revenue and list of courses they teach.**"
+      ]
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "cs202_db",
+      "language": "python",
+      "name": "python3"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "ipython",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.13.7"
+    },
+    "colab": {
+      "provenance": []
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
