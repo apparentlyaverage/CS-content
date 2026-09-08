@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exercise 3 - Height Conversion</title>
+</head>
+<body>
+    <script>
+        let heightInMetres = 1.86;
+        
+        // Convert metres to millimetres (1.86 * 1000 = 1860)
+        let heightInMm = heightInMetres * 1000;
+        
+        // Convert millimetres to total inches (1 inch = 25.4 mm)
+        let totalInches = heightInMm / 25.4;
+        
+        // Calculate whole feet (12 inches = 1 foot) and the remaining inches
+        let feet = Math.floor(totalInches / 12);
+        let inches = totalInches % 12;
+
+        // Display output matching Figure 3. toFixed(0) is used to round the inches so it reads "1 inches" instead of a long decimal
+        document.write("<h2>" + heightInMetres + " metres = " + feet + " feet " + inches.toFixed(0) + " inches!</h2>");
+    </script>
+</body>
+</html>
