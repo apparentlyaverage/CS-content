@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Systems-Level Programming (C) — Exam Prep Sheet</title>
+<style>
+  :root{
+    --bg:#fbfaf7; --panel:#ffffff; --ink:#1d1d1f; --muted:#5f6368; --line:#e4e1da;
+    --accent:#1f5fa8; --accent-soft:#e8f0fa; --warn:#a4501b; --warn-soft:#fdf1e7;
+    --ok:#2e7d4f; --ok-soft:#e9f5ee; --code:#f3f1ec;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font:15.5px/1.6 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{display:grid;grid-template-columns:250px 1fr;max-width:1250px;margin:0 auto}
+  nav{position:sticky;top:0;height:100vh;overflow:auto;padding:24px 18px;border-right:1px solid var(--line);font-size:14px}
+  nav h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 6px}
+  nav a{display:block;color:var(--ink);text-decoration:none;padding:3px 8px;border-radius:6px}
+  nav a:hover{background:var(--accent-soft);color:var(--accent)}
+  main{padding:32px 44px 80px;min-width:0}
+  h1{font-size:30px;margin:0 0 4px}
+  .sub{color:var(--muted);margin:0 0 20px}
+  h2.sec{font-size:22px;margin:44px 0 12px;padding-top:8px;border-top:2px solid var(--ink)}
+  h3{font-size:17px;margin:22px 0 6px}
+  section{scroll-margin-top:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:12px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+  .key{background:var(--accent-soft);border-left:4px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+  .warn{background:var(--warn-soft);border-left:4px solid var(--warn);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+  .warn b:first-child{color:var(--warn)}
+  code{font:13.5px/1.45 Consolas,"SF Mono",Menlo,monospace;background:var(--code);padding:1px 5px;border-radius:4px}
+  pre{background:#1e1f22;color:#e6e6e6;padding:12px 14px;border-radius:8px;overflow:auto;font:13.5px/1.5 Consolas,"SF Mono",Menlo,monospace;margin:10px 0}
+  pre code{background:none;padding:0;color:inherit}
+  pre .c{color:#8fbf7f}
+  table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#f1eee8}
+  ul,ol{padding-left:22px;margin:6px 0}
+  li{margin:3px 0}
+  details.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:10px 0}
+  details.q>summary{cursor:pointer;padding:11px 16px;font-weight:600;list-style:none;position:relative;padding-left:38px}
+  details.q>summary::-webkit-details-marker{display:none}
+  details.q>summary::before{content:"+";position:absolute;left:14px;top:9px;font-size:18px;color:var(--accent);font-weight:700}
+  details.q[open]>summary::before{content:"−"}
+  details.q>.ans{padding:2px 18px 14px;border-top:1px dashed var(--line)}
+  .ans .verdict{display:inline-block;background:var(--ok-soft);color:var(--ok);font-weight:700;padding:1px 8px;border-radius:5px;margin-right:4px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}
+  button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--panel);padding:5px 12px;border-radius:7px;cursor:pointer}
+  button:hover{border-color:var(--accent);color:var(--accent)}
+  .pill{display:inline-block;font-size:12px;background:#eee;padding:0 7px;border-radius:10px;color:var(--muted);margin-left:6px;font-weight:500}
+  .mem-stack{color:#1f5fa8;font-weight:600}.mem-heap{color:#a4501b;font-weight:600}.mem-data{color:#2e7d4f;font-weight:600}.mem-text{color:#7a3fa0;font-weight:600}
+  @media (max-width:900px){.wrap{grid-template-columns:1fr}nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:20px}}
+  @media print{nav,.toolbar{display:none}.wrap{display:block}main{padding:0}details.q>.ans{display:block!important}pre{white-space:pre-wrap}h2.sec{break-before:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <h2>Concepts</h2>
+  <a href="#why">1. What &amp; why</a>
+  <a href="#cvsjava">2. C vs Java/Python</a>
+  <a href="#ub">3. Undefined behaviour</a>
+  <a href="#rules">4. The 3 rules</a>
+  <a href="#memory">5. Stack / heap / data</a>
+  <a href="#sizes">6. Sizes &amp; sizeof</a>
+  <a href="#pointers">7. Pointers</a>
+  <a href="#endian">8. Endianness</a>
+  <a href="#zero">9. Zero is special</a>
+  <a href="#arrays">10. Arrays &amp; strings</a>
+  <a href="#dynamic">11. malloc / calloc / free</a>
+  <a href="#const">12. const</a>
+  <a href="#types">13. struct / union / enum</a>
+  <a href="#decl">14. Reading declarations</a>
+  <a href="#build">15. Compilation &amp; linking</a>
+  <a href="#main">16. main &amp; argv</a>
+  <h2>Exam questions</h2>
+  <a href="#q-union">Q1 — union/struct/typedef</a>
+  <a href="#q-readint">Q2 — Where is it stored?</a>
+  <a href="#q-arrow">Q3 — The -&gt; operator</a>
+  <a href="#q-main">Q4 — main() with malloc</a>
+  <a href="#q-calloc">Q5 — calloc &amp; addUp</a>
+  <a href="#q-sizeof">Q6 — Broken sizeof loop</a>
+  <a href="#q-alloc">Q7 — Stack/heap/data</a>
+  <a href="#q-minimise">Q8 — minimise()</a>
+  <a href="#q-yellow">Q9 — "yellow"/"green"</a>
+  <a href="#q-decl">Q10 — Decode declarations</a>
+  <h2>Revision</h2>
+  <a href="#cram">Last-minute cram list</a>
+</nav>
+
+<main>
+<h1>Systems-Level Programming in C — Exam Prep</h1>
+<p class="sub">Built from the lecture slides. It covers the key concepts first, then model answers to every review question in the deck. Click a question to reveal its answer, and test yourself before you look.</p>
+<div class="toolbar">
+  <button onclick="document.querySelectorAll('details.q').forEach(d=>d.open=true)">Show all answers</button>
+  <button onclick="document.querySelectorAll('details.q').forEach(d=>d.open=false)">Hide all answers</button>
+  <button onclick="window.print()">Print</button>
+</div>
+
+<!-- ================= CONCEPTS ================= -->
+<h2 class="sec">Part A — Key concepts</h2>
+
+<section id="why">
+<h3>1. What systems-level programming is, and why it matters</h3>
+<div class="card">
+<p>Systems-level programming is the <b>missing link</b> between assembly (very low-level) and Java/Python (very high-level): <code>Hardware → Assembly → <b>C</b> → Java/Python</code>.</p>
+<ul>
+  <li><b>Abstraction level:</b> the more irrelevant detail a language hides, the higher-level it is. A higher-level language usually turns <b>one statement into more opcodes</b> than a lower-level one.</li>
+  <li><b>C is a high-level language</b> defined by an ISO standard (ISO/IEC 9899). C hides registers, opcodes, flags, stack setup and teardown, calling and register conventions, interrupts, syscalls, addressing modes and instruction sets. It does <b>not</b> hide <b>memory</b> or <b>memory areas</b> (.text, .data, .bss). Those stay your problem.</li>
+  <li><b>Why learn it:</b> (1) it's interesting; (2) it shows how machines and operating systems work, which helps you answer "why is my program slow?" and "why does this optimisation work?"; (3) you can't write systems software without it. <b>POSIX is specified in C.</b></li>
+</ul>
+</div>
+</section>
+
+<section id="cvsjava">
+<h3>2. C compared with Java and Python</h3>
+<table>
+<tr><th>Java / Python</th><th>C</th></tr>
+<tr><td>Memory-managed (garbage collected)</td><td><b>Not</b> memory-managed. You allocate and free dynamic memory yourself</td></tr>
+<tr><td>Object-oriented, with classes and objects</td><td>No classes or objects. Uses functions, structs, and global plus local variables</td></tr>
+<tr><td>Strongly typed. You can't treat type X as type Y</td><td><b>Weakly typed.</b> "Memory is just memory." A cast reinterprets it, and C says "Sure, no problem!"</td></tr>
+<tr><td>Built-in data structures, including strings</td><td>None. A string is just a NUL-terminated <code>char</code> sequence</td></tr>
+<tr><td>Interpreted / run in a virtual machine</td><td>Compiled to native instructions</td></tr>
+<tr><td>Exceptions</td><td><b>No exceptions.</b> A failing function sets a global error variable (<code>errno</code>) and/or returns a special value (often 0 or −1)</td></tr>
+<tr><td>Bad code fails safely (exception, crash with a message)</td><td>Bad code might <b>not</b> fail visibly. You get undefined behaviour</td></tr>
+</table>
+<p>C also has <b>labels and <code>goto</code></b>, and small, well-defined functions documented in <code>man</code> pages.</p>
+
+<div class="grid">
+<div class="card"><b>Memory management: pros</b><ul><li>Fewer details for the programmer</li><li>Code focuses on the problem, not on allocation</li><li>Fewer memory-related security bugs</li></ul></div>
+<div class="card"><b>Memory management: cons</b><ul><li>Less control over and knowledge of what the program does</li><li>Harder to find performance issues by reading code</li><li>Harder to reach low-level memory and registers</li></ul></div>
+<div class="card"><b>Interpreted / VM</b><ul><li>Cross-platform wherever the VM runs</li><li>More overhead, so usually slower</li><li>The VM can provide features the OS or hardware lacks</li></ul></div>
+<div class="card"><b>Compiled (C)</b><ul><li>Must be compiled separately for each platform</li><li>Less overhead, so usually faster</li><li>Limited by the hardware, but can use hardware-specific features</li><li><i>VMs themselves are usually written in C or C++</i></li></ul></div>
+</div>
+</section>
+
+<section id="ub">
+<h3>3. Undefined behaviour (UB)</h3>
+<div class="key"><b>Definition (C standard):</b> behaviour, on use of a non-portable or erroneous construct or erroneous data, for which the standard imposes <b>no requirements</b>.</div>
+<p><b>Example:</b> signed integer overflow. "No requirements" means the implementation may:</p>
+<ul>
+  <li>ignore the situation completely, often with unpredictable results;</li>
+  <li>behave in a documented, environment-specific way, with or without a diagnostic;</li>
+  <li>stop translation or execution with a diagnostic;</li>
+  <li>…or do <b>anything else</b>.</li>
+</ul>
+<p>Common sources of UB: writing to a string literal, <code>free</code>ing memory that wasn't dynamically allocated, reading or writing past the end of an array, dereferencing NULL or freed pointers, and mismatched types across object files.</p>
+</section>
+
+<section id="rules">
+<h3>4. The three fundamental rules of C</h3>
+<div class="key">
+<ol>
+  <li><b>All data has a place</b> (in memory).</li>
+  <li><b>All data has a size</b> (in bytes).</li>
+  <li><b>Zero is special.</b></li>
+</ol>
+Break any of these and you get <b>undefined behaviour</b>.
+</div>
+<div class="card"><b>Copy-by-value only.</b> C never passes by reference. When you call a function, each argument's value is <b>copied</b> into the parameter variable, then the function runs. Assignment also copies the value. To let a function change a caller's variable, pass a <b>pointer</b> (the copied value is then an address). C syntax can be deceptive: many things that look like built-in operations are really "pseudo-instructions" for memory operations.</div>
+</section>
+
+<section id="memory">
+<h3>5. Where data lives: stack, heap and data segment</h3>
+<p><b>Static</b> allocation means the size is known at compile time (an <code>int</code>, a fixed-size array). <b>Dynamic</b> allocation means the size is only known at run time (reading <i>n</i> integers, where <i>n</i> comes from the user). C makes <b>you</b> manage the dynamic kind.</p>
+<p>All data is in <b>exactly one</b> of these places:</p>
+<table>
+<tr><th>Area</th><th>Access</th><th>Lifetime</th><th>What goes there</th></tr>
+<tr><td class="mem-stack">Stack</td><td>Read-write</td><td>Created at function-call setup, destroyed at teardown</td><td>Local variables, parameters, fixed-size local arrays. Size must be <b>known at compile time</b>.</td></tr>
+<tr><td class="mem-heap">Heap</td><td>Read-write</td><td>From <code>malloc</code>/<code>calloc</code>/<code>realloc</code> until <code>free</code> (memory is obtained from the OS by a syscall)</td><td>Data whose size is <b>not known at compile time</b></td></tr>
+<tr><td class="mem-data">Data segment</td><td>String literals and constants are <b>read-only</b></td><td>The whole run of the program</td><td>String literals, constants, globals and <code>static</code> variables</td></tr>
+</table>
+<p class="sub">Function code lives in the <span class="mem-text">.text</span> (code) section, which the slides group with the "data segment / other in-process section".</p>
+<div class="warn"><b>Watch out:</b> one slide says global variables are reserved "on the stack". In reality globals (and <code>static</code> locals) live in the data segment (.data/.bss), and only locals and arguments go on the stack. In the exam, put globals such as <code>errno</code> in the data segment.</div>
+</section>
+
+<section id="sizes">
+<h3>6. Sizes and <code>sizeof</code></h3>
+<ul>
+  <li>The <b>type</b> of data determines its <b>size</b>. <code>sizeof(char)</code> is <b>1 by definition</b>, which is almost always one byte. Every other size is measured in <code>char</code> units.</li>
+  <li>Typical x64 sizes: <code>char 1 · short 2 · int 4 · float 4 · long 8 · double 8 · any pointer 8</code>. (On 32-bit x86, pointers and <code>long</code> are usually 4.)</li>
+  <li><code>signed</code> and <code>unsigned</code> don't change size.</li>
+  <li><code>sizeof(v)</code> or <code>sizeof(int)</code> returns a <code>size_t</code>, an unsigned type that is usually <code>unsigned long</code>.</li>
+  <li>For a <b>static array</b>, <code>sizeof</code> gives the <b>total bytes</b>, not the element count. Element count = <code>sizeof(a)/sizeof(a[0])</code>.</li>
+  <li>For a <b>pointer</b>, <code>sizeof</code> gives the pointer's size (8 on x64), <b>never</b> the size of what it points to.</li>
+  <li>A cast forces C to treat X as Y, which trades type safety for flexibility.</li>
+</ul>
+</section>
+
+<section id="pointers">
+<h3>7. Pointers</h3>
+<p>A <b>pointer</b> is a variable that stores a memory <b>address</b>. The address is where the data <b>starts</b>.</p>
+<ul>
+  <li><b>Address-of</b> <code>&amp;v</code> gives the address of <code>v</code>. If <code>v</code> is a <code>T</code>, then <code>&amp;v</code> is a <code>T*</code>.</li>
+  <li><b>Dereference</b> <code>*m</code> gives the value at address <code>m</code> ("following" the pointer).</li>
+  <li>All pointers are the same size, which depends on the largest address the machine can use. On x64 that's <b>8 bytes</b> (64-bit addresses).</li>
+  <li>You can have pointers to pointers: <code>int**</code>.</li>
+</ul>
+<table>
+<tr><th>Operation on <code>int *k</code></th><th>Syntax</th><th>Meaning</th></tr>
+<tr><td>Assign</td><td><code>k = &amp;x;</code></td><td>Change the stored address</td></tr>
+<tr><td>Read the address</td><td><code>k</code></td><td>Look at the address itself</td></tr>
+<tr><td>Dereference</td><td><code>*k</code></td><td>Value at that address</td></tr>
+<tr><td>Arithmetic</td><td><code>k+1</code></td><td>Moves in units of <code>sizeof(int)</code>. If <code>k</code> = …19010, then <code>k+1</code> = …19014</td></tr>
+<tr><td>Index</td><td><code>k[i]</code></td><td>Same as <code>*(k+i)</code></td></tr>
+<tr><td>Address of the pointer</td><td><code>&amp;k</code></td><td>An <code>int**</code></td></tr>
+</table>
+<div class="card"><b><code>void*</code> (void pointer):</b> a raw address with <b>no type</b>.
+<ul><li>You <b>can't dereference</b> it, because C doesn't know how to interpret the memory.</li>
+<li>You <b>can't index it or do pointer arithmetic</b>, because the element size is unknown.</li>
+<li>Cast it first: <code>*((int*)p)</code>, or <code>((node*)v)-&gt;name</code>.</li></ul></div>
+<div class="card"><b>Choosing the operator:</b> Is it a <code>void*</code>? Cast, then dereference. Is it a pointer? Use <code>*v</code> or <code>v-&gt;field</code>. Is it a plain value? Use <code>v</code> or <code>v.field</code>.</div>
+<div class="card"><b>Function pointers:</b> <code>int (*f)(char, char)</code> declares <code>f</code> as a pointer to a function that takes <code>(char, char)</code> and returns <code>int</code>. Call it as <code>f('a','b')</code>.<br>
+<b>Multi-level:</b> <code>char **m</code> is a pointer to pointer to char, i.e. an array of strings. <code>int **xs</code> is a table or matrix. You must allocate each level separately. Drawing arrow diagrams helps.</div>
+</section>
+
+<section id="endian">
+<h3>8. Endianness</h3>
+<p><code>int v = 123456789;</code> is <code>0x075BCD15</code>, i.e. the bytes <code>07 5B CD 15</code>.</p>
+<table>
+<tr><th>Order</th><th>Bytes in memory, starting at <code>&amp;v</code></th></tr>
+<tr><td><b>Big-endian</b> (most significant byte first; how we write numbers)</td><td><code>07 5B CD 15</code></td></tr>
+<tr><td><b>Little-endian</b> (least significant byte first; <b>x86/x64</b>)</td><td><code>15 CD 5B 07</code></td></tr>
+</table>
+<p><code>&amp;v</code> always points at the <b>lowest address</b>, so the same <code>int</code> looks different byte by byte on machines with different endianness. The union exam question tests exactly this.</p>
+</section>
+
+<section id="zero">
+<h3>9. Zero is special</h3>
+<ol>
+  <li>In conditionals, <b>non-zero is true and zero is false</b>.</li>
+  <li>Zero marks the <b>end</b> of data with unknown or dynamic size. Used this way it is called a <b>terminator</b> or <b>sentinel</b>, and it means "stop reading, you've reached the end".</li>
+</ol>
+<p>Each kind of type has its own zero: <code>'\0'</code> is the char zero (NUL), <code>0</code> is the numeric zero, and <code>NULL</code> is the pointer zero.</p>
+</section>
+
+<section id="arrays">
+<h3>10. Arrays and strings</h3>
+<div class="card">
+<b>Strings:</b> a C string is a sequence of chars ending in <code>'\0'</code>. Instead of copying the whole string, you copy a pointer to its first char.<br>
+<code>char *r = "testing";</code> puts a <b>pointer</b> <code>r</code> on the <span class="mem-stack">stack</span>. It points to <code>t e s t i n g \0</code> in the <span class="mem-data">data segment</span>, which is <b>read-only</b>, so writing to it is UB.
+</div>
+<div class="card">
+<b>Static arrays</b> (elements stored one after another):
+<ol>
+<li>Allocated on the <b>stack</b> (when local).</li>
+<li>Must get a size at creation. Explicitly: <code>int a[3]</code>. Implicitly: <code>double b[] = {9.5, 87.2, -32.6, 5.0}</code> has length 4, and <code>char c[] = "hello"</code> has length <b>6</b> because of the <code>'\0'</code>.</li>
+<li><code>sizeof</code> gives the <b>total bytes</b>. That only equals the element count for <code>char</code> arrays.</li>
+<li>The element count is <b>lost</b> when the array is passed to a function, because only a pointer to element 0 is passed. The array <b>decays</b> to a pointer.</li>
+<li>So you usually pass the size as an extra parameter.</li>
+</ol>
+</div>
+<div class="key"><b>Array vs pointer:</b> <code>char k[20] = "yellow";</code> copies the characters <b>into a 20-byte stack array</b>, and you can modify them. <code>char *m = "green";</code> is only an 8-byte pointer on the stack to a <b>read-only literal</b>.</div>
+</section>
+
+<section id="dynamic">
+<h3>11. Dynamic memory (<code>&lt;stdlib.h&gt;</code>)</h3>
+<table>
+<tr><th>Function</th><th>What it does</th></tr>
+<tr><td><code>malloc(bytes)</code></td><td>Allocates <code>bytes</code> of <b>uninitialised</b> memory</td></tr>
+<tr><td><code>calloc(count, size)</code></td><td>Allocates <code>count × size</code> bytes, <b>all set to zero</b></td></tr>
+<tr><td><code>realloc(p, bytes)</code></td><td>Grows or shrinks a block (it may move it). If <code>p</code> is NULL it acts like <code>malloc</code></td></tr>
+<tr><td><code>free(p)</code></td><td>Returns the memory. Freeing memory that was <b>not</b> dynamically allocated is <b>UB</b></td></tr>
+</table>
+<p>They all return <code>void*</code>, and <b>NULL on failure</b>, so always check.</p>
+<pre><code>int *z = (int*)malloc(sizeof(int) * 10);
+int *z = (int*)calloc(10, sizeof(int));
+z = (int*)realloc(z, sizeof(int) * 15);
+free(z);</code></pre>
+<div class="warn"><b>Common bugs:</b> forgetting <code>free</code> (memory leak); not checking for NULL; using memory after <code>free</code>; freeing twice; <code>malloc(n)</code> instead of <code>malloc(n * sizeof(T))</code>.</div>
+</section>
+
+<section id="const">
+<h3>12. <code>const</code></h3>
+<p><code>const int days_per_week = 7;</code> means the value can't be changed. With pointers, <b>what</b> is constant depends on where <code>const</code> sits. A tip: read the declaration right to left.</p>
+<table>
+<tr><th>Declaration</th><th>Meaning</th><th><code>*x = 5</code></th><th><code>x = &amp;z</code></th></tr>
+<tr><td><code>const int *x</code> (same as <code>int const *x</code>)</td><td>Pointer to a constant int</td><td>✗</td><td>✓</td></tr>
+<tr><td><code>int * const x</code></td><td>Constant pointer to an int</td><td>✓</td><td>✗</td></tr>
+<tr><td><code>const int * const x</code></td><td>Constant pointer to a constant int</td><td>✗</td><td>✗</td></tr>
+</table>
+<div class="warn"><b>Note:</b> the slide writes the constant pointer as <code>int const *x</code>, which is a typo. In real C, <code>int const *x</code> means the same as <code>const int *x</code>. A constant pointer needs <code>const</code> <b>after</b> the <code>*</code>: <code>int * const x</code>. Learn the meanings and use the correct syntax.</div>
+</section>
+
+<section id="types">
+<h3>13. User-defined types: struct, union, enum, typedef</h3>
+<p>At run time, types don't exist. They are replaced by memory operations at fixed offsets. <b>Defining a type reserves no memory</b>, and the compiled program doesn't change. Defining a <b>variable</b> of that type reserves memory.</p>
+<div class="card"><b>Declaration vs definition</b>
+<ul><li>A <b>declaration</b> gives a name and type, e.g. a function <b>prototype</b> <code>int f(int);</code> or <code>extern int g;</code>.</li>
+<li>A <b>definition</b> gives a name and type <b>and reserves memory</b>, e.g. a function with its body, or a variable.</li></ul></div>
+<div class="grid">
+<div class="card"><b>struct</b>: members placed <b>one after another</b>.
+<pre><code>struct node {
+  void *data;
+  struct node *next;
+};
+struct node x;   <span class="c">/* 8+8 = 16 on x64 */</span></code></pre>
+Size is the <b>sum</b> of the members, plus padding.</div>
+<div class="card"><b>union</b>: every member <b>starts at the same address</b>.
+<pre><code>union integer {
+  unsigned int   value;
+  unsigned short words[2];
+  unsigned char  low_word[2];
+};  <span class="c">/* max(4,4,2) = 4 */</span></code></pre>
+Size is the <b>largest</b> member. Use it to view the same memory in different ways.</div>
+<div class="card"><b>enum</b>: links integers to names.
+<pre><code>enum day { WEEKEND, HOLIDAY, WORKDAY };
+<span class="c">/*          0        1        2     */</span></code></pre></div>
+<div class="card"><b>typedef</b>: gives a type a shorter name.
+<pre><code>typedef struct node_t {
+  void *data;
+  struct node_t *next; <span class="c">/* can't use 'node' yet */</span>
+} node;                <span class="c">/* new name goes last */</span></code></pre></div>
+</div>
+<p><b>Member access:</b> <code>s.field</code> on a value. On a pointer, <code>(*p).field</code> is the same as <code>p-&gt;field</code>.</p>
+<p><b>Alignment and padding:</b> memory is read in CPU-word chunks, and aligned accesses are fastest. 32-bit machines align to 4 bytes and 64-bit machines to 8, so the compiler may add padding. <b>Order struct members by descending size to minimise padding.</b> (The course mostly ignores alignment, but it exists.)</p>
+</section>
+
+<section id="decl">
+<h3>14. Reading complex declarations: "march forward unless forced backwards"</h3>
+<ol>
+<li>Start at the <b>identifier</b> and write "<i>name</i> is".</li>
+<li><b>Go right:</b>
+  <ul><li><code>[]</code> → "an array of"; <code>[N]</code> → "an array of N"</li>
+  <li><code>()</code> or <code>(void)</code> → "a function taking nothing, returning"</li>
+  <li><code>(…)</code> → "a function taking (decode each parameter), returning"</li>
+  <li>At the end, or at an unmatched <code>)</code>, go to step 3</li></ul></li>
+<li><b>Go left:</b>
+  <ul><li><code>(</code> → go back to step 2</li>
+  <li><code>* const</code> → "a constant pointer to"; <code>*</code> → "a pointer to"</li>
+  <li><code>const</code> followed by a type → "constant <i>type</i>", then stop; a type on its own → write it down and stop</li></ul></li>
+</ol>
+<p>See <a href="#q-decl">Q10</a> for the two worked examples from the slides.</p>
+</section>
+
+<section id="build">
+<h3>15. Building programs: compilation and linking</h3>
+<p>You can build either an <b>executable</b> or a <b>library</b>. The only difference is that an executable has an <b>entry point</b> (<code>main</code>). Larger systems use a <b>build system</b> (e.g. <code>make</code>) instead of compiling by hand.</p>
+<table>
+<tr><th>#</th><th>Step</th><th>Input → output</th><th>What happens</th></tr>
+<tr><td>1</td><td><b>Preprocessing</b></td><td>.c → preprocessed .c</td><td><b>Text transforms</b>: comments become whitespace, <code>#include</code> is pasted in, macros are expanded, <code>#if</code> blocks are kept or dropped</td></tr>
+<tr><td>2</td><td><b>Compilation</b></td><td>→ assembly (.s)</td><td>Each preprocessed file becomes assembly language</td></tr>
+<tr><td>3</td><td><b>Assembly</b></td><td>→ object code (.o)</td><td>The assembler produces machine-specific native code plus <b>relocation information</b>. Object code is <b>not executable</b></td></tr>
+<tr><td>4</td><td><b>Linking</b></td><td>.o files + libraries → executable or library</td><td>The linker resolves symbols: internal symbols to their definitions, external ones to libraries. A <b>runtime linker</b> fills deliberate gaps later (<code>LD_PRELOAD</code> on Linux)</td></tr>
+</table>
+<div class="card"><b>Preprocessor directives</b>
+<ul>
+<li><code>#include</code>: copy the file's contents in here. <code>&lt;stdio.h&gt;</code> searches the system include paths. <code>"stdio.h"</code> searches the current or project directory first, then the system paths.</li>
+<li><code>#define</code>: defines a <b>macro</b> (text substitution).</li>
+<li><code>#ifdef</code> / <code>#ifndef</code> … <code>#else</code> … <code>#endif</code>: include or skip text depending on whether a macro is defined. This is used for <b>include guards</b>. <code>#else</code> is optional.</li>
+<li><code>#pragma</code>: compiler-specific; ignored if the compiler doesn't recognise it.</li>
+</ul>
+<b>Header files (.h)</b> hold <b>declarations</b> (prototypes) of what exists in other files. They can also declare variables, and .c files refer to those with <code>extern</code>. If different object files assume <b>different types</b> for the same name, the result is UB.</div>
+</section>
+
+<section id="main">
+<h3>16. Command-line arguments</h3>
+<pre><code>int main(int argc, char **argv)   <span class="c">/* instead of int main(void) */</span></code></pre>
+<p><code>argc</code> is the number of arguments and <code>argv</code> is an array of strings. <code>argv[0]</code> is <b>always the name used to start the program</b>. The return type is still <code>int</code>.</p>
+</section>
+
+<!-- ================= QUESTIONS ================= -->
+<h2 class="sec">Part B — Exam questions with model answers</h2>
+<p class="sub">These are the review questions from the end of the slide deck. They all use the same example program (a <code>union number</code> with <code>readInt</code> and <code>reverse</code>), shown in Q1–Q4.</p>
+
+<section id="q-union">
+<h3>Q1 — Struct, union, typedef and #include</h3>
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;errno.h&gt;
+
+struct bytes {
+  unsigned char fourth;
+  unsigned char third;
+  unsigned char second;
+  unsigned char first;
+};
+
+typedef union number {
+  struct bytes bytes;
+  unsigned int n;
+} num;</code></pre>
+<details class="q"><summary>Is <code>struct bytes</code> a definition or a declaration? What's the difference?</summary><div class="ans">
+<p>It is a <b>type definition</b>: it names the type <b>and</b> gives its full layout (four <code>unsigned char</code> members), so the compiler knows its size. A bare <code>struct bytes;</code> would only be a (forward) declaration, an incomplete type you can't create variables of.</p>
+<p><b>Declaration</b> = name + type. <b>Definition</b> = name + type + it can occupy memory. Defining a <i>type</i> still reserves <b>no memory</b>. Memory is only reserved when you define a <b>variable</b> of that type (e.g. <code>struct bytes b;</code>).</p></div></details>
+<details class="q"><summary>What does the typedef allow us to do?</summary><div class="ans">
+<p>We can write <code>num x;</code> instead of <code>union number x;</code>. <code>num</code> is just a shorter alias for the type <code>union number</code>. It doesn't create a new type or change the compiled code.</p></div></details>
+<details class="q"><summary>What is the size of a <code>struct bytes</code> on x86? On x64?</summary><div class="ans">
+<p><span class="verdict">4 bytes on both.</span> It holds four 1-byte <code>unsigned char</code>s, and a <code>char</code> is 1 by definition on every platform. <code>char</code> needs only 1-byte alignment, so there is no padding. Word size (32 vs 64-bit) doesn't matter because there are no pointers or <code>long</code>s.</p></div></details>
+<details class="q"><summary>What is the size of <code>num</code> on x86? On x64?</summary><div class="ans">
+<p><span class="verdict">4 bytes on both.</span> A union is as big as its largest member: <code>max(sizeof(struct bytes), sizeof(unsigned int)) = max(4, 4) = 4</code>. <code>unsigned int</code> is 4 bytes on both x86 and x64.</p></div></details>
+<details class="q"><summary>What do the #include directives do? What's the difference between <code>&lt;stdio.h&gt;</code> and <code>"stdio.h"</code>?</summary><div class="ans">
+<p><code>#include</code> is a <b>preprocessor</b> directive. It copies the named file's contents into this spot before compilation. Here that brings in the declarations (prototypes) for <code>printf</code>/<code>fgets</code> (<code>stdio.h</code>), <code>malloc</code>/<code>strtol</code>/<code>free</code> (<code>stdlib.h</code>) and <code>errno</code> (<code>errno.h</code>).</p>
+<ul><li><code>&lt;stdio.h&gt;</code> searches only the <b>system/standard</b> include directories. Use it for library headers.</li>
+<li><code>"stdio.h"</code> searches the <b>current/project directory first</b>, then falls back to the system directories. Use it for your own headers.</li></ul></div></details>
+</section>
+
+<section id="q-readint">
+<h3>Q2 — Where is each thing stored?</h3>
+<pre><code>static int readInt(const char* prompt, unsigned int* result) {
+  char input[16];
+  char *end;
+redo:
+  printf("%s\n", prompt);
+  if (fgets(input, 16, stdin) == NULL) {
+    return -1;
+  }
+  errno = 0;
+  *result = (unsigned int)strtol(input, &amp;end, 10);
+  if (errno != 0 || end == input) {
+    goto redo;
+  }
+  return 0;
+}</code></pre>
+<details class="q"><summary>Where is <code>input</code>? Where is <code>*input</code>?</summary><div class="ans">
+<p><code>input</code> is a fixed-size local array (<code>char[16]</code>), so all 16 bytes are on the <span class="mem-stack">stack</span>, in <code>readInt</code>'s frame. <code>*input</code> is <code>input[0]</code>, the first char of that array, so it is <b>also on the stack</b>. (An array is not a pointer: there is no separate pointer variable pointing somewhere else.)</p></div></details>
+<details class="q"><summary>Where is <code>readInt</code>?</summary><div class="ans">
+<p>It's a function, so its machine code is in the <span class="mem-text">code (.text) section</span>, a read-only in-process section that exists for the whole run. That's the "data segment / other in-process section" bucket, <b>not</b> the stack or heap. <code>static</code> here means <b>internal linkage</b>: only this .c file can see it.</p></div></details>
+<details class="q"><summary>Where is <code>result</code>? Where is <code>prompt</code>?</summary><div class="ans">
+<p>Both are <b>parameters</b>, so they are on the <span class="mem-stack">stack</span>. Each is a pointer (8 bytes on x64) holding a <b>copy</b> of the address the caller passed (copy-by-value).</p></div></details>
+<details class="q"><summary>(Trick question) Where is <code>*result</code>? Where is <code>*prompt</code>?</summary><div class="ans">
+<p><b>You can't tell from <code>readInt</code> alone.</b> It depends on what the <b>caller</b> passed. A pointer can point into any of the three areas.</p>
+<ul><li>In this program, <code>main</code> calls <code>readInt("Enter an integer", &amp;(v-&gt;n))</code>, where <code>v</code> came from <code>malloc</code>, so <code>*result</code> is on the <span class="mem-heap">heap</span>. If someone passed <code>&amp;localVar</code>, it would be on the stack.</li>
+<li><code>*prompt</code> is the first character of the string literal <code>"Enter an integer"</code>, so it's in the <span class="mem-data">data segment</span> (read-only). That's also why the parameter is <code>const char*</code>.</li></ul></div></details>
+<details class="q"><summary>Where is <code>end</code>?</summary><div class="ans">
+<p><code>end</code> is a local <code>char*</code>, so it's on the <span class="mem-stack">stack</span>. After <code>strtol(input, &amp;end, 10)</code> it points to the first character in <code>input</code> that wasn't part of the number, so it <b>points into the stack</b> too. We pass <code>&amp;end</code> (a <code>char**</code>) so that <code>strtol</code> can change our pointer.</p></div></details>
+<details class="q"><summary>Where is <code>errno</code>?</summary><div class="ans">
+<p><code>errno</code> is a <b>global</b> error variable declared in <code>&lt;errno.h&gt;</code>, so it's in the <span class="mem-data">data segment</span> and lasts the whole program. (Technically it's thread-local in modern C, but "global, data segment" is the expected answer.) It shows C's error handling without exceptions: set <code>errno = 0</code>, call the function, then check whether <code>errno != 0</code>. The function also returns <code>-1</code> to signal failure.</p></div></details>
+</section>
+
+<section id="q-arrow">
+<h3>Q3 — The <code>-&gt;</code> operator</h3>
+<pre><code>static void reverse(struct bytes *v) {
+  unsigned char tmp = v-&gt;first;
+  v-&gt;first = v-&gt;fourth;
+  v-&gt;fourth = tmp;
+  tmp = v-&gt;second;
+  v-&gt;second = v-&gt;third;
+  v-&gt;third = tmp;
+}</code></pre>
+<details class="q"><summary>What does the <code>-&gt;</code> syntax do? Why do you need it?</summary><div class="ans">
+<p><code>p-&gt;field</code> <b>dereferences the pointer, then accesses the member</b>. It's shorthand for <code>(*p).field</code>. We need it because <code>v</code> is a <b>pointer</b> to a struct, not a struct, so <code>v.first</code> won't compile. We need a pointer because C is copy-by-value. If <code>reverse</code> took a <code>struct bytes</code> by value, it would swap the bytes of a <b>copy</b>, and the caller would never see the change.</p></div></details>
+<details class="q"><summary>Can you rewrite it using different syntax?</summary><div class="ans">
+<p>Yes. Use explicit dereference plus the dot operator (the brackets are needed because <code>.</code> binds tighter than <code>*</code>):</p>
+<pre><code>static void reverse(struct bytes *v) {
+  unsigned char tmp = (*v).first;
+  (*v).first  = (*v).fourth;
+  (*v).fourth = tmp;
+  tmp = (*v).second;
+  (*v).second = (*v).third;
+  (*v).third  = tmp;
+}</code></pre>
+<p>Or use indexing: <code>v[0].first</code> is the same as <code>(*(v+0)).first</code>.</p></div></details>
+</section>
+
+<section id="q-main">
+<h3>Q4 — <code>main</code> with malloc and the union</h3>
+<pre><code>int main(void) {
+  num *v = (num*)malloc(sizeof(num));
+  if (readInt("Enter an integer", &amp;(v-&gt;n)) != 0) {
+      return -1;
+  }
+  printf("v = %u (decimal), %x (hexadecimal)\n", v-&gt;n, v-&gt;n);
+  printf("bytes: %x %x %x %x\n", v-&gt;bytes.first, v-&gt;bytes.second,
+      v-&gt;bytes.third, v-&gt;bytes.fourth);
+  reverse(&amp;(v-&gt;bytes));
+  printf("Swapped!\n");
+  printf("v = %u (decimal), %x (hexadecimal)\n", v-&gt;n, v-&gt;n);
+  printf("bytes: %x %x %x %x\n", v-&gt;bytes.first, v-&gt;bytes.second, v-&gt;bytes.third, v-&gt;bytes.fourth);
+  return 0;
+}</code></pre>
+<details class="q"><summary>Why do we cast the return of malloc?</summary><div class="ans">
+<p><code>malloc</code> returns a <b><code>void*</code></b>, a raw address with no type, because it doesn't know what you'll store. The cast <code>(num*)</code> says "treat this memory as a <code>num</code>". It documents intent and makes the type explicit (and it's <b>required</b> in C++). In C, <code>void*</code> converts to other pointer types implicitly, so the cast is good style rather than strictly required.</p></div></details>
+<details class="q"><summary>If a tutor changes <code>&amp;(v-&gt;n)</code> to <code>v</code>, the code still works. Explain why.</summary><div class="ans">
+<p>In a <b>union, every member starts at the same address</b>, the start of the union. So <code>&amp;(v-&gt;n)</code> (the address of member <code>n</code>) is <b>numerically the same</b> as <code>v</code> (the address of the union). <code>readInt</code> only receives an address and writes 4 bytes there, so the same bytes get written. Only the pointer <b>types</b> differ (<code>num*</code> vs <code>unsigned int*</code>), and C's weak typing lets that through, at most with a warning.</p></div></details>
+<details class="q"><summary>Why does <code>v-&gt;bytes.first</code> use a <code>-&gt;</code> and a <code>.</code>?</summary><div class="ans">
+<p><code>v</code> is a <b>pointer</b> to a union, so we use <code>-&gt;</code> to reach its member <code>bytes</code>. But <code>bytes</code> is a struct <b>value</b> stored inside the union, not a pointer, so we use <code>.</code> to reach <code>first</code>. Rule: use <code>-&gt;</code> on pointers and <code>.</code> on values. In full: <code>(*v).bytes.first</code>.</p></div></details>
+<details class="q"><summary>Can I replace <code>&amp;(v-&gt;bytes)</code> with <code>v</code>? Even if I could, why wouldn't I?</summary><div class="ans">
+<p><b>It would work</b>, for the same reason as before: <code>bytes</code> is at offset 0 of the union, so both are the same address. <b>But you shouldn't</b>, because:</p>
+<ul><li>It's a <b>type mismatch</b> (<code>num*</code> passed where <code>struct bytes*</code> is expected). You throw away type safety and get a compiler warning.</li>
+<li>It's <b>misleading</b>: the reader can't see you mean the <code>bytes</code> view of the number.</li>
+<li>It's <b>fragile</b>: it only works because of the union's layout. If <code>num</code> became a struct, or <code>bytes</code> weren't first, it would silently break (UB).</li></ul></div></details>
+<details class="q"><summary>There's a problem in <code>main</code>. What is it?</summary><div class="ans">
+<p><b>Memory leak:</b> <code>v</code> is allocated with <code>malloc</code> but <b>never <code>free</code>d</b>, neither on the normal path nor on the early <code>return -1</code>. Also, the <b><code>malloc</code> result isn't checked for NULL</b>. If allocation fails, <code>&amp;(v-&gt;n)</code> dereferences NULL, which is UB.</p>
+<pre><code>num *v = (num*)malloc(sizeof(num));
+if (v == NULL) return -2;
+if (readInt("Enter an integer", &amp;(v-&gt;n)) != 0) { free(v); return -1; }
+...
+free(v);
+return 0;</code></pre>
+<p>Related point: on little-endian x86, <code>first</code>…<code>fourth</code> are declared in reverse order, so <code>fourth</code> holds the least significant byte. <code>reverse</code> swaps the byte order, which converts between little- and big-endian.</p></div></details>
+</section>
+
+<section id="q-calloc">
+<h3>Q5 — calloc, error codes and <code>addUp</code></h3>
+<pre><code>static long addUp(int* arr, int n) { /* elided */ }
+
+int main(void) {
+    int n;
+    if (readInt("Number of values to read?", &amp;n) != 0 || n &lt;= 0) return -1;
+    int* values = (int*)calloc((size_t)n, sizeof(int));
+    if (values == NULL) return -2;
+    for (int i = 0; i &lt; n; i++) readInt("Value?", values+i);
+    printf("Added up to %lu\n", addUp(values, n));
+    free(values);
+    return 0;
+}</code></pre>
+<details class="q"><summary>What does each parameter to <code>calloc</code> mean?</summary><div class="ans">
+<p><code>calloc(count, size)</code>: the first is the <b>number of elements</b> (<code>n</code>) and the second is the <b>size of each element in bytes</b> (<code>sizeof(int)</code>). It allocates <code>count × size</code> bytes on the heap and <b>sets them all to zero</b>.</p></div></details>
+<details class="q"><summary>Why cast <code>n</code> to a <code>size_t</code> in the calloc call?</summary><div class="ans">
+<p><code>calloc</code>'s parameters have type <b><code>size_t</code></b>, an <b>unsigned</b> type (what <code>sizeof</code> returns). <code>n</code> is a signed <code>int</code>. The explicit cast makes the signed-to-unsigned conversion visible and avoids a compiler warning. It's safe only because we already checked <code>n &gt; 0</code>. A negative <code>int</code> converted to <code>size_t</code> becomes a huge positive number.</p></div></details>
+<details class="q"><summary>Why return different values at different points?</summary><div class="ans">
+<p>C has <b>no exceptions</b>, so the return value is the error code. The program's exit status tells the caller (e.g. the shell) <b>what went wrong</b>: <code>0</code> = success, <code>-1</code> = couldn't read a valid count, <code>-2</code> = memory allocation failed. Different codes let you tell the failure causes apart.</p></div></details>
+<details class="q"><summary>When would <code>values</code> be NULL?</summary><div class="ans">
+<p>When <b>allocation fails</b>: the OS can't supply <code>n × sizeof(int)</code> bytes, e.g. you're out of memory or <code>n</code> is huge. <code>malloc</code>, <code>calloc</code> and <code>realloc</code> all return NULL on failure. Using NULL would be UB, hence the check.</p></div></details>
+<details class="q"><summary>Explain <code>values+i</code> in the call to <code>readInt</code>.</summary><div class="ans">
+<p>It's <b>pointer arithmetic</b>. <code>values</code> is an <code>int*</code>, so <code>values+i</code> moves forward <code>i × sizeof(int)</code> bytes, giving the <b>address of element <code>i</code></b>. It's the same as <code>&amp;values[i]</code>. <code>readInt</code> needs an <b>address</b> so it can write the value into the array, which is the copy-by-value plus pointer pattern.</p></div></details>
+<details class="q"><summary>Why pass <code>n</code> to <code>addUp</code>? Why not null-terminate the array?</summary><div class="ans">
+<p>When an array is passed to a function it <b>decays to a pointer</b> to its first element, so the length is lost. <code>sizeof(arr)</code> inside <code>addUp</code> would just be 8 (a pointer). So we pass the length separately.</p>
+<p>We <b>can't use a zero terminator</b> because <b>0 is a valid value</b> the user might type. A sentinel only works when that value can never appear in real data. For strings that's true, since <code>'\0'</code> is never part of text. For arbitrary ints it isn't, so <code>addUp</code> would stop at the first 0 the user entered.</p>
+<p><i>Extra marks:</i> <code>%lu</code> is for <code>unsigned long</code>, but <code>addUp</code> returns a signed <code>long</code>, so it should be <code>%ld</code>. Also, <code>readInt</code> takes an <code>unsigned int*</code> but receives an <code>int*</code>.</p></div></details>
+</section>
+
+<section id="q-sizeof">
+<h3>Q6 — Broken <code>sizeof</code> loop (assume 64-bit)</h3>
+<pre><code>char* values[] = { "hello", "there", "now" };
+int lengths[] = { 0, 0, 0 };
+for (int i = 0; i &lt; sizeof(values); i++) {
+  lengths[i] = sizeof(values[i]);
+}</code></pre>
+<details class="q"><summary>Which lines are wrong, and how would you fix them?</summary><div class="ans">
+<p><b>Line 3, the loop condition:</b> <code>values</code> is an array of 3 <b>pointers</b>, so <code>sizeof(values)</code> = 3 × 8 = <b>24 bytes</b>, not 3 elements. The loop runs 24 times and writes past the end of <code>lengths</code> (buffer overflow, UB). Fix: divide by the element size.</p>
+<p><b>Line 4, the length:</b> <code>values[i]</code> is a <code>char*</code>, so <code>sizeof(values[i])</code> is always <b>8</b> (pointer size), not the string length. Fix: use <code>strlen</code> from <code>&lt;string.h&gt;</code>, which counts chars up to the <code>'\0'</code>.</p>
+<pre><code>#include &lt;string.h&gt;
+char* values[] = { "hello", "there", "now" };
+int lengths[] = { 0, 0, 0 };
+size_t count = sizeof(values) / sizeof(values[0]);   <span class="c">/* 24 / 8 = 3 */</span>
+for (size_t i = 0; i &lt; count; i++) {
+  lengths[i] = (int)strlen(values[i]);               <span class="c">/* 5, 5, 3 */</span>
+}</code></pre>
+<p>Using <code>size_t i</code> also avoids comparing a signed and an unsigned value.</p></div></details>
+</section>
+
+<section id="q-alloc">
+<h3>Q7 — Stack, heap or data segment?</h3>
+<pre><code>int main() {
+  int p = 23;
+  int *q = &amp;p;
+  *q = 3;
+  char *t = "tasty";
+  char *h = (char*)calloc(6, 1);
+  memcpy(h, t, 5);
+  free(h);
+  return 0;
+}</code></pre>
+<details class="q"><summary>Are there any allocations on the stack? If so, where?</summary><div class="ans">
+<p>Yes. All four local variables: <code>p</code> (<code>int</code>, 4 B), <code>q</code> (<code>int*</code>, 8 B), <code>t</code> (<code>char*</code>, 8 B) and <code>h</code> (<code>char*</code>, 8 B). <code>q</code> points to <code>p</code>, so <code>*q = 3</code> changes <code>p</code> to 3 without allocating anything.</p></div></details>
+<details class="q"><summary>Are there any allocations on the heap? If so, where?</summary><div class="ans">
+<p>Yes. <code>calloc(6, 1)</code> allocates <b>6 zeroed bytes</b> on the heap, and <code>h</code> stores their address. <code>memcpy</code> copies <code>t a s t y</code> into the first 5 of them. <code>free(h)</code> gives them back.</p></div></details>
+<details class="q"><summary>Are there any allocations in the data segment? If so, where?</summary><div class="ans">
+<p>Yes. The string literal <code>"tasty"</code> is 6 bytes (<code>t a s t y \0</code>) in the <b>read-only data segment</b>. <code>t</code> only holds its address. (The constant 23 is encoded in the instructions, not stored as data.)</p></div></details>
+<details class="q"><summary>Why use calloc instead of malloc?</summary><div class="ans">
+<p><code>memcpy(h, t, 5)</code> copies only <b>5</b> bytes and <b>not</b> the <code>'\0'</code>. Because <code>calloc</code> <b>zero-fills</b>, <code>h[5]</code> is already <code>'\0'</code>, so <code>h</code> is a valid, terminated C string. With <code>malloc</code>, <code>h[5]</code> would be garbage, and using <code>h</code> as a string would read past the end (UB).</p>
+<p><i>Also:</i> the program needs <code>#include &lt;stdlib.h&gt;</code> and <code>&lt;string.h&gt;</code>, and should check <code>h != NULL</code>.</p></div></details>
+</section>
+
+<section id="q-minimise">
+<h3>Q8 — Copy-by-value: <code>minimise</code></h3>
+<pre><code>void minimise(int a, int b) {
+  if (a &lt; b) {
+    b = a;
+  } else {
+    a = b;
+  }
+}</code></pre>
+<details class="q"><summary>Will this function work? Why or why not?</summary><div class="ans">
+<p><b>No.</b> C is <b>copy-by-value</b>: <code>a</code> and <code>b</code> are local copies on <code>minimise</code>'s stack frame. Assigning to them changes only the copies, which are destroyed when the function returns. The caller's variables never change, so the function has no visible effect.</p></div></details>
+<details class="q"><summary>How would you rewrite it to work? Do the rewrite.</summary><div class="ans">
+<p>Pass <b>pointers</b> (copies of the <b>addresses</b>), then <b>dereference</b> them to change the caller's variables:</p>
+<pre><code>void minimise(int *a, int *b) {
+  if (*a &lt; *b) {
+    *b = *a;
+  } else {
+    *a = *b;
+  }
+}
+
+<span class="c">/* call site */</span>
+int x = 4, y = 9;
+minimise(&amp;x, &amp;y);   <span class="c">/* now x == 4, y == 4 */</span></code></pre></div></details>
+</section>
+
+<section id="q-yellow">
+<h3>Q9 — Trace memory line by line</h3>
+<pre><code>int main() {
+  char k[20] = "yellow";
+  char *m = "green";
+  char* test = calloc(1, 20);
+  char** arr = malloc(3 * sizeof(char*));
+  *arr = k+2;
+  arr[1] = m;
+  memcpy(&amp;k, test, strlen(k));
+  return 0;
+}</code></pre>
+<details class="q"><summary>Explain where memory is allocated for each entity on each line, and what each line does.</summary><div class="ans">
+<table>
+<tr><th>Line</th><th>Allocation</th><th>Effect</th></tr>
+<tr><td><code>char k[20] = "yellow";</code></td><td><span class="mem-stack">Stack</span>: 20-byte array <code>k</code></td><td>Copies <code>y e l l o w \0</code> into <code>k[0..6]</code>, and the rest is zero-filled. The array is writable.</td></tr>
+<tr><td><code>char *m = "green";</code></td><td><span class="mem-stack">Stack</span>: 8-byte pointer <code>m</code>. <span class="mem-data">Data seg</span>: <code>"green\0"</code> (6 B, read-only)</td><td><code>m</code> holds the literal's address. Nothing is copied.</td></tr>
+<tr><td><code>char* test = calloc(1, 20);</code></td><td><span class="mem-stack">Stack</span>: 8-byte pointer <code>test</code>. <span class="mem-heap">Heap</span>: 20 bytes, all zero</td><td><code>test</code> points to 20 zeroed heap bytes.</td></tr>
+<tr><td><code>char** arr = malloc(3 * sizeof(char*));</code></td><td><span class="mem-stack">Stack</span>: 8-byte pointer <code>arr</code>. <span class="mem-heap">Heap</span>: 24 bytes (3 pointers × 8), <b>uninitialised</b></td><td>An array of 3 <code>char*</code> slots on the heap.</td></tr>
+<tr><td><code>*arr = k+2;</code></td><td>none</td><td><code>arr[0]</code> = address of <code>k[2]</code>, which points into the <b>stack</b> at <code>"llow"</code>.</td></tr>
+<tr><td><code>arr[1] = m;</code></td><td>none</td><td><code>arr[1]</code> = address of <code>"green"</code> in the <b>data segment</b>. <code>arr[2]</code> is still garbage.</td></tr>
+<tr><td><code>memcpy(&amp;k, test, strlen(k));</code></td><td>none</td><td><code>strlen(k)</code> = 6. Copies 6 <b>zero</b> bytes from the heap into <code>k[0..5]</code>, so <code>k</code> becomes the empty string <code>""</code>, and <code>arr[0]</code> now points to <code>""</code> too. <code>&amp;k</code> is a <code>char(*)[20]</code> with the same address as <code>k</code>, so it works.</td></tr>
+</table></div></details>
+<details class="q"><summary>Two important lines are missing. What are they, and where do they go?</summary><div class="ans">
+<p>The two heap allocations are never freed (<b>memory leaks</b>). Insert both just <b>before <code>return 0;</code></b>, after the last use:</p>
+<pre><code>  memcpy(&amp;k, test, strlen(k));
+  free(test);
+  free(arr);
+  return 0;</code></pre>
+<p>Don't <code>free(m)</code>, <code>free(k)</code> or <code>free(arr[0])</code>. They weren't dynamically allocated, so freeing them is UB.</p>
+<p><i>If your lecturer meant the headers instead, the answer is <code>#include &lt;stdlib.h&gt;</code> (calloc/malloc/free) and <code>#include &lt;string.h&gt;</code> (memcpy/strlen) at the top. Mention both to be safe. NULL checks after the allocations are a bonus point.</i></p></div></details>
+</section>
+
+<section id="q-decl">
+<h3>Q10 — Decode the declarations from the slides</h3>
+<details class="q"><summary><code>int** const z(int[3][2], void(*)(size_t[]))</code></summary><div class="ans">
+<ol><li>Start: "<b>z is</b>"</li>
+<li>Right: <code>(…)</code> → "a function taking (<i>an array of 3 arrays of 2 ints</i>, <i>a pointer to a function taking an array of size_t, returning void</i>), returning"</li>
+<li>End reached, so go left: <code>* const</code> → "a constant pointer to"</li>
+<li>Left: <code>*</code> → "a pointer to"</li>
+<li>Left: <code>int</code> → "int". Stop.</li></ol>
+<p class="key"><b>z is a function taking (an array of 3 arrays of 2 ints, and a pointer to a function taking an array of <code>size_t</code> and returning void) that returns a constant pointer to a pointer to int.</b></p></div></details>
+<details class="q"><summary><code>int *(*(*(*b)(void))[10])(char)</code></summary><div class="ans">
+<ol><li>"<b>b is</b>". Right: <code>)</code> is unmatched, so go left: <code>*</code> → "a pointer to"</li>
+<li><code>(</code> → go right: <code>(void)</code> → "a function taking nothing, returning"</li>
+<li>Unmatched <code>)</code>, so go left: <code>*</code> → "a pointer to"</li>
+<li><code>(</code> → go right: <code>[10]</code> → "an array of 10"</li>
+<li>Unmatched <code>)</code>, so go left: <code>*</code> → "pointers to"</li>
+<li><code>(</code> → go right: <code>(char)</code> → "a function taking a char, returning"</li>
+<li>End, so go left: <code>*</code> → "a pointer to", then <code>int</code>. Stop.</li></ol>
+<p class="key"><b>b is a pointer to a function taking no arguments that returns a pointer to an array of 10 pointers to functions, each taking a char and returning a pointer to int.</b></p></div></details>
+</section>
+
+<!-- ================= CRAM ================= -->
+<h2 class="sec" id="cram">Last-minute cram list</h2>
+<div class="grid">
+<div class="card"><b>Rules</b><ul><li>All data has a place, a size, and zero is special</li><li>Copy-by-value only, so use pointers to modify the caller's variables</li><li>Breaking a rule means undefined behaviour (no requirements at all)</li></ul></div>
+<div class="card"><b>Memory</b><ul><li>Stack: locals and params, compile-time size, freed on return</li><li>Heap: malloc/calloc/realloc, run-time size, you must free</li><li>Data segment: literals, constants and globals; literals are read-only; lasts the whole run</li></ul></div>
+<div class="card"><b>sizeof traps</b><ul><li><code>sizeof(array)</code> = total bytes</li><li><code>sizeof(pointer)</code> = 8 on x64</li><li>Count = <code>sizeof(a)/sizeof(a[0])</code></li><li>String length: use <code>strlen</code>, not sizeof</li><li><code>char c[]="hello"</code> has 6 elements</li></ul></div>
+<div class="card"><b>Types</b><ul><li>struct size = sum of members + padding</li><li>union size = largest member; all members at offset 0</li><li>enum values: 0, 1, 2, …</li><li>Defining a type reserves no memory</li><li><code>-&gt;</code> on pointers, <code>.</code> on values</li></ul></div>
+<div class="card"><b>Build</b><ul><li>Preprocess → compile → assemble → link</li><li>Object code is not executable (it has relocation info)</li><li>Executable = library + entry point</li><li><code>&lt;&gt;</code> searches system paths; <code>""</code> searches local first</li></ul></div>
+<div class="card"><b>Errors</b><ul><li>No exceptions: use <code>errno</code> and/or a special return value</li><li>Check malloc/calloc for NULL</li><li>Free every allocation, and only those</li><li>Use distinct error return codes for distinct failures</li></ul></div>
+</div>
+<p class="sub" style="margin-top:28px">Two places where this sheet differs from the slides on purpose: (1) the slides write a constant pointer as <code>int const *x</code>, but correct C is <code>int * const x</code>; (2) one slide says globals go on the stack, but they go in the data segment.</p>
+</main>
+</div>
+</body>
+</html>
