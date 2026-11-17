@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS201 Study Plan: notes & questions (easiest → hardest)</title>
+<style>
+:root{--bg:#f6f5f1;--panel:#fff;--ink:#1d1d1b;--muted:#6b6a65;--line:#e3e1da;--accent:#2f5d8a;--accent-soft:#e6eef6;
+--good:#2e7d4f;--good-soft:#e5f3ea;--bad:#b3402f;--bad-soft:#f8e6e2;--code-bg:#f1efe8;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+--pA:#2f5d8a;--pB:#8a5a2f;--pC:#5d2f8a}
+@media (prefers-color-scheme:dark){:root{--bg:#17181a;--panel:#212226;--ink:#ecebe6;--muted:#9a9993;--line:#34353a;--accent:#7fb0e0;--accent-soft:#25313d;
+--good:#6fcf97;--good-soft:#1f3328;--bad:#f08a78;--bad-soft:#3a2420;--code-bg:#1b1c1f;--pA:#7fb0e0;--pB:#e0b07f;--pC:#b89be0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar{max-width:1200px;margin:0 auto;padding:10px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0}
+.sub{color:var(--muted);font-size:13px}
+nav.tabs{display:flex;gap:4px;margin-left:auto}
+nav.tabs a{border:1px solid var(--line);color:var(--ink);padding:6px 14px;border-radius:8px;text-decoration:none;font-size:14px}
+nav.tabs a.on{background:var(--accent);border-color:var(--accent);color:#fff}
+main{max-width:1200px;margin:0 auto;padding:16px 18px;display:grid;grid-template-columns:270px 1fr;gap:18px;align-items:start}
+#page,.toc{min-width:0}
+.card{overflow-wrap:anywhere}
+.toc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;position:sticky;top:70px;max-height:calc(100vh - 90px);overflow:auto;font-size:14px}
+.toc .ph{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:10px 6px 4px}
+.toc a{display:flex;justify-content:space-between;gap:6px;padding:4px 8px;border-radius:7px;color:var(--ink);text-decoration:none}
+.toc a:hover{background:var(--accent-soft)}
+.toc .pct{color:var(--muted);font-size:12px;white-space:nowrap}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:16px;scroll-margin-top:80px}
+.phase{margin:6px 0 12px}
+.phase h2{font-size:17px;margin:0}
+.phase p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.head h3{margin:0;font-size:18px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.b{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:1px 9px;color:var(--muted)}
+.b.A{color:var(--pA);border-color:var(--pA)} .b.B{color:var(--pB);border-color:var(--pB)} .b.C{color:var(--pC);border-color:var(--pC)}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow:auto;font:13px/1.5 var(--mono);margin:8px 0}
+code{font-family:var(--mono);font-size:.9em;background:var(--code-bg);padding:1px 4px;border-radius:4px}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:8px 0;display:block;overflow-x:auto}
+td,th{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--accent-soft)}
+ul,ol{margin:6px 0;padding-left:22px} li{margin:2px 0}
+p{margin:8px 0}
+.go{display:inline-block;margin-top:8px;color:var(--accent);font-weight:600;text-decoration:none}
+.q{border-top:1px solid var(--line);padding:12px 0}
+.q:first-of-type{border-top:0}
+.qn{font-weight:700;color:var(--muted);margin-right:6px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+input.ans{flex:1;min-width:200px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:14px var(--mono)}
+.btn{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:8px;padding:6px 12px;cursor:pointer;font:inherit;font-size:13.5px;font-weight:600}
+.btn.solid{background:var(--accent);color:#fff}
+.btn.good{border-color:var(--good);color:var(--good)} .btn.bad{border-color:var(--bad);color:var(--bad)}
+.btn.good.on{background:var(--good);color:#fff} .btn.bad.on{background:var(--bad);color:#fff}
+.fb{margin-top:8px;padding:8px 12px;border-radius:8px;font-size:14px}
+.fb.ok{background:var(--good-soft);border-left:4px solid var(--good)} .fb.no{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.answer{margin-top:8px;background:var(--good-soft);border-left:4px solid var(--good);border-radius:8px;padding:8px 12px}
+.hidden{display:none}
+.summary{display:flex;gap:16px;flex-wrap:wrap}
+.stat{border:1px solid var(--line);border-radius:10px;padding:8px 14px}
+.stat b{display:block;font-size:20px}
+@media (max-width:860px){main{grid-template-columns:1fr}.toc{position:static;max-height:34vh}header{position:static}}
+@media print{header,.toc,.go,.row{display:none}main{display:block}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div><h1>CS201 Study Plan</h1><div class="sub">16 topics, easiest → hardest, with the marks each got in 2023 / 2022</div></div>
+  <nav class="tabs"><a href="#notes" id="t-notes">📘 Notes</a><a href="#questions" id="t-questions">✏️ Questions</a></nav>
+</div></header>
+<main><aside class="toc" id="toc"></aside><div id="page"></div></main>
+<script>
+/*DATA*/
+
+const LS = "practice:cs201-plan";
+let store = {}; try { store = JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) {}
+const save = () => { try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) {} };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// code spans are pulled out first so * inside code (pointers!) is never treated as bold/italic
+const inline = s => {
+  const codes = [];
+  let t = esc(s).replace(/`([^`]+)`/g, (m, c) => "\u0000" + (codes.push(c) - 1) + "\u0000");
+  t = t.replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/(^|[\s(])\*([^*\s][^*]*?)\*(?=[\s).,:;]|$)/g, "$1<i>$2</i>");
+  return t.replace(/\u0000(\d+)\u0000/g, (m, i) => "<code>" + codes[+i] + "</code>");
+};
+function md(src) {
+  const out = []; const parts = String(src).split("```");
+  parts.forEach((p, i) => {
+    if (i % 2) { out.push("<pre><code>" + esc(p.replace(/^\n/, "").replace(/\n$/, "")) + "</code></pre>"); return; }
+    const lines = p.split("\n"); let k = 0;
+    while (k < lines.length) {
+      const l = lines[k];
+      if (/^\s*\|/.test(l)) {                       // table
+        const rows = []; while (k < lines.length && /^\s*\|/.test(lines[k])) rows.push(lines[k++]);
+        const cells = r => r.trim().replace(/^\||\|$/g, "").split("|").map(c => c.trim());
+        const body = rows.filter(r => !/^\s*\|[\s:|-]+\|\s*$/.test(r));
+        out.push("<table><tr>" + cells(body[0]).map(c => "<th>" + inline(c) + "</th>").join("") + "</tr>" +
+          body.slice(1).map(r => "<tr>" + cells(r).map(c => "<td>" + inline(c) + "</td>").join("") + "</tr>").join("") + "</table>");
+        continue;
+      }
+      if (/^\s*[-*] /.test(l)) { const it = []; while (k < lines.length && /^\s*[-*] /.test(lines[k])) it.push(lines[k++].replace(/^\s*[-*] /, "")); out.push("<ul>" + it.map(x => "<li>" + inline(x) + "</li>").join("") + "</ul>"); continue; }
+      if (/^\s*\d+\. /.test(l)) { const it = []; while (k < lines.length && /^\s*\d+\. /.test(lines[k])) it.push(lines[k++].replace(/^\s*\d+\. /, "")); out.push("<ol>" + it.map(x => "<li>" + inline(x) + "</li>").join("") + "</ol>"); continue; }
+      if (l.trim()) out.push("<p>" + inline(l) + "</p>");
+      k++;
+    }
+  });
+  return out.join("");
+}
+const norm = s => String(s).toLowerCase().replace(/[−–]/g, "-").replace(/²/g, "^2").replace(/ⁿ/g, "^n").replace(/[\s,;→>]+/g, " ").trim();
+const squash = s => norm(s).replace(/\s+/g, "");
+const marks = s => s.phase === 4 ? "not yet examined" : `${s.m23} / ${s.m22} marks`;
+const secLabel = s => s.sec === "A" ? "Section A: AdvProg" : s.sec === "B" ? "Section B: MIPS" : s.sec === "C" ? "Section C: C" : "Sections A & B";
+function progress(id) {
+  const qs = QS[id] || []; const got = qs.filter((q, i) => (store[id + ":" + i] || {}).r === 1).length;
+  return [got, qs.length];
+}
+
+function renderToc(view) {
+  let html = "";
+  PHASES.forEach(ph => {
+    html += `<div class="ph">${esc(ph.name.split(":")[0])}</div>`;
+    SECTIONS.filter(s => s.phase === ph.id).forEach(s => {
+      const [g, n] = progress(s.id);
+      html += `<a href="#${view}/${s.id}"><span>${s.n}. ${esc(s.title)}</span><span class="pct">${view === "questions" ? g + "/" + n : (s.phase === 4 ? "bonus" : s.sec)}</span></a>`;
+    });
+  });
+  document.getElementById("toc").innerHTML = html;
+}
+
+function sectionHead(s) {
+  return `<div class="head"><h3>${s.n}. ${esc(s.title)}</h3><div class="badges"><span class="b ${s.sec.length === 1 ? s.sec : ""}">${secLabel(s)}</span><span class="b">${marks(s)}</span></div></div>`;
+}
+
+function renderNotes() {
+  let html = `<div class="card"><div class="summary">
+    <div class="stat"><span class="sub">Phase 1</span><b>~60–65 marks</b></div>
+    <div class="stat"><span class="sub">Phase 2</span><b>~55 marks</b></div>
+    <div class="stat"><span class="sub">Phase 3</span><b>~50–60 marks</b></div></div>
+    <p class="sub">Marks shown as <b>2023 / 2022</b>. Each paper is 180 marks: Section A 85, Section B 55, Section C 40. Read a section's notes, then hit <b>Practise →</b> to answer its questions on the Questions page.</p></div>`;
+  PHASES.forEach(ph => {
+    html += `<div class="phase"><h2>${esc(ph.name)}</h2><p>${esc(ph.blurb)}</p></div>`;
+    SECTIONS.filter(s => s.phase === ph.id).forEach(s => {
+      html += `<div class="card" id="notes/${s.id}">${sectionHead(s)}${md(s.notes)}<a class="go" href="#questions/${s.id}">Practise this section (${(QS[s.id] || []).length} questions) →</a></div>`;
+    });
+  });
+  document.getElementById("page").innerHTML = html;
+}
+
+function renderQuestions() {
+  let total = 0, got = 0; SECTIONS.forEach(s => { const [g, n] = progress(s.id); total += n; got += g; });
+  let html = `<div class="card"><div class="summary"><div class="stat"><span class="sub">Marked "got it"</span><b>${got} / ${total}</b></div></div>
+    <p class="sub">Type an answer where there's a box (auto-checked), or answer in your head or on paper, then <b>Show answer</b> and mark yourself. <b>Got it</b> / <b>Missed</b> is saved in this browser and shown in the sidebar.</p>
+    <div class="row"><button class="btn bad" id="resetAll">Reset all progress</button></div></div>`;
+  PHASES.forEach(ph => {
+    html += `<div class="phase"><h2>${esc(ph.name)}</h2></div>`;
+    SECTIONS.filter(s => s.phase === ph.id).forEach(s => {
+      const qs = QS[s.id] || [];
+      html += `<div class="card" id="questions/${s.id}">${sectionHead(s)}<a class="go" href="#notes/${s.id}">← Read the notes</a>` +
+        qs.map((q, i) => {
+          const k = s.id + ":" + i, st = store[k] || {};
+          return `<div class="q" data-k="${k}"><div><span class="qn">Q${i + 1}</span>${inline(q.q)}</div>
+            ${q.check ? `<div class="row"><input class="ans" placeholder="Type your answer, then Enter" value="${esc(st.v || "")}"><button class="btn solid" data-act="check">Check</button></div>` : ""}
+            <div class="row"><button class="btn" data-act="show">Show answer</button>
+              <button class="btn good ${st.r === 1 ? "on" : ""}" data-act="got">Got it</button><button class="btn bad ${st.r === 0 ? "on" : ""}" data-act="miss">Missed</button></div>
+            <div class="fbslot"></div><div class="answer hidden">${md(q.a)}</div></div>`;
+        }).join("") + `</div>`;
+    });
+  });
+  document.getElementById("page").innerHTML = html;
+  document.getElementById("resetAll").onclick = () => { if (confirm("Clear all question progress?")) { store = {}; save(); document.body.dataset.view = ""; route(); } };
+}
+
+document.getElementById("page").addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const box = b.closest(".q"), k = box.dataset.k, [id, i] = k.split(":"), q = QS[id][+i];
+  const st = store[k] = store[k] || {};
+  const act = b.dataset.act;
+  if (act === "show") box.querySelector(".answer").classList.toggle("hidden");
+  if (act === "check") {
+    const v = box.querySelector("input.ans").value; st.v = v;
+    const ok = q.check.some(c => norm(c) === norm(v) || squash(c) === squash(v));
+    box.querySelector(".fbslot").innerHTML = `<div class="fb ${ok ? "ok" : "no"}">${ok ? "✔ Correct" : "✘ Not matching. Check the answer below (equivalent wording may still be right)."}</div>`;
+    box.querySelector(".answer").classList.remove("hidden");
+    st.r = ok ? 1 : 0;
+  }
+  if (act === "got") st.r = 1;
+  if (act === "miss") st.r = 0;
+  box.querySelector("[data-act=got]").classList.toggle("on", st.r === 1);
+  box.querySelector("[data-act=miss]").classList.toggle("on", st.r === 0);
+  save(); renderToc("questions");
+});
+document.getElementById("page").addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.matches("input.ans")) e.target.closest(".q").querySelector("[data-act=check]").click();
+});
+
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1)) || "notes";
+  const view = h.startsWith("questions") ? "questions" : "notes";
+  document.getElementById("t-notes").classList.toggle("on", view === "notes");
+  document.getElementById("t-questions").classList.toggle("on", view === "questions");
+  document.title = (view === "notes" ? "Notes" : "Questions") + " · CS201 Study Plan";
+  if (document.body.dataset.view !== view) { view === "notes" ? renderNotes() : renderQuestions(); document.body.dataset.view = view; }
+  renderToc(view);
+  const target = h.includes("/") ? document.getElementById(h) : null;
+  if (target) target.scrollIntoView({ block: "start" }); else window.scrollTo({ top: 0 });
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>

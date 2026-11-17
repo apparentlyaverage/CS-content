@@ -17,3 +17,8 @@ ex = (src / "exam-engine.html").read_text(encoding="utf-8")
 data = "\n".join((src / f).read_text(encoding="utf-8") for f in ["exam-drills-adv.js", "exam-drills-mips.js", "exam-papers.js"])
 (src.parent / "CS201-exam-prep.html").write_text(ex.replace("/*DATA*/", data), encoding="utf-8")
 print("built CS201-exam-prep.html")
+
+# CS201 study plan (notes + questions)
+pe = (src / "plan-engine.html").read_text(encoding="utf-8")
+(src.parent / "CS201-study-plan.html").write_text(pe.replace("/*DATA*/", (src / "plan-data.js").read_text(encoding="utf-8")), encoding="utf-8")
+print("built CS201-study-plan.html")

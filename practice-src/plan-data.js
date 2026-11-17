@@ -1,0 +1,658 @@
+// CS201 study plan: sections in easiest → hardest order, with notes and questions.
+// Question types: {q, a} reveal-and-self-mark; add `check: [...]` for an auto-checked typed answer.
+const PHASES = [
+  { id: 1, name: "Phase 1: Easy, formulaic marks", blurb: "About 60–65 marks for the least effort. Do these first." },
+  { id: 2, name: "Phase 2: Medium (a procedure or a short piece of code)", blurb: "About 55 marks." },
+  { id: 3, name: "Phase 3: Hardest (write code from scratch)", blurb: "About 50–60 marks, and the most risk, so give it the most time." },
+  { id: 4, name: "Bonus: studied but not yet examined", blurb: "Likely next. Cover these once phases 1–3 are solid." },
+];
+
+const SECTIONS = [
+// ======================= PHASE 1 =======================
+{ id: "hash", phase: 1, n: 1, title: "Hash table traces", sec: "A", m23: 12, m22: 12,
+notes: `
+**Why it's easy:** the same question appeared both years: 5 integer keys into a table of size **6**. It's pure procedure.
+
+**Step 1: hash values (2 marks).** Integer.hashCode() returns the number itself, so **hash = key % 6**.
+
+**Step 2: internal hashing, linear probing (5 marks).**
+- Go to slot hash(key). If it's taken, try the next slot, wrapping from 5 to 0, until you find an empty one.
+- Insert in the order given. Order matters.
+- Searching stops only at a truly **empty** slot. That's why deleted slots are marked *deleted* (occupied = false), not emptied.
+
+**Step 3: external hashing (5 marks).**
+- Each slot is a **bucket**, a linked list. A collision just joins the list.
+- The notes insert new nodes at the **front** of the bucket.
+
+**Worked example (June 2023): keys 18, 13, 24, 17, 20**
+\`\`\`
+hash:   18→0  13→1  24→0  17→5  20→2
+internal:  [0]18 [1]13 [2]24 [3]20 [4]-- [5]17     (24: 0,1 taken → 2;  20: 2 taken → 3)
+external:  0: 24 → 18   1: 13   2: 20   5: 17
+\`\`\`
+
+**Theory you might also be asked**
+- *Collision*: two keys hash to the same slot. A *perfect hash* has no collisions (only possible for small fixed key sets).
+- *Primary clustering*: keys with the same hash pile up in a run. *Secondary clustering*: a key hits a slot taken by a *displaced* key with a different hash.
+- Internal tables are a fixed size and need at least one empty slot. External tables grow without limit.
+- Hashing destroys order, so you can't iterate in key order (ListDictionary can).
+- String hash: \`h = h*26 + ch\`, then \`(h & 0x7FFFFFFF) % SIZE\` (the AND clears the sign bit).
+`},
+{ id: "defs", phase: 1, n: 2, title: "Definitions (Q1)", sec: "A", m23: 8, m22: 8,
+notes: `
+**Why it's easy:** four 2-mark definitions every year. Memorise these word for word.
+
+| Term | Definition |
+|---|---|
+| **Precondition** | What must be true **when a method is called** for it to work. |
+| **Postcondition** | What the method guarantees is true **after** it finishes (if the preconditions held). |
+| **ADT** | A pair **<V, O>**: a set of **values** and a set of **operations** on those values. |
+| **Proper binary tree** | Every node has **0 or 2** children. |
+| **Big-O** | Algorithm is O(f(n)) if there exist positive constants c, n₀ with **t ≤ c·f(n) for all n > n₀**. |
+| **Graph** | **G = (V, E)**: a set of vertices V and edges E, each edge a pair (v, w) with v, w ∈ V. |
+| **Most important quality of a program** | **Correctness**. |
+| **Bounded generic class** | \`public class SomeClass<T extends Comparable<T>>\` (\`extends\` is used even for interfaces). |
+| **Access by position** | Array **O(1)**; linked list **O(n)**. |
+| **Tractable** | Has a polynomial-or-better algorithm. Exponential and worse are intractable (e.g. Hanoi O(2ⁿ)). |
+| **Leaf** | A node with outdegree 0. |
+| **Depth of a node** | Length of the path from it to the root. |
+| **Iterator** | An object (get / next / atEnd) for stepping through an ADT without knowing its implementation. |
+| **Assertion** | A checkable statement of program state. \`assert cond;\` throws AssertionError; off by default. |
+| **Abstraction** | Hiding inessential details and dealing with the essence. |
+
+**Big-O ranking:** 1 < log n < n < n log n < n² < n³ < 2ⁿ < n!
+`},
+{ id: "compile", phase: 1, n: 3, title: "C compile steps", sec: "C", m23: 6, m22: 8,
+notes: `
+**Why it's easy:** four steps, always in this order.
+
+| # | Step | Input → Output | Purpose |
+|---|---|---|---|
+| 1 | **Preprocessing** | .c → .i (expanded source) | Expands \`#include\` and \`#define\` macros, handles #if, strips comments |
+| 2 | **Compiling** | .i → .s (assembly) | Translates C into assembly for the target CPU; checks syntax and types |
+| 3 | **Assembly** | .s → .o (object file) | Turns assembly into machine code; external symbols still unresolved |
+| 4 | **Linking** | .o files + libraries → executable | Combines objects and **resolves symbols** (e.g. printf) |
+
+\`\`\`
+gcc -E prog.c -o prog.i
+gcc -S prog.i -o prog.s
+gcc -c prog.s -o prog.o
+gcc prog.o -o prog
+\`\`\`
+**Memory hook:** "**P**lease **C**ompile **A**ll **L**ines": P-C-A-L.
+`},
+{ id: "byval", phase: 1, n: 4, title: "Pass-by-value bug", sec: "C", m23: 6, m22: 9,
+notes: `
+**Why it's easy:** the answer is always the same idea.
+
+**(a) Why it doesn't work:** C passes arguments **by value**. The function gets **copies**, so changing them doesn't affect the caller's variables.
+
+**(b) Fix:** pass **pointers** and dereference them.
+\`\`\`
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+void minimise(int *a, int *b) {
+    if (*a < *b) *b = *a;
+    else         *a = *b;
+}
+\`\`\`
+**(c) Fix the call:** \`swap(&small, &big);\`, since \`&\` gives the address.
+
+**(d) The classic extra bug:** \`if (small = big)\` **assigns**. It should be \`==\`.
+
+**Related 2-mark definition:** \`&x\` gives the address of x (a pointer to x); \`*p\` gives the value p points to.
+`},
+{ id: "numbers", phase: 1, n: 5, title: "Binary, hex, 2's complement, IEEE", sec: "B", m23: 15, m22: 13,
+notes: `
+**Decimal → binary (whole numbers): divide by 2** and read the remainders **bottom-up**.
+\`\`\`
+42: 42/2=21 r0, 21/2=10 r1, 10/2=5 r0, 5/2=2 r1, 2/2=1 r0, 1/2=0 r1  →  101010
+\`\`\`
+**Fractions: multiply by 2**, take the whole-number part as the next digit (read top-down), and stop when you see a value repeat.
+\`\`\`
+0.3: 0.6→0, 1.2→1, 0.4→0, 0.8→0, 1.6→1, 1.2→1 (0.2 repeats) → 0.0 1001 1001…  (recurring)
+\`\`\`
+**Hex:** group the bits in 4s from the right. 0010 1010 = **0x2A**.
+
+**Two's complement (8 bits):** negate = **invert all bits, then add 1**. Range −128…127.
+\`\`\`
+−20:  20 = 0001 0100 → invert 1110 1011 → +1 → 1110 1100
+−50:  0x32 = 0011 0010 → 1100 1101 → +1 → 1100 1110 = 0xCE
+\`\`\`
+**Overflow:** the carry INTO the sign bit ≠ the carry OUT of it. **Sign extension:** copy the sign bit leftwards.
+
+**IEEE 754 single:** \`sign(1) | exponent(8, bias 127) | fraction(23)\`, value = (−1)^S × 1.F × 2^(E−127).
+1. Convert to binary. 2. Normalise to 1.xxx × 2^e. 3. Stored exponent = e + 127. 4. Fraction = the bits after the leading 1 (the 1 isn't stored). 5. Pack the bits, then group in 4s for hex.
+\`\`\`
+−0.125 = −0.001₂ = −1.0 × 2⁻³ → S=1, E=124=01111100, F=0
+1 01111100 000…0 → 1011 1110 0000 … = 0xBE000000
+\`\`\`
+**Negating a float = flip ONLY the sign bit** (the first hex digit gains 8): 0x42C33333 → **0xC2C33333**. Never use two's complement on floats.
+`},
+{ id: "logic", phase: 1, n: 6, title: "Logic", sec: "B", m23: 10, m22: 10,
+notes: `
+**Gates:** AND ∧, OR ∨, NOT ¬, XOR ⊕ ("not equal"), NAND, NOR. **NAND and NOR are universal**: NOT A = A NAND A.
+
+**Half adder** (adds two bits): **S = A ⊕ B, C = A ∧ B**. Circuit: A and B feed an XOR gate (S) and an AND gate (C).
+\`\`\`
+A B | S C
+0 0 | 0 0
+0 1 | 1 0
+1 0 | 1 0
+1 1 | 0 1      ← C S read as a number = A + B, which proves it adds correctly
+\`\`\`
+**Half subtractor** (A − B): **D = A ⊕ B, Bout = ¬A ∧ B** (you borrow only for 0 − 1).
+
+**Full adder:** S = A ⊕ B ⊕ Cin; Cout = (A∧B) ∨ (Cin ∧ (A⊕B)). Chain them for multi-bit addition (ripple carry).
+
+**Proving with a truth table:** list every input row, compute both sides, and show the columns are identical for **every** row.
+
+**Simplification toolkit**
+\`\`\`
+De Morgan:   ¬(A ∨ B) = ¬A ∧ ¬B        ¬(A ∧ B) = ¬A ∨ ¬B
+A ∨ 1 = 1    A ∨ 0 = A    A ∧ 0 = 0    A ∧ 1 = A
+A ∧ ¬A = 0   A ∨ ¬A = 1
+A ∧ (B ∨ C) = (A∧B) ∨ (A∧C)     A ∨ (B ∧ C) = (A∨B) ∧ (A∨C)
+\`\`\`
+Example: (A∧B) ∨ (A∧¬B) = A ∧ (B ∨ ¬B) = A ∧ 1 = **A**. Name the law used at each step.
+`},
+{ id: "mcq", phase: 1, n: 7, title: "SPIM multiple choice", sec: "B", m23: 5, m22: 0,
+notes: `
+**Five 1-mark facts that keep coming up**
+- "**Attempt to execute non-instruction**" after your code runs means you **forgot the exit syscall** (\`li $v0, 10\` / \`syscall\`). A missing \`main\` gives an *undefined symbol* error instead.
+- Printing a string needs its **address**: \`la $a0, str\` / \`li $v0, 4\` / \`syscall\`. Not li, lw or move.
+- A **directive** (.data, .text, .word, .asciiz, .space) is an instruction **to the assembler** and generates no machine code. A **pseudoinstruction** (li, la, move, blt) expands into real instruction(s).
+- **Universal gate:** NAND (NOR too).
+- Negating an IEEE float: **flip the sign bit**.
+
+**Registers:** $zero(0) $at(1) $v0–$v1(2–3) $a0–$a3(4–7) $t0–$t7(8–15) $s0–$s7(16–23) $t8–$t9(24–25) $gp(28) $sp(29) $fp(30) $ra(31).
+
+**Syscalls ($v0):** 1 print_int ($a0) · 2 print_float ($f12) · 4 print_string ($a0 = address) · 5 read_int → $v0 · 6 read_float → $f0 · 8 read_string · 9 sbrk · **10 exit** · 11 print_char.
+`},
+
+// ======================= PHASE 2 =======================
+{ id: "bsearch", phase: 2, n: 8, title: "Binary search", sec: "A", m23: 12, m22: 8,
+notes: `
+**Trace (3 marks):** \`look = (left + right) / 2\` (integer division). If list[look] < item, left = look + 1; if greater, right = look − 1. Write down every index examined.
+\`\`\`
+5 13 14 18 22 26 29 34 39 41, search 39:  look 4 (22) → 7 (34) → 8 (39 found)   ⇒ 4, 7, 8
+\`\`\`
+**Code (7 marks):**
+\`\`\`
+public static int binarySearch (int[] list, int item)
+  { int left = 0, right = list.length - 1;
+    while (left <= right)
+      { int look = (left + right) / 2;
+        if (list[look] == item) return look;
+        if (list[look] > item) right = look - 1;
+        else left = look + 1;
+      }
+    return -1;
+  }
+\`\`\`
+**Complexity:** **O(log n)**. C_n = C_{n/2} + 1, so C_n = log₂n + 1. 10 items → max 4 comparisons; 1 000 000 → 20.
+
+**Equivalent BST (2022, 8 marks):** the root is the first midpoint; recurse on each half with the same mid formula.
+\`\`\`
+6 10 13 19 24 28 34 35 39 42  →  root 24(4); left half mid 10(1): 6, 13→19; right half mid 35(7): 28→34, 39→42
+\`\`\`
+**Extras:** \`(left+right)/2\` can overflow for huge arrays, so use \`left + (right-left)/2\`. Interpolated search is O(log log n). Sorted sequential search averages n/2; unsorted, found half the time, averages 3n/4.
+`},
+{ id: "rectree", phase: 2, n: 9, title: "Recursion & tree traversals", sec: "A", m23: 10, m22: 8,
+notes: `
+**Recursion = a stop case + a call on a smaller problem.** Each call gets its own local variables.
+
+**Towers of Hanoi (2023, 10 marks):**
+\`\`\`
+private static void hanoi (int n, Tower from, Tower to, Tower spare)
+  { if (n == 1)
+      moveDisk(from, to);
+    else
+      { hanoi(n - 1, from, spare, to);   // n-1 out of the way
+        moveDisk(from, to);              // biggest disk
+        hanoi(n - 1, spare, to, from);   // n-1 back on top
+      }
+  }
+\`\`\`
+2ⁿ − 1 moves, so O(2ⁿ).
+
+**Traversals (2022, 8 marks):** same shape, just move the print.
+\`\`\`
+public void preOrderPrint (Tree<Character> root)   // NLR
+  { if (root != null)
+      { System.out.println(root.getData());
+        preOrderPrint(root.left());
+        preOrderPrint(root.right());
+      }
+  }
+\`\`\`
+- **In-order (LNR):** left, print, right. On a BST this gives sorted order.
+- **Post-order (LRN):** left, right, print.
+- **Breadth-order:** use a **queue** (add the root; repeatedly remove one and add its children).
+
+Tree a(b(d,e), c(f,g)): pre **a b d e c f g**, in **d b e a f c g**, post **d e b f g c a**.
+`},
+{ id: "bstgraph", phase: 2, n: 10, title: "BST insert/delete & graphs", sec: "A", m23: 8, m22: 12,
+notes: `
+**BST rule:** left subtree < node ≤ right subtree.
+
+**Insert:** walk from the root (go left if smaller, otherwise right) until you hit null. The new node is **always a leaf**.
+
+**Delete, 4 cases:**
+1. Leaf: just remove it.
+2. Only a left child: the child takes its place.
+3. Only a right child: the child takes its place.
+4. **Two children:** replace the value with the **smallest value in the right subtree** (go right once, then all the way left), then delete that node. It never has a left child.
+
+**2023 example:** tree N(A(–, J(G)), X(S)). Add D → G's left; add T → S's right. Delete N → S becomes the root: S(A(–, J(G)), X).
+
+**Graphs**
+- Directed (arrows) vs undirected; weighted edges carry a value.
+- **Adjacency matrix:** row = FROM, column = TO, 1 if there's an edge. By the notes' convention the **diagonal is 1**. Undirected → symmetric. Wastes space when there are few edges.
+- **Edge lists:** each vertex lists the vertices it points to. Good for sparse graphs.
+\`\`\`
+A→B, A→C, C→B          A: B, C       A B C
+                       B:           A 1 1 1
+                       C: B         B 0 1 0
+                                    C 0 1 1
+\`\`\`
+**General tree → binary tree:** left pointer = left-most child, right pointer = next sibling.
+`},
+{ id: "perf", phase: 2, n: 11, title: "Performance", sec: "B", m23: 10, m22: 6,
+notes: `
+**Pipelining (5 marks):** split instruction execution into stages **IF** (fetch), **ID** (decode, read registers), **EX** (execute), **MEM** (memory access), **WB** (write back). Like an assembly line, different instructions occupy each stage at once, so about one instruction finishes per stage-time. **Throughput** improves by up to N× for N stages, even though each instruction still takes as long. Losses come from overheads between stages and from branches (MIPS has a branch delay slot). Simple, uniform RISC instructions make pipelining easy.
+
+**Caching**
+- A cache is small, fast SRAM managed by hardware. It holds recently used data, and on a miss it loads a whole **block (line)**, about 64 bytes.
+- **Temporal locality:** the same location is used again soon. **Spatial locality:** nearby locations are used soon.
+- Array iteration benefits from **spatial** locality: one miss brings in the next 16 ints, so the following accesses are hits.
+- A cache works despite being small because of locality: most accesses hit, so the average speed approaches cache speed.
+- Scattered or random accesses mean poor locality, more misses and slower code.
+
+**Formulas (not asked yet, so likely)**
+\`\`\`
+speedup = t_before / t_after
+pipeline: per-instr = (stage time × N + overhead × (N−1)) / N
+Amdahl:   speedup = N / (S·N + (1 − S))          S = fraction that can't be parallelised
+t_avg  = f_L1·t_L1 + f_L2·t_L2 + f_DRAM·t_DRAM
+\`\`\`
+Example: 5 units, 4 stages, 0.2 overhead → (5 + 0.6)/4 = 1.4 → speedup 5/1.4 ≈ **3.6**.
+`},
+{ id: "decl", phase: 2, n: 12, title: "Reading C declarations", sec: "C", m23: 10, m22: 9,
+notes: `
+**The right-left rule:** start at the **name**, read **right** (\`[n]\` = "array of n", \`(…)\` = "function taking … returning"), then **left** (\`*\` = "pointer to"). Parentheses force you to finish the inside first. End with the base type.
+
+| Declaration | English |
+|---|---|
+| \`int **p[4]\` | p is an array of 4 pointers to pointers to int |
+| \`char **p[3]\` | p is an array of 3 pointers to pointers to char |
+| \`char (*a)[10]\` | a is a pointer to an array of 10 chars |
+| \`void *(*d)(int*, int)\` | d is a pointer to a function taking (pointer to int, int) returning pointer to void |
+| \`int (*fs[5])(int)\` | fs is an array of 5 pointers to functions taking int returning int |
+| \`char *k(int* (*)(int,int), int**)\` | k is a function taking (a pointer to a function taking (int, int) returning pointer to int, a pointer to pointer to int) returning pointer to char |
+| \`void* (*maxBy)(void*, int, int (*)(void*))\` | maxBy is a pointer to a function taking (pointer to void, int, pointer to function taking pointer to void returning int) returning pointer to void |
+
+**Marking tip:** the 7-mark ones give a mark per piece, so name **every** parameter type and the return type.
+`},
+{ id: "memory", phase: 2, n: 13, title: "Memory segments & pointer programs", sec: "C", m23: 7, m22: 14,
+notes: `
+**Where does it point?**
+| Thing | Segment |
+|---|---|
+| Local variables and local arrays (\`char w[] = "twip"\`) | **Stack** |
+| \`malloc\` / \`calloc\` results | **Heap** |
+| String literals (\`char *m = "green"\`), globals, \`static\` variables | **Data segment** (literals are read-only) |
+| An array of pointers itself (\`char *p[3]\`) | Stack, so \`p\` points to the stack, while \`p[i]\` points wherever it was set |
+
+**Rules examiners test**
+- Every malloc/calloc needs a matching **\`free\`**, otherwise you have a memory leak. "Two missing lines" usually means two frees before \`return\`.
+- Strings need a **'\\0'** terminator. malloc doesn't zero memory (calloc does).
+- Modifying a string literal is **undefined behaviour**. Use \`char s[] = "..."\` instead.
+- **Undefined behaviour:** the C standard imposes no requirements. It can crash, misbehave or *seem to work*.
+- **Array decay:** in most expressions an array becomes a pointer to its first element, and its size is lost (not inside \`sizeof\`).
+- **Equivalent syntax:** \`a[i] == *(a + i)\`, \`p[0][1] == *(*p + 1)\`, \`**p == p[0][0]\`, \`*arr == arr[0]\`.
+
+**2022 trace:** \`p = {malloc(3), w, "zoot"}; **p='y'; p[0][1]='c'; *(*p+2)='\\0';\` prints **yc - twip - zoot**.
+
+**struct vs union** (32-bit int, 64-bit pointer): \`struct{int a; char *b;}\` = 4 + 4 padding + 8 = **16**; the union = **8** (its largest member). Use a union when only one member is in use at a time.
+`},
+
+// ======================= PHASE 3 =======================
+{ id: "sorts", phase: 3, n: 14, title: "Simple sorts + Big-O tables", sec: "A", m23: 14, m22: 12,
+notes: `
+**Bubble sort (2023, 10 marks):** swap adjacent pairs that are out of order, and stop early if a pass makes no swaps.
+\`\`\`
+public static void bubbleSort (int[] list)
+  { boolean madeSwap = true;
+    for (int pass = 0; pass < list.length - 1 && madeSwap; pass++)
+      { madeSwap = false;
+        for (int k = 0; k < list.length - pass - 1; k++)
+          if (list[k] > list[k + 1])
+            { int tmp = list[k]; list[k] = list[k + 1]; list[k + 1] = tmp;
+              madeSwap = true; }
+      }
+  }
+\`\`\`
+**Insertion sort (2022, 8 marks):** insert each item into the sorted part.
+\`\`\`
+public static void insertionSort (int[] list)
+  { for (int k = 1; k < list.length; k++)
+      { int tmp = list[k];
+        int j = k - 1;
+        while (j >= 0 && list[j] > tmp)
+          { list[j + 1] = list[j]; j--; }
+        list[j + 1] = tmp;
+      }
+  }
+\`\`\`
+**Selection sort (not asked yet, so likely):** find the minimum of the rest and swap it into position k. Only n−1 swaps.
+\`\`\`
+for (int k = 0; k < list.length - 1; k++)
+  { int minPos = k;
+    for (int j = k + 1; j < list.length; j++)
+      if (list[j] < list[minPos]) minPos = j;
+    int tmp = list[k]; list[k] = list[minPos]; list[minPos] = tmp;
+  }
+\`\`\`
+**The Big-O table (4 marks):**
+\`\`\`
+             Comparisons (best/avg/worst)   Moves (best/avg/worst)
+Bubble       O(n)  / O(n²) / O(n²)          O(1)  / O(n²) / O(n²)
+Insertion    O(n)  / O(n²) / O(n²)          O(n)  / O(n²) / O(n²)
+Selection    O(n²) / O(n²) / O(n²)          O(n)  / O(n)  / O(n)
+\`\`\`
+Best case = already sorted; worst = reverse order.
+`},
+{ id: "queues", phase: 3, n: 15, title: "Queue / list implementation", sec: "A", m23: 21, m22: 25,
+notes: `
+**15 marks every year:** implement add, remove, head and isEmpty. Learn both versions cold.
+
+**ListQueue (2023):** fields \`hd\`, \`tl\` (null when empty).
+\`\`\`
+public void add (T item)
+  { QueueNode node = new QueueNode();
+    node.data = item;
+    if (tl != null) tl.next = node;   // link after the tail
+    tl = node;
+    if (hd == null) hd = node;        // was empty
+  }
+public T remove ()
+  { if (hd == null) throw new EmptyException("empty");
+    T tmp = hd.data;
+    hd = hd.next;
+    if (hd == null) tl = null;        // removed the last one
+    return tmp;
+  }
+public T head () { if (hd == null) throw new EmptyException("empty"); return hd.data; }
+public boolean isEmpty () { return hd == null; }
+\`\`\`
+**ArrayQueue (2022), circular:** \`hd = tl = -1\` when empty.
+\`\`\`
+public void add (T item)
+  { tl++;
+    if (tl >= data.length) tl = 0;    // wrap
+    if (tl == hd) throw new NoSpaceAvailableException("full");
+    data[tl] = item;
+    if (hd == -1) hd = tl;            // first item
+  }
+public T remove ()
+  { if (hd == -1) throw new EmptyException("empty");
+    T tmp = data[hd];
+    if (hd == tl) hd = tl = -1;       // last item
+    else { hd++; if (hd >= data.length) hd = 0; }
+    return tmp;
+  }
+\`\`\`
+**IntegerList position(item, pos) (2022):** skip ahead pos nodes, then search, counting k. Client: \`p = position(42, 0); while (p != -1) { print p; p = position(42, p+1); }\`
+
+**Deque diagram (2023):** header node H ⇄ a ⇄ b ⇄ c ⇄ back to H. H.rt → a (the left end), H.lt → c (the right end). Empty: H points to itself.
+
+**Likely next:** ArrayStack (\`data[++topIndex] = item\` / \`return data[topIndex--]\`), ListStack (\`node.next = topNode; topNode = node;\`), or deque addLeft/removeRight.
+`},
+{ id: "mips", phase: 3, n: 16, title: "MIPS programming", sec: "B", m23: 15, m22: 25,
+notes: `
+**The biggest and hardest section. Learn the templates, then practise.**
+
+**Loop template** (test at the bottom):
+\`\`\`
+        (init)
+        j    test
+body:   (body)
+        (increment)
+test:   bCOND R1, R2, body      # branch while the condition to CONTINUE is true
+\`\`\`
+**If / if-else:** **invert** the condition to jump around the true part.
+\`\`\`
+        bINV R1, R2, else       # e.g. if (x < 10)  →  bge x, 10, else
+        (true part)
+        j    done
+else:   (false part)
+done:
+\`\`\`
+**Array element i (words):** \`sll $t4, $i, 2\` → \`add $t4, $t4, $base\` → \`lw $t5, 0($t4)\`
+
+**One-liners**
+\`\`\`
+N = Z (Z at frame offset 8):   lw   $t0, -8($fp)        # stack offsets are NEGATIVE
+return 42 (leaf):              li   $v0, 42  /  jr $ra
+Z = N + 27; return Z:          addi $t0, $t1, 27  /  move $v0, $t0  /  jr $ra
+print string at label s:       la $a0, s  /  li $v0, 4  /  syscall
+\`\`\`
+**Function frame (book convention)**
+\`\`\`
+func:  sw   $ra, 0($sp)       # save return address
+       sw   $fp, -4($sp)      # save old frame pointer
+       move $fp, $sp
+       addi $sp, $sp, -12     # -4 per word in the frame (ra, fp, + locals/saved $a)
+       ...
+       move $sp, $fp          # unwind
+       lw   $fp, -4($sp)
+       lw   $ra, 0($sp)
+       jr   $ra
+\`\`\`
+**Register rules:** callers save $t/$a/$v if they need them later; callees save $s/$fp/$sp/$ra. Use $s registers for values that must survive a \`jal\`.
+
+**Caller's responsibilities (3 marks):** save the temporaries it needs → arguments in $a0–$a3 (extras on the stack) → \`jal\` → take the result from $v0 → restore the temporaries.
+
+**Recursion (Ackermann, 2022):** −12 = a frame of 3 words; the frame is unwound once at a shared return label; the last call is \`jal\` so control comes back here to unwind before returning.
+
+**Root function (main):** must save $ra before calling anything, because the SPIM start-up code reached main with a \`jal\`.
+`},
+
+// ======================= BONUS =======================
+{ id: "likely", phase: 4, n: 17, title: "Not yet examined (likely next)", sec: "A/B", m23: 0, m22: 0,
+notes: `
+**Quick sort:** pivot = first element; partition so the pivot lands in its final place; recurse on both sides. Best/avg **O(n log n)** (avg ≈ 1.38 n log n), worst **O(n²)** on sorted input. Fixes: median-of-three or a random pivot.
+\`\`\`
+5 2 8 1 9 3  → first partition → 1 2 3 5 9 8   (5 in its final place, returns index 3)
+\`\`\`
+**Merge sort:** split in half, sort each half, merge. Always **O(n log n)** but needs about **2× memory**, which is why quick sort is used more.
+
+**Stacks:** LIFO; push, pop, top, isEmpty. Array version: topIndex = −1 when empty. Linked version: \`node.next = topNode; topNode = node;\` (this order).
+
+**Deque code (header node):**
+\`\`\`
+addLeft:     n.lt = header; n.rt = header.rt; header.rt.lt = n; header.rt = n;
+removeRight: n = header.lt; header.lt = n.lt; n.lt.rt = header; return n.data;
+\`\`\`
+**Full adder:** S = A⊕B⊕Cin, Cout = (A∧B) ∨ (Cin∧(A⊕B)).
+
+**MIPS strlen:**
+\`\`\`
+strlen: move $v0, $zero
+loop:   lbu  $t1, 0($a0)
+        beq  $t1, $zero, done
+        addi $v0, $v0, 1
+        addi $a0, $a0, 1
+        j    loop
+done:   jr   $ra
+\`\`\`
+**Instruction formats:** R = op6 rs5 rt5 rd5 shamt5 funct6; I = op6 rs5 rt5 imm16; J = op6 addr26 (only j and jal). Big constants: \`lui\` + \`ori\`.
+
+**RISC vs CISC:** RISC has many registers, fixed-length simple instructions, and touches memory only through loads and stores (a "load-store architecture").
+`},
+];
+
+// ---------------- QUESTIONS ----------------
+const QS = {
+hash: [
+  { q: "Keys 31, 12, 25, 6, 18 go into a table of size 6. Give the hash values (in order, separated by spaces).", check: ["1 0 1 0 0"], a: "31%6=1, 12%6=0, 25%6=1, 6%6=0, 18%6=0" },
+  { q: "Insert those keys (31, 12, 25, 6, 18) into an **internal** table of size 6 with linear probing. Give slots 0–5 (use - for empty).", check: ["12 31 25 6 18 -"], a: "31→1. 12→0. 25→1 taken → 2. 6→0, 1, 2 taken → 3. 18→0…3 taken → 4.\n```\n[0]12 [1]31 [2]25 [3]6 [4]18 [5]--\n```" },
+  { q: "Same keys into an **external** table (new nodes at the front). What does bucket 0 contain, front to back?", check: ["18 6 12"], a: "Bucket 0 gets 12, then 6, then 18, each at the front: **18 → 6 → 12**. Bucket 1: 25 → 31." },
+  { q: "Keys 7, 13, 19 into an internal table of size 6. Then 13 is deleted, and you search for 19. Why must 13's slot be marked *deleted* rather than emptied?", a: "7→1, 13→1 taken → 2, 19→1 → 2 → 3. If slot 2 (13) became empty, a search for 19 would start at 1, then hit the empty slot 2 and stop, wrongly reporting 19 absent. A 'deleted' marker makes the search keep probing." },
+  { q: "What's the difference between primary and secondary clustering?", a: "**Primary:** keys with the **same** hash value fill a run of consecutive slots. **Secondary:** a key's home slot is taken by a **displaced** key with a different hash value, so clusters merge and grow." },
+  { q: "Give one advantage of external hashing over internal hashing, and one advantage of ListDictionary over both.", a: "External: not limited by the table size (buckets grow) and no clustering problem. ListDictionary: keeps the keys **in order**, so it can iterate in sorted order (hash tables lose order)." },
+],
+defs: [
+  { q: "Define **precondition**. (2)", a: "A condition that must be true when a method is called for it to work correctly. If it's violated, the postcondition isn't guaranteed." },
+  { q: "Define **abstract data type**. (2)", a: "A pair <V, O>: a set of values V and a set of operations O defined on those values (used through the operations, independent of implementation)." },
+  { q: "Define **proper binary tree**. (2)", a: "A binary tree where every node has 0 or 2 children." },
+  { q: "What does \"the algorithm is O(f(n))\" mean? (2)", a: "There exist positive constants c and n₀ such that its time t ≤ c·f(n) for all n > n₀." },
+  { q: "Complete the header so T must implement Comparable: `public class SomeClass ____`", check: ["<T extends Comparable<T>>", "<T extends Comparable>"], a: "`<T extends Comparable<T>>`" },
+  { q: "Accessing position k in a list: array O(__), linked list O(__). Answer as `x y`.", check: ["1 n", "O(1) O(n)"], a: "O(1) for an array (direct indexing), O(n) for a linked list (walk from the start)." },
+  { q: "Define a **graph**. (2)", a: "G = (V, E): a set of vertices V and a set of edges E, where each edge is a pair (v, w) with v, w ∈ V." },
+  { q: "Rank: n², log n, 2ⁿ, n log n, 1, n!, n", check: ["1 log n n n log n n² 2ⁿ n!", "1, log n, n, n log n, n^2, 2^n, n!", "1 logn n nlogn n^2 2^n n!"], a: "1 < log n < n < n log n < n² < 2ⁿ < n!" },
+],
+compile: [
+  { q: "Put these in order: linking, assembly, preprocessing, compilation.", check: ["preprocessing compilation assembly linking"], a: "Preprocessing → compilation → assembly → linking." },
+  { q: "What is the output of the **compilation** step?", check: ["assembly", "assembly code", ".s", "assembly language"], a: "Assembly code (.s)." },
+  { q: "Which step resolves the reference to `printf`?", check: ["linking", "linker", "link"], a: "Linking: it combines the object files with the libraries and resolves symbols." },
+  { q: "Explain the purpose of **preprocessing**. (2)", a: "It processes # directives: pastes in #include files, expands #define macros, handles conditional compilation (#if/#ifdef) and removes comments. The output is pure C source." },
+  { q: "What does the **assembly** step produce, and what's still missing from it?", a: "An object file (.o) of machine code. References to external symbols (functions and variables defined elsewhere) are still unresolved until linking." },
+],
+byval: [
+  { q: "Why can't `void inc(int x) { x++; }` change the caller's variable? (2)", a: "C passes by value: x is a copy, so incrementing it changes only the copy." },
+  { q: "Rewrite `inc` so it works, and show the call for a variable `count`.", a: "```\nvoid inc(int *x) { (*x)++; }\ninc(&count);\n```\n(The brackets matter: `*x++` would increment the pointer.)" },
+  { q: "Spot the bug: `if (a = 0) printf(\"zero\");`", a: "`=` assigns 0 to a, and the condition is then 0 (false), so it never prints and a is destroyed. It should be `a == 0`." },
+  { q: "Write `void sortTwo(int *a, int *b)` that leaves the smaller value in *a and the larger in *b.", a: "```\nvoid sortTwo(int *a, int *b) {\n    if (*a > *b) { int t = *a; *a = *b; *b = t; }\n}\n```" },
+  { q: "What does `&x` give? What does `*p` give?", a: "&x = the address of x (a pointer to x). *p = the value stored at the address p holds (dereference)." },
+],
+numbers: [
+  { q: "Convert 37 to binary.", check: ["100101"], a: "37→18 r1→9 r0→4 r1→2 r0→1 r0→0 r1 → 100101" },
+  { q: "Convert 1011 0110₂ to hex.", check: ["0xB6", "B6"], a: "1011 = B, 0110 = 6 → 0xB6" },
+  { q: "−37 in 8-bit two's complement (binary).", check: ["11011011"], a: "37 = 0010 0101 → invert 1101 1010 → +1 → 1101 1011" },
+  { q: "−100 in 8-bit two's complement, as hex.", check: ["0x9C", "9C"], a: "100 = 0110 0100 → 1001 1011 → +1 → 1001 1100 = 0x9C" },
+  { q: "Convert 0.6 to binary. Is it recurring?", a: "0.6×2=1.2→1, 0.2→0.4→0, 0.4→0.8→0, 0.8→1.6→1, 0.6 repeats → **0.1001 1001…₂**, recurring." },
+  { q: "Convert 0.625 to binary.", check: ["0.101"], a: "1.25→1, 0.5→0, 1.0→1 → 0.101 (terminates)" },
+  { q: "What is the stored IEEE exponent (decimal) for 0.0101₂?", check: ["125"], a: "0.0101 = 1.01 × 2⁻² → −2 + 127 = 125" },
+  { q: "Encode 5.5 as an IEEE single in hex.", check: ["0x40B00000", "40B00000"], a: "5.5 = 101.1 = 1.011 × 2² → S 0, E 129 = 10000001, F 011000…\n0 10000001 0110000… = 0100 0000 1011 0000 … = **0x40B00000**" },
+  { q: "The IEEE float 0x41200000 is 10.0. What is −10.0?", check: ["0xC1200000", "C1200000"], a: "Flip the sign bit: 4 → C → 0xC1200000" },
+  { q: "Add 01110000 + 00110000 (8-bit two's complement). Overflow? Why?", a: "= 1010 0000. There's a carry into the sign bit but none out of it, so **overflow** (112 + 48 = 160 > 127)." },
+],
+logic: [
+  { q: "Write the half adder expressions.", a: "S = A ⊕ B,  C = A ∧ B" },
+  { q: "Truth table for the half subtractor D = A⊕B, Bout = ¬A∧B. What is Bout when A=0, B=1?", check: ["1"], a: "1 (0 − 1 needs a borrow). The full table: 00→0 0, 01→1 1, 10→1 0, 11→0 0." },
+  { q: "Simplify, naming each law: (A ∨ B) ∧ (A ∨ ¬B)", a: "= A ∨ (B ∧ ¬B)   (distribution of or over and)\n= A ∨ 0   (B ∧ ¬B = 0)\n= **A**   (or-identity)" },
+  { q: "Simplify: ¬(¬A ∧ ¬B)", a: "De Morgan: ¬(¬A ∧ ¬B) = ¬¬A ∨ ¬¬B = **A ∨ B**" },
+  { q: "Build NOT and AND using only NAND gates.", a: "NOT A = A NAND A.  A AND B = (A NAND B) NAND (A NAND B), i.e. NAND followed by a NAND-based NOT." },
+  { q: "How does a truth table *prove* a circuit implements an equation?", a: "Compute the circuit's output and the equation's value for **every** combination of inputs. If the columns are identical in every row, they're equivalent." },
+  { q: "Full adder: Cin=1, A=0, B=1. Give S and Cout as `S Cout`.", check: ["0 1"], a: "1+0+1 = 10₂ → S = 0, Cout = 1" },
+],
+mcq: [
+  { q: "After running, SPIM says \"Attempt to execute non-instruction\". Most likely cause?", check: ["missing exit", "no exit syscall", "forgot exit", "exit"], a: "No exit system call (li $v0, 10 / syscall), so it ran off the end of the code." },
+  { q: "Which instruction puts the address of label `msg` into $a0?", check: ["la $a0, msg", "la $a0,msg"], a: "la $a0, msg" },
+  { q: "Is `.asciiz` a directive or a pseudoinstruction?", check: ["directive"], a: "A directive: it tells the assembler to store a null-terminated string and generates no instruction." },
+  { q: "Syscall code for read_int, and the register the result comes back in? Answer `code reg`.", check: ["5 $v0", "5 v0"], a: "5, result in $v0." },
+  { q: "Which register number is $sp?", check: ["29", "$29"], a: "$29" },
+  { q: "What does `blt $t1, $t2, L` expand to?", a: "slt $at, $t1, $t2  then  bne $at, $zero, L" },
+],
+bsearch: [
+  { q: "Binary search for 12 in `2 4 7 9 12 15 18 21` (indices 0–7). Give the indices examined.", check: ["3 5 4"], a: "(0+7)/2=3 (9<12, so left=4) → (4+7)/2=5 (15>12, so right=4) → (4+4)/2=4 (12 found). **3, 5, 4**" },
+  { q: "Same list, search for 20. Indices examined, and the result?", a: "3 (9) → 5 (15) → 6 (18) → 7 (21>20, so right=6). left 7 > right 6 → not found, return **−1**. Indices 3, 5, 6, 7." },
+  { q: "Max comparisons to binary-search 1000 sorted items?", check: ["10"], a: "⌈log₂1000⌉ ≈ 10" },
+  { q: "Write binarySearch(int[] list, int item) from memory.", a: "```\nint left = 0, right = list.length - 1;\nwhile (left <= right) {\n  int look = (left + right) / 2;\n  if (list[look] == item) return look;\n  if (list[look] > item) right = look - 1; else left = look + 1;\n}\nreturn -1;\n```" },
+  { q: "Draw the BST equivalent to binary-searching `1 3 5 7 9 11 13`.", a: "Root 7 (index 3); left half mid 3 (children 1, 5); right half mid 11 (children 9, 13). A perfectly balanced tree." },
+  { q: "Why must the list be sorted? What's binary search's complexity?", a: "It discards half the list based on whether the item is bigger or smaller than the middle, which is only valid if the list is ordered. O(log n)." },
+],
+rectree: [
+  { q: "Write the recursive hanoi(n, from, to, spare) method.", a: "```\nif (n == 1) moveDisk(from, to);\nelse { hanoi(n-1, from, spare, to); moveDisk(from, to); hanoi(n-1, spare, to, from); }\n```" },
+  { q: "How many moves for 5 disks?", check: ["31"], a: "2⁵ − 1 = 31" },
+  { q: "Tree: root 8; 8.left = 3 (children 1, 6); 8.right = 10 (right child 14). Give the pre-order traversal.", check: ["8 3 1 6 10 14"], a: "8 3 1 6 10 14" },
+  { q: "Same tree: in-order?", check: ["1 3 6 8 10 14"], a: "1 3 6 8 10 14 (sorted, because it's a BST)" },
+  { q: "Same tree: post-order?", check: ["1 6 3 14 10 8"], a: "1 6 3 14 10 8" },
+  { q: "Write a recursive method that counts the nodes of a Tree<T>.", a: "```\nint count(Tree<T> t) {\n  if (t == null) return 0;\n  return 1 + count(t.left()) + count(t.right());\n}\n```" },
+  { q: "Which data structure does a breadth-order traversal use?", check: ["queue"], a: "A queue." },
+],
+bstgraph: [
+  { q: "Insert 50, 30, 70, 20, 40, 60 into an empty BST, then delete 50. What is the new root?", check: ["60"], a: "50 has two children → replace it with the smallest in its right subtree (70 → left 60) = **60**." },
+  { q: "In that BST (before deleting), where does 35 go?", a: "35 < 50 → 30; 35 > 30 → 40; 35 < 40 → **left child of 40**." },
+  { q: "Why does the node chosen to replace a deleted two-child node never have a left child?", a: "It's the minimum of the right subtree: you went left as far as possible, so it has no left child." },
+  { q: "Directed graph: A→B, B→C, C→A, A→D. Give the edge lists.", a: "A: B, D   B: C   C: A   D: (none)" },
+  { q: "Same graph: give the adjacency matrix (notes' convention).", a: "```\n  A B C D\nA 1 1 0 1\nB 0 1 1 0\nC 1 0 1 0\nD 0 0 0 1\n```" },
+  { q: "When are edge lists better than an adjacency matrix?", a: "When the graph is **sparse** (many vertices, few edges): the matrix would be mostly zeros and waste space." },
+  { q: "Convert the general tree r(a(x, y), b, c) to a binary tree. What is a's right pointer?", check: ["b"], a: "Right pointer = next sibling, so b. (a.left = x, x.right = y, b.right = c.)" },
+],
+perf: [
+  { q: "Name the 5 classic MIPS pipeline stages.", check: ["IF ID EX MEM WB"], a: "IF ID EX MEM WB" },
+  { q: "Explain how pipelining speeds up execution. (5)", a: "Execution is split into stages. Different instructions occupy different stages at the same time (like an assembly line), so one completes about every stage-time. Throughput rises by up to N× for N stages, although each instruction's latency doesn't drop. Overheads between stages and branches/hazards reduce the gain." },
+  { q: "A loop sums an array. Spatial or temporal locality helps most?", check: ["spatial"], a: "Spatial: consecutive elements share a cache line." },
+  { q: "The loop variable `sum` is used every iteration. Which locality is that?", check: ["temporal"], a: "Temporal: the same location is reused soon." },
+  { q: "Pipeline: 6 units of work, 3 stages, 0.3 units of overhead between stages. Speedup? (2 dp)", check: ["2.73", "2.7"], a: "Per instruction = (6 + 2×0.3)/3 = 2.2. Speedup = 6/2.2 ≈ 2.73" },
+  { q: "Amdahl: 90% parallelisable on 10 cores. Speedup? (2 dp)", check: ["5.26", "5.3"], a: "S = 0.1: 10/(0.1×10 + 0.9) = 10/1.9 ≈ 5.26" },
+  { q: "L1 = 1 cycle, 3% go to L2 (10 cycles), 1% go to DRAM (100 cycles). Average cycles per instruction?", check: ["2.26"], a: "0.96×1 + 0.03×10 + 0.01×100 = 0.96 + 0.3 + 1.0 = 2.26" },
+  { q: "Why does a cache that's tiny compared with RAM still speed things up?", a: "Locality: programs mostly reuse recent data and nearby data, so the small working set in cache serves most accesses (hits). The average access time approaches the cache's speed." },
+],
+decl: [
+  { q: "Describe `int *p[5]`.", check: ["array of 5 pointers to int", "p is an array of 5 pointers to int"], a: "p is an array of 5 pointers to int." },
+  { q: "Describe `int (*p)[5]`.", check: ["pointer to an array of 5 ints", "p is a pointer to an array of 5 ints", "pointer to array of 5 int"], a: "p is a pointer to an array of 5 ints." },
+  { q: "Describe `double (*f)(int, char*)`.", a: "f is a pointer to a function taking (int, pointer to char) and returning double." },
+  { q: "Describe `char **(*g)(void)`.", a: "g is a pointer to a function taking no arguments and returning a pointer to a pointer to char." },
+  { q: "Describe `int (*tbl[3])(int, int)`.", a: "tbl is an array of 3 pointers to functions taking (int, int) and returning int." },
+  { q: "Write the declaration: x is a pointer to a function taking a pointer to char and returning a pointer to int.", check: ["int *(*x)(char *)", "int *(*x)(char*)", "int* (*x)(char*)"], a: "int *(*x)(char *);" },
+  { q: "Describe `void* (*maxBy)(void*, int, int (*)(void*))`. (7)", a: "maxBy is a pointer to a function taking (a pointer to void, an int, and a pointer to a function that takes a pointer to void and returns int) and returning a pointer to void." },
+],
+memory: [
+  { q: "`char s[] = \"hi\"; char *t = \"hi\"; char *u = malloc(3);` Where do s, t and u point? Answer as three words.", check: ["stack data heap"], a: "s → stack, t → data segment (literal), u → heap" },
+  { q: "`char *s = \"cat\"; s[0] = 'b';` What's wrong, and how do you fix it?", a: "It modifies a string literal (read-only data), which is undefined behaviour. Fix: `char s[] = \"cat\";` (a writable stack copy)." },
+  { q: "Define undefined behaviour. (2)", a: "Behaviour on which the C standard imposes no requirements. It may crash, give wrong results, or appear to work." },
+  { q: "Rewrite `p[2][1]` using pointer arithmetic.", check: ["*(*(p+2)+1)", "*(*(p + 2) + 1)"], a: "*(*(p + 2) + 1)" },
+  { q: "`char *b = malloc(4); b[0]='h'; b[1]='i'; printf(\"%s\", b);` What's the risk, and the fix?", a: "No '\\0' terminator (malloc doesn't zero memory), so printf may read past the end. Add `b[2] = '\\0';` (or use calloc). Also free(b) afterwards." },
+  { q: "sizeof `struct { char c; double d; }` on a typical 64-bit system?", check: ["16"], a: "1 + 7 padding + 8 = 16" },
+  { q: "sizeof `union { int i; double d; char s[3]; }`?", check: ["8"], a: "The largest member is 8 (double), already aligned → 8" },
+  { q: "What does \"an array decays into a pointer\" mean? (2)", a: "In most expressions an array name is converted to a pointer to its first element (&a[0]), and the size information is lost (not inside sizeof or &a)." },
+],
+sorts: [
+  { q: "Write bubbleSort(int[] list) with the early-exit flag.", a: "See the notes: outer pass loop with `&& madeSwap`, inner loop `k < list.length - pass - 1`, swap if `list[k] > list[k+1]`." },
+  { q: "Write insertionSort(int[] list).", a: "for k = 1..n-1: tmp = list[k]; j = k-1; while (j >= 0 && list[j] > tmp) { list[j+1] = list[j]; j--; } list[j+1] = tmp;" },
+  { q: "Write selectionSort(int[] list).", a: "for k: minPos = k; for j = k+1..: if list[j] < list[minPos], minPos = j; then swap list[k] and list[minPos]." },
+  { q: "Bubble sort `5 1 4 2 8`: the list after pass 1?", check: ["1 4 2 5 8"], a: "5↔1 → 1 5 4 2 8; 5↔4 → 1 4 5 2 8; 5↔2 → 1 4 2 5 8; 5<8 → **1 4 2 5 8**" },
+  { q: "Selection sort `5 1 4 2 8`: the list after 2 swaps?", check: ["1 2 4 5 8"], a: "Swap 5↔1 → 1 5 4 2 8; swap 5↔2 → **1 2 4 5 8**" },
+  { q: "Insertion sort best case: what input, and what Big-O?", a: "An already-sorted list: the inner loop never runs, so O(n) comparisons." },
+  { q: "Which simple sort does the fewest data moves, and how many?", check: ["selection"], a: "Selection sort: exactly n−1 swaps." },
+  { q: "Fill in: bubble sort comparisons best/avg/worst.", check: ["O(n) O(n²) O(n²)", "O(n) O(n^2) O(n^2)"], a: "O(n) / O(n²) / O(n²)" },
+],
+queues: [
+  { q: "Write ListQueue add(T item).", a: "```\nQueueNode node = new QueueNode(); node.data = item;\nif (tl != null) tl.next = node;\ntl = node;\nif (hd == null) hd = node;\n```" },
+  { q: "Write ListQueue remove().", a: "```\nif (hd == null) throw new EmptyException(\"empty\");\nT tmp = hd.data; hd = hd.next;\nif (hd == null) tl = null;\nreturn tmp;\n```" },
+  { q: "Write ArrayQueue add(T item) (circular, hd = tl = -1 when empty).", a: "```\ntl++; if (tl >= data.length) tl = 0;\nif (tl == hd) throw new NoSpaceAvailableException(\"full\");\ndata[tl] = item;\nif (hd == -1) hd = tl;\n```" },
+  { q: "Circular queue, size 4, empty. add a, b, c; remove; add d, e. Give hd and tl as `hd tl`.", check: ["1 0"], a: "abc: hd0 tl2. remove: hd1. d → tl3, e wraps → tl0. **hd 1, tl 0**" },
+  { q: "Why does ListQueue.remove set tl = null when hd becomes null?", a: "The last node was removed. Otherwise tl would still point at it, and the next add would link onto a dead node." },
+  { q: "Write ArrayStack push and pop.", a: "```\npush: if (topIndex + 1 >= data.length) throw ...; data[++topIndex] = item;\npop:  if (topIndex < 0) throw ...; return data[topIndex--];\n```" },
+  { q: "Write ListStack push. Why does the order of the two pointer lines matter?", a: "`node.next = topNode; topNode = node;`. Reversed, topNode would point at node and node.next at itself, losing the stack." },
+  { q: "Write IntegerList position(int item, int pos).", a: "```\nListNode curr = first; int k = 0;\nwhile (k < pos && curr != null) { curr = curr.next; k++; }\nwhile (curr != null && curr.data != item) { curr = curr.next; k++; }\nreturn curr == null ? -1 : k;\n```" },
+  { q: "Describe the doubly-, circularly-linked list with a header node holding x, y, z.", a: "H ⇄ x ⇄ y ⇄ z ⇄ H (circular). H.rt = x, H.lt = z, x.lt = H, z.rt = H. Empty: H.lt = H.rt = H." },
+],
+mips: [
+  { q: "Translate: `x = y - 5;` with x in $t0 and y in $t1.", check: ["addi $t0, $t1, -5", "addi $t0,$t1,-5"], a: "addi $t0, $t1, -5" },
+  { q: "Translate: `if (a > b) c = 1;` with a=$s0, b=$s1, c=$s2.", a: "```\n      ble  $s0, $s1, done   # inverted condition\n      li   $s2, 1\ndone:\n```" },
+  { q: "Write MIPS for `for (i = 0; i < 10; i++) sum += i;` (sum $s0, i $s1).", a: "```\n      li   $s0, 0\n      li   $s1, 0\n      li   $t0, 10\n      j    test\nbody: add  $s0, $s0, $s1\n      addi $s1, $s1, 1\ntest: blt  $s1, $t0, body\n```" },
+  { q: "Load arr[i] (int array at label arr, i in $t1) into $t2.", a: "```\nla   $t0, arr\nsll  $t3, $t1, 2\nadd  $t3, $t3, $t0\nlw   $t2, 0($t3)\n```" },
+  { q: "N = Z, where N is in $t0 and Z is at frame offset 12.", check: ["lw $t0, -12($fp)", "lw $t0,-12($fp)"], a: "lw $t0, -12($fp)" },
+  { q: "Write the function entry and exit code for a frame with ra, fp and 2 locals.", a: "```\nsw $ra, 0($sp)\nsw $fp, -4($sp)\nmove $fp, $sp\naddi $sp, $sp, -16\n...\nmove $sp, $fp\nlw $fp, -4($sp)\nlw $ra, 0($sp)\njr $ra\n```" },
+  { q: "List the caller's responsibilities when calling a non-leaf function. (3)", a: "Save any $t/$a/$v registers needed after the call; put arguments in $a0–$a3 (extras on the stack); jal; get the result from $v0; restore the saved registers." },
+  { q: "Why must main save $ra before calling a function?", a: "main itself was reached by a jal in the SPIM start-up code. Calling another function overwrites $ra, so main couldn't return." },
+  { q: "Why use $s rather than $t registers for values that must survive a call?", a: "By convention a callee must preserve $s registers but may destroy $t registers." },
+  { q: "Write MIPS to count the elements > 0 in a 10-int array `nums`, storing the count at label `cnt`.", a: "```\n      la   $t0, nums\n      li   $t1, 0          # i\n      li   $t2, 0          # count\n      li   $t3, 10\n      j    test\nbody: sll  $t4, $t1, 2\n      add  $t4, $t4, $t0\n      lw   $t5, 0($t4)\n      ble  $t5, $zero, skip\n      addi $t2, $t2, 1\nskip: addi $t1, $t1, 1\ntest: blt  $t1, $t3, body\n      la   $t6, cnt\n      sw   $t2, 0($t6)\n```" },
+],
+likely: [
+  { q: "Quick sort (first-element pivot, notes' partition): the list after the first partition of `4 7 2 9 1 5`?", check: ["2 1 4 9 7 5"], a: "Pivot 4. right walks down past 5 and stops at 1 (index 4). left walks up past 4 and stops at 7 (index 1). Swap → 4 1 2 9 7 5. right walks down past 7 and 9, stops at 2 (index 2). left moves to index 2 and stops (left == right). Swap the pivot with index 2 → **2 1 4 9 7 5** (4 in its final place)." },
+  { q: "Quick sort worst case: input and Big-O?", a: "An already-sorted (or reverse-sorted) list with the first element as pivot → O(n²)." },
+  { q: "Why is quick sort preferred to merge sort despite merge sort's guaranteed O(n log n)?", a: "Merge sort needs temporary arrays (about 2× memory). Quick sort's worst case is rare and avoidable with better pivot choice." },
+  { q: "Write deque addLeft with a header node.", a: "n.lt = header; n.rt = header.rt; header.rt.lt = n; header.rt = n;" },
+  { q: "Give the R-format field widths.", check: ["6 5 5 5 5 6"], a: "op 6, rs 5, rt 5, rd 5, shamt 5, funct 6" },
+  { q: "How do you load 0x12345678 into $t0?", a: "lui $t0, 0x1234 then ori $t0, $t0, 0x5678" },
+],
+};
