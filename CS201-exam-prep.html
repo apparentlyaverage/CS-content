@@ -67,6 +67,8 @@ textarea.short{min-height:110px}
 .timer{font:600 15px var(--mono)}
 .hidden{display:none}
 .note{background:var(--warn-soft);border-left:4px solid var(--warn);padding:8px 12px;border-radius:8px;font-size:14px;margin:8px 0}
+/* phones / narrow windows: keep the drill list short so the drill itself is reachable */
+@media (max-width:860px){.side{position:static;max-height:38vh}header{position:static}main{padding:10px}}
 </style>
 </head>
 <body>
@@ -2192,7 +2194,9 @@ function renderList() {
   const done = Object.values(store.drill).filter(v => v === 2).length;
   document.getElementById("dcount").textContent = `${DRILLS.length} drills · ${done} marked “nailed it”`;
 }
-document.getElementById("dlist").onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; cur = +b.dataset.i; renderList(); renderDrill(); window.scrollTo({ top: 0 }); };
+document.getElementById("dlist").onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; cur = +b.dataset.i; renderList(); renderDrill(); showDrillTop(); };
+const narrow = () => window.matchMedia("(max-width:860px)").matches;
+function showDrillTop() { if (narrow()) document.getElementById("dmain").scrollIntoView({ block: "start" }); else window.scrollTo({ top: 0 }); }
 function pickGaps(lines) {
   const cand = lines.map((l, i) => [l, i]).filter(([l]) => { const t = l.trim(); return t.length > 3 && !/^(\/\/|#|\/\*|\*|\}|\{|else$|[})\]]+;?$|\.text|\.data)/.test(t); });
   const n = Math.max(2, Math.round(cand.length * 0.35));
@@ -2220,7 +2224,7 @@ function renderDrill() {
       <button class="btn bad" id="r1">Shaky</button><button class="btn good" id="r2">Nailed it</button></div>
   </div>`;
   m.querySelectorAll("[data-m]").forEach(b => b.onclick = () => { mode = b.dataset.m; renderDrill(); });
-  const step = k => { const v = visible().map(x => x[1]); const p = v.indexOf(cur); if (v.length) { cur = v[(p + k + v.length) % v.length]; renderList(); renderDrill(); } };
+  const step = k => { const v = visible().map(x => x[1]); const p = v.indexOf(cur); if (v.length) { cur = v[(p + k + v.length) % v.length]; renderList(); renderDrill(); showDrillTop(); } };
   document.getElementById("prev").onclick = () => step(-1);
   document.getElementById("nxt").onclick = () => step(1);
   document.getElementById("r1").onclick = () => { store.drill[cur] = 1; save(); renderList(); step(1); };
