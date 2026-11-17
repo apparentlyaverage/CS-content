@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS201 Exam Prep: code drills, past papers, predicted questions</title>
+<style>
+:root{--bg:#f6f5f1;--panel:#fff;--ink:#1d1d1b;--muted:#6b6a65;--line:#e3e1da;--accent:#2f5d8a;--accent-soft:#e6eef6;
+--good:#2e7d4f;--good-soft:#e5f3ea;--bad:#b3402f;--bad-soft:#f8e6e2;--warn:#9a6a00;--warn-soft:#fbf1d9;--code-bg:#f1efe8;
+--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#17181a;--panel:#212226;--ink:#ecebe6;--muted:#9a9993;--line:#34353a;--accent:#7fb0e0;
+--accent-soft:#25313d;--good:#6fcf97;--good-soft:#1f3328;--bad:#f08a78;--bad-soft:#3a2420;--warn:#e7c46a;--warn-soft:#3a3220;--code-bg:#1b1c1f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar{max-width:1240px;margin:0 auto;padding:10px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0;font-weight:650}
+.sub{color:var(--muted);font-size:13px}
+nav.tabs{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+nav.tabs button,.btn,.chip{font:inherit}
+nav.tabs button{border:1px solid var(--line);background:transparent;color:var(--ink);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:14px}
+nav.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+main{max-width:1240px;margin:0 auto;padding:16px 18px}
+.layout{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
+@media (max-width:860px){.layout{grid-template-columns:1fr}}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;position:sticky;top:70px;max-height:calc(100vh - 90px);overflow:auto}
+.side input{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-size:14px;margin-bottom:8px}
+.grp{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:10px 4px 4px}
+.item{display:flex;justify-content:space-between;gap:6px;width:100%;text-align:left;border:0;background:transparent;color:var(--ink);padding:5px 8px;border-radius:7px;cursor:pointer;font:inherit;font-size:14px}
+.item:hover{background:var(--accent-soft)}
+.item.on{background:var(--accent);color:#fff}
+.dot{width:9px;height:9px;border-radius:50%;flex:none;margin-top:6px;background:var(--line)}
+.dot.ok{background:var(--good)} .dot.meh{background:var(--warn)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:14px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.good{border-color:var(--good);color:var(--good);background:transparent}
+.btn.bad{border-color:var(--bad);color:var(--bad);background:transparent}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:4px 11px;cursor:pointer;font-size:13px}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.meta{color:var(--muted);font-size:13px}
+.tag{display:inline-block;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin-right:6px}
+h2{font-size:19px;margin:0 0 6px}
+h3{font-size:16px;margin:14px 0 6px}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:11px 13px;overflow:auto;font:13px/1.5 var(--mono);margin:8px 0;tab-size:4}
+code{font-family:var(--mono);font-size:.92em;background:var(--code-bg);padding:1px 4px;border-radius:4px}
+pre code{background:none;padding:0}
+textarea{width:100%;min-height:220px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:13px/1.5 var(--mono);tab-size:4;resize:vertical}
+textarea.short{min-height:110px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:980px){.cols{grid-template-columns:1fr}}
+.gap{font:13px/1.5 var(--mono);white-space:pre;overflow:auto;background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.gap .ln{display:flex;align-items:center;min-height:22px}
+.gap input{flex:1;font:13px var(--mono);padding:2px 6px;border:1px dashed var(--accent);border-radius:5px;background:var(--panel);color:var(--ink);min-width:200px}
+.gap input.ok{border:1px solid var(--good);background:var(--good-soft)}
+.gap input.no{border:1px solid var(--bad);background:var(--bad-soft)}
+.fb{margin-top:10px;padding:10px 13px;border-radius:9px}
+.fb.ok{background:var(--good-soft);border-left:4px solid var(--good)}
+.fb.no{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.fb.info{background:var(--accent-soft);border-left:4px solid var(--accent)}
+.ans{background:var(--good-soft);border-left:4px solid var(--good);border-radius:9px;padding:10px 14px;margin-top:10px}
+.q .head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.marks{white-space:nowrap;font-weight:600;color:var(--accent)}
+.score{width:64px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit}
+.sec{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px}
+.timer{font:600 15px var(--mono)}
+.hidden{display:none}
+.note{background:var(--warn-soft);border-left:4px solid var(--warn);padding:8px 12px;border-radius:8px;font-size:14px;margin:8px 0}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div><h1>CS201 Exam Prep</h1><div class="sub">Every algorithm from AdvProg + MIPS2C as code drills · 2022 &amp; 2023 papers · predicted questions</div></div>
+  <nav class="tabs" id="tabs">
+    <button data-v="drills" class="on">Code drills</button>
+    <button data-v="papers">Past papers</button>
+    <button data-v="predict">Predicted questions</button>
+    <button data-v="about">How to use</button>
+  </nav>
+</div></header>
+<main>
+  <section id="v-drills"></section>
+  <section id="v-papers" class="hidden"></section>
+  <section id="v-predict" class="hidden"></section>
+  <section id="v-about" class="hidden"></section>
+</main>
+<script>
+// Code drills: Advanced Programming. Code written fresh in the course's style (same class/method names as the notes).
+const D = (book, group, title, task, code, extra) => Object.assign({ book, group, title, task, code }, extra || {});
+const R = String.raw;
+const DRILLS = [
+// ===== Ch 1-2 =====
+D("AdvProg", "1–2 · Basics & recursion", "Precondition check + Javadoc", "Write `squareRoot(double x)` with a Javadoc comment (@param, @return, @throws), PRE/POST comments, and a precondition check that throws an exception for public callers.", R`
+/** Approximates the square root using Newton-Raphson.
+  * @param x The value whose square root is required.
+  * @return An approximation to the square root of x.
+  * @throws IllegalArgumentException if x < 0.
+  */
+public static double squareRoot (double x)
+// PRE:  x >= 0
+// POST: returns an approximation to the square root of x
+  { if (x < 0)
+      throw new IllegalArgumentException("x < 0");
+    if (x == 0)
+      return 0;
+    double guess = x;
+    for (int k = 0; k < 30; k++)
+      guess = (guess + x / guess) / 2;
+    return guess;
+  } // squareRoot`, { notes: "Public methods should throw exceptions for precondition violations (Oracle guideline). `assert x >= 0;` is fine for private or internal checks, but assertions are off unless enabled at runtime." }),
+D("AdvProg", "1–2 · Basics & recursion", "Factorial: recursive", "Recursive factorial with PRE/POST and a stop case.", R`
+public int factorial (int n)
+// PRE:  n >= 0
+// POST: returns n! (nonsense if it overflows)
+  { if (n == 0)
+      return 1;                     // stop case
+    else
+      return n * factorial(n - 1);  // recursive call
+  } // factorial`),
+D("AdvProg", "1–2 · Basics & recursion", "Factorial: iterative", "Exercise 2.1: iterative factorial. This is the version you'd actually use.", R`
+public int factorial (int n)
+  { int result = 1;
+    for (int k = 2; k <= n; k++)
+      result *= k;
+    return result;
+  } // factorial`),
+D("AdvProg", "1–2 · Basics & recursion", "Read and write backwards (recursive)", "Read characters until '\\n' and print them in reverse using recursion. Explain why the local variable matters.", R`
+public void readAndWriteBackwards () throws IOException
+  { char ch = (char)System.in.read();
+    if (ch != '\n')
+      readAndWriteBackwards();   // write the rest backwards first
+    System.out.print(ch);        // then this character
+  } // readAndWriteBackwards`, { notes: "Each call has its **own** `ch`. If `ch` were an instance or class variable, every call would share it and the program would break." }),
+D("AdvProg", "1–2 · Basics & recursion", "Fibonacci: recursive and iterative", "Exercise 2.3: f1 = f2 = 1, fn = fn-1 + fn-2. Write both versions.", R`
+public static long fibRec (int n)
+  { if (n <= 2)
+      return 1;
+    return fibRec(n - 1) + fibRec(n - 2);
+  } // fibRec
+
+public static long fibIter (int n)
+  { long a = 1, b = 1;
+    for (int k = 3; k <= n; k++)
+      { long c = a + b;
+        a = b;
+        b = c;
+      }
+    return b;
+  } // fibIter`, { notes: "The recursive version is exponential (it recomputes the same values); the iterative one is O(n)." }),
+D("AdvProg", "1–2 · Basics & recursion", "Towers of Hanoi", "Exercise 2.5 / **June 2023 Q2**. Complete `hanoi(numDisks, fromTower, toTower, spareTower)` using `moveDisk(from, to)`.", R`
+private static void hanoi (int numDisks, Tower fromTower,
+                           Tower toTower, Tower spareTower)
+  { if (numDisks == 1)
+      moveDisk(fromTower, toTower);
+    else
+      { hanoi(numDisks - 1, fromTower, spareTower, toTower); // n-1 to spare
+        moveDisk(fromTower, toTower);                       // biggest disk
+        hanoi(numDisks - 1, spareTower, toTower, fromTower); // n-1 on top
+      }
+  } // hanoi
+
+private static void moveDisk (Tower fromTower, Tower toTower)
+  { toTower.add(fromTower.remove());
+  } // moveDisk`, { exam: "June 2023 Q2", notes: "2ⁿ − 1 moves, so O(2ⁿ). Both recursive calls swap the roles of the towers." }),
+D("AdvProg", "1–2 · Basics & recursion", "Gene sequences: replace every X", "Exercise 2.6: print every sequence you get by replacing each X with A, C, T or G.", R`
+public static void expand (String seq)
+  { int pos = seq.indexOf('X');
+    if (pos < 0)
+      System.out.println(seq);          // no X's left
+    else
+      for (char base : new char[] {'A', 'C', 'T', 'G'})
+        expand(seq.substring(0, pos) + base + seq.substring(pos + 1));
+  } // expand`),
+D("AdvProg", "1–2 · Basics & recursion", "Interfaces: PersonalAssistant", "Model PAs as Secretaries with managerial responsibilities, using an interface (Java only has single inheritance).", R`
+public interface ManagerialResponsibilities
+  { public void manage();
+  } // interface ManagerialResponsibilities
+
+public class Manager extends Employee implements ManagerialResponsibilities
+  { public void manage () { /* ... */ }
+  } // class Manager
+
+public class PersonalAssistant extends Secretary implements ManagerialResponsibilities
+  { public void manage () { /* ... */ }
+  } // class PersonalAssistant
+
+public void runOffice (ManagerialResponsibilities mgr)
+  { mgr.manage();                         // only interface methods visible
+    if (mgr instanceof PersonalAssistant pa)
+      { /* use pa's PA-specific methods */ }
+  } // runOffice`),
+
+// ===== Ch 4 =====
+D("AdvProg", "4 · Vectors & lists", "IntegerVector: fields + constructors", "Data members, a sized constructor with a precondition check, and a default constructor (size 100).", R`
+public class IntegerVector
+  { private int[] data;      // the array of data
+    private int numElements; // number of elements in use
+
+    public IntegerVector (int initSize)
+      { if (initSize <= 0)
+          throw new IllegalArgumentException("initSize <= 0");
+        numElements = 0;
+        data = new int[initSize];
+      } // constructor
+
+    public IntegerVector ()
+      { this(100);
+      } // constructor`),
+D("AdvProg", "4 · Vectors & lists", "IntegerVector: add (end and at position)", "Both `add(item)` and `add(item, position)`. Positions past the end just append.", R`
+public void add (int item)
+  { if (numElements + 1 > data.length)
+      throw new NoSpaceAvailableException("no space available");
+    data[numElements++] = item;
+  } // add
+
+public void add (int item, int position)
+  { if (numElements + 1 > data.length)
+      throw new NoSpaceAvailableException("no space available");
+    if (position < 0)
+      throw new IllegalArgumentException("position is negative");
+    if (position >= numElements)
+      data[numElements++] = item;          // add at end
+    else
+      { for (int k = numElements - 1; k >= position; k--)
+          data[k + 1] = data[k];          // move elements up
+        data[position] = item;
+        numElements++;
+      }
+  } // add`),
+D("AdvProg", "4 · Vectors & lists", "IntegerVector: get, set, position, remove, length", "The accessors and the remaining list operations.", R`
+public int get (int index)
+  { if (index < 0 || index >= numElements)
+      throw new IndexOutOfBoundsException("index is out of range");
+    return data[index];
+  } // get
+
+public void set (int index, int item)
+  { if (index < 0 || index >= numElements)
+      throw new IndexOutOfBoundsException("index is out of range");
+    data[index] = item;
+  } // set
+
+public int position (int item)
+  { for (int k = 0; k < numElements; k++)
+      if (data[k] == item)
+        return k;
+    return -1;                             // not found
+  } // position
+
+public void remove (int position)
+  { if (position < 0 || position >= numElements)
+      throw new IndexOutOfBoundsException("position out of range");
+    for (int k = position + 1; k < numElements; k++)
+      data[k - 1] = data[k];               // move elements down
+    numElements--;
+  } // remove
+
+public int length ()
+  { return numElements;
+  } // length`),
+D("AdvProg", "4 · Vectors & lists", "IntegerVector: toString", "Build \"[a, b, c]\" with a StringBuffer.", R`
+public String toString ()
+  { StringBuffer s = new StringBuffer("[");
+    for (int k = 0; k < numElements; k++)
+      { s.append(data[k]);
+        if (k < numElements - 1)
+          s.append(", ");
+      }
+    s.append("]");
+    return s.toString();
+  } // toString`, { notes: "StringBuffer is mutable; String isn't, so concatenating Strings in a loop creates many objects." }),
+D("AdvProg", "4 · Vectors & lists", "IntegerVector: grow when full (Ex 4.9)", "Instead of throwing when full, allocate a bigger array and copy across.", R`
+private void grow ()
+  { int[] bigger = new int[data.length * 2];
+    for (int k = 0; k < numElements; k++)
+      bigger[k] = data[k];
+    data = bigger;
+  } // grow
+
+public void add (int item)
+  { if (numElements == data.length)
+      grow();
+    data[numElements++] = item;
+  } // add`),
+D("AdvProg", "4 · Vectors & lists", "IntegerVector: reverse & deleteAll (Ex 4.2/4.4)", "Reverse the vector in place; delete all elements.", R`
+public void reverse ()
+  { for (int lo = 0, hi = numElements - 1; lo < hi; lo++, hi--)
+      { int tmp = data[lo];
+        data[lo] = data[hi];
+        data[hi] = tmp;
+      }
+  } // reverse
+
+public void deleteAll ()
+  { numElements = 0;
+  } // deleteAll`),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: class, ListNode, constructor", "The linked-list version: private inner ListNode with public fields, `first`, `numElements`.", R`
+public class IntegerList
+  { private class ListNode
+      { public int data;
+        public ListNode next;
+      } // inner class ListNode
+
+    private ListNode first;   // first node in the list
+    private int numElements;  // number of elements
+
+    public IntegerList ()
+      { first = null;
+        numElements = 0;
+      } // constructor`),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: add at front", "The simplest add: new node goes at the front.", R`
+public void add (int item)
+  { ListNode node = new ListNode();
+    node.data = item;
+    node.next = first;   // link to old first node
+    first = node;        // node is now first
+    numElements++;
+  } // add`, { notes: "The order matters: if you set `first = node` first, you lose the rest of the list." }),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: add at position", "Insert at a 0-based position; past the end means append. Handle the front-of-list special case.", R`
+public void add (int item, int position)
+  { if (position < 0)
+      throw new IllegalArgumentException("position is negative");
+    ListNode node = new ListNode();
+    node.data = item;
+    ListNode curr = first, prev = null;
+    for (int k = 0; k < position && curr != null; k++)
+      { prev = curr;
+        curr = curr.next;
+      }
+    node.next = curr;
+    if (prev != null)
+      prev.next = node;
+    else
+      first = node;        // adding at the front
+    numElements++;
+  } // add`),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: get & set", "Walk the list to an index.", R`
+public int get (int index)
+  { if (index < 0 || index >= numElements)
+      throw new IndexOutOfBoundsException("index is out of range");
+    ListNode curr = first;
+    for (int k = 0; k < index; k++)
+      curr = curr.next;
+    return curr.data;
+  } // get
+
+public void set (int index, int item)
+  { if (index < 0 || index >= numElements)
+      throw new IndexOutOfBoundsException("index is out of range");
+    ListNode curr = first;
+    for (int k = 0; k < index; k++)
+      curr = curr.next;
+    curr.data = item;
+  } // set`, { notes: "O(n) for a linked list, O(1) for an array. A favourite fill-in-the-blank (June 2022 Q1d)." }),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: position (empty-body for loop)", "Search using the classic empty-body loop with short-circuit evaluation.", R`
+public int position (int item)
+  { ListNode curr = first;
+    int k;
+    for (k = 0; curr != null && curr.data != item; k++, curr = curr.next)
+      ; // empty body: all the work is in the loop header
+    if (curr == null)
+      return -1;           // not found
+    else
+      return k;
+  } // position`),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: position(item, start) + find all 42s", "**June 2022 Q4.** Overloaded position that starts searching at `pos`, then use it to print every position of 42.", R`
+public int position (int item, int pos)
+  { ListNode curr = first;
+    int k = 0;
+    while (k < pos && curr != null)    // skip to the start position
+      { curr = curr.next;
+        k++;
+      }
+    while (curr != null && curr.data != item)
+      { curr = curr.next;
+        k++;
+      }
+    if (curr == null)
+      return -1;
+    else
+      return k;
+  } // position
+
+// client: find all the 42s
+int p = myList.position(42, 0);
+while (p != -1)
+  { System.out.println(p);
+    p = myList.position(42, p + 1);
+  }`, { exam: "June 2022 Q4" }),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: remove", "Remove the node at a position, with the first-node special case.", R`
+public void remove (int position)
+  { if (position < 0 || position >= numElements)
+      throw new IndexOutOfBoundsException("position out of range");
+    ListNode curr = first, prev = null;
+    for (int k = 0; k < position; k++)
+      { prev = curr;
+        curr = curr.next;
+      }
+    if (prev != null)
+      prev.next = curr.next;
+    else
+      first = curr.next;   // removing the first node
+    numElements--;
+  } // remove`),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: toString", "Display a linked list using the standard traversal idiom.", R`
+public String toString ()
+  { StringBuffer s = new StringBuffer("[");
+    for (ListNode curr = first; curr != null; curr = curr.next)
+      { s.append(curr.data);
+        if (curr.next != null)
+          s.append(", ");
+      }
+    s.append("]");
+    return s.toString();
+  } // toString`),
+D("AdvProg", "4 · Vectors & lists", "IntegerList: reverse (Ex 4.16)", "Reverse the links in place.", R`
+public void reverse ()
+  { ListNode prev = null, curr = first;
+    while (curr != null)
+      { ListNode nxt = curr.next;
+        curr.next = prev;      // flip the link
+        prev = curr;
+        curr = nxt;
+      }
+    first = prev;
+  } // reverse`),
+D("AdvProg", "4 · Vectors & lists", "ObjectList vs GenericList<T>", "Show the key differences: the polymorphic ObjectList (Object + casts + .equals) vs the generic GenericList<T>.", R`
+// Polymorphism version
+public class ObjectList
+  { private class ListNode
+      { public Object data;
+        public ListNode next;
+      }
+    // position must use .equals, not ==
+    // client:  Student s = (Student)list.get(0);   // cast needed
+  }
+
+// Generic version
+public class GenericList<T>
+  { private class ListNode
+      { public T data;
+        public ListNode next;
+      }
+    private ListNode first;
+    private int numElements;
+
+    public T get (int index)
+      { ListNode curr = first;
+        for (int k = 0; k < index; k++)
+          curr = curr.next;
+        return curr.data;           // no cast needed by client
+      } // get
+  }
+
+// client
+GenericList<Student> classList = new GenericList<>();   // diamond (Java 7+)
+if (obj instanceof Student s)                            // pattern matching
+  System.out.println(s);`),
+
+// ===== Ch 5 =====
+D("AdvProg", "5 · Stacks, queues, deques", "Stack<T> interface", "The interface both stack classes implement.", R`
+public interface Stack<T>
+  { public void push (T item);
+    public T pop ();
+    public T top ();
+    public boolean isEmpty ();
+  } // interface Stack`),
+D("AdvProg", "5 · Stacks, queues, deques", "ArrayStack<T>", "Full array implementation: generic array creation, push/pop/top/isEmpty with precondition checks.", R`
+public class ArrayStack<T> implements Stack<T>
+  { private T[] data;
+    private int topIndex;   // index of the top item, -1 if empty
+
+    @SuppressWarnings("unchecked")
+    public ArrayStack (int initSize)
+      { data = (T[])new Object[initSize];
+        topIndex = -1;
+      } // constructor
+
+    public ArrayStack ()
+      { this(100);
+      } // constructor
+
+    public void push (T item)
+      { if (topIndex + 1 >= data.length)
+          throw new NoSpaceAvailableException("stack is full");
+        data[++topIndex] = item;      // prefix ++: move up, then store
+      } // push
+
+    public T pop ()
+      { if (topIndex < 0)
+          throw new EmptyException("stack is empty");
+        return data[topIndex--];      // postfix --: read, then move down
+      } // pop
+
+    public T top ()
+      { if (topIndex < 0)
+          throw new EmptyException("stack is empty");
+        return data[topIndex];
+      } // top
+
+    public boolean isEmpty ()
+      { return topIndex < 0;
+      } // isEmpty
+  } // class ArrayStack`),
+D("AdvProg", "5 · Stacks, queues, deques", "ListStack<T>", "Linked-list stack with an inner StackNode and a `topNode` pointer.", R`
+public class ListStack<T> implements Stack<T>
+  { private class StackNode
+      { public T data;
+        public StackNode next;
+      } // inner class StackNode
+
+    private StackNode topNode;
+
+    public ListStack ()
+      { topNode = null;
+      } // constructor
+
+    public void push (T item)
+      { StackNode node = new StackNode();
+        node.data = item;
+        node.next = topNode;   // these two lines must be in this order
+        topNode = node;
+      } // push
+
+    public T pop ()
+      { if (topNode == null)
+          throw new EmptyException("stack is empty");
+        T tmpData = topNode.data;
+        topNode = topNode.next;
+        return tmpData;
+      } // pop
+
+    public T top ()
+      { if (topNode == null)
+          throw new EmptyException("stack is empty");
+        return topNode.data;
+      } // top
+
+    public boolean isEmpty ()
+      { return topNode == null;
+      } // isEmpty
+  } // class ListStack`),
+D("AdvProg", "5 · Stacks, queues, deques", "Reverse a string with a stack", "Client program: push each character until newline, then pop and print.", R`
+public static void main (String[] args) throws IOException
+  { Stack<Character> st = new ListStack<>();   // or new ArrayStack<>()
+    char ch = (char)System.in.read();
+    while (ch != '\n')
+      { st.push(ch);
+        ch = (char)System.in.read();
+      }
+    while (!st.isEmpty())
+      System.out.print(st.pop());
+    System.out.println();
+  } // main`),
+D("AdvProg", "5 · Stacks, queues, deques", "Bracket matching (Ex 5.5)", "Return true if (), [] and {} are correctly nested.", R`
+public static boolean balanced (String text)
+  { Stack<Character> st = new ListStack<>();
+    for (char ch : text.toCharArray())
+      { if (ch == '(' || ch == '[' || ch == '{')
+          st.push(ch);
+        else if (ch == ')' || ch == ']' || ch == '}')
+          { if (st.isEmpty())
+              return false;              // right bracket, nothing open
+            char open = st.pop();
+            if ((ch == ')' && open != '(') ||
+                (ch == ']' && open != '[') ||
+                (ch == '}' && open != '{'))
+              return false;              // wrong kind
+          }
+      }
+    return st.isEmpty();                 // leftovers = unmatched
+  } // balanced`),
+D("AdvProg", "5 · Stacks, queues, deques", "RPN calculator (Ex 5.6)", "Evaluate a space-separated postfix expression like \"2 5 + 10 3 - *\".", R`
+public static double evalRPN (String expr)
+  { Stack<Double> st = new ArrayStack<>();
+    for (String word : expr.trim().split("\\s+"))
+      { if (word.equals("+") || word.equals("-") ||
+            word.equals("*") || word.equals("/"))
+          { double right = st.pop();     // note: right operand popped first
+            double left = st.pop();
+            switch (word)
+              { case "+": st.push(left + right); break;
+                case "-": st.push(left - right); break;
+                case "*": st.push(left * right); break;
+                case "/": st.push(left / right); break;
+              }
+          }
+        else
+          st.push(Double.parseDouble(word));
+      }
+    return st.pop();
+  } // evalRPN`),
+D("AdvProg", "5 · Stacks, queues, deques", "Queue<T> interface", "The interface both queue classes implement.", R`
+public interface Queue<T>
+  { public void add (T item);
+    public T remove ();
+    public T head ();
+    public boolean isEmpty ();
+  } // interface Queue`),
+D("AdvProg", "5 · Stacks, queues, deques", "ArrayQueue<T> (circular)", "**June 2022 Q3.** add, remove, head, isEmpty for a circular array queue with hd = tl = -1 when empty.", R`
+public void add (T item)
+  { tl++;
+    if (tl >= data.length)          // wrap around
+      tl = 0;
+    if (tl == hd)                   // tail caught up with head
+      throw new NoSpaceAvailableException("queue is full");
+    data[tl] = item;
+    if (hd == -1)                   // first item in the queue
+      hd = tl;
+  } // add
+
+public T remove ()
+  { if (hd == -1)
+      throw new EmptyException("queue is empty");
+    T tmpData = data[hd];
+    if (hd == tl)                   // removed the last item
+      hd = tl = -1;
+    else
+      { hd++;
+        if (hd >= data.length)      // wrap around
+          hd = 0;
+      }
+    return tmpData;
+  } // remove
+
+public T head ()
+  { if (hd == -1)
+      throw new EmptyException("queue is empty");
+    return data[hd];
+  } // head
+
+public boolean isEmpty ()
+  { return hd == -1;
+  } // isEmpty`, { exam: "June 2022 Q3", given: R`public class ArrayQueue<T> implements Queue<T>
+  { private T[] data; private int hd, tl;
+    public ArrayQueue (int initSize)
+      { data = (T[])new Object[initSize]; hd = tl = -1; }`, notes: "`tl = (tl + 1) % data.length;` is the equivalent one-line wrap. Note the full check happens **after** incrementing tl. (If the queue is full the add fails, but tl has already moved. Mention it, or undo it, in an exam.)" }),
+D("AdvProg", "5 · Stacks, queues, deques", "ListQueue<T>", "**June 2023 Q3.** add, remove, head, isEmpty with head and tail pointers.", R`
+public void add (T item)
+  { QueueNode node = new QueueNode();
+    node.data = item;
+    node.next = null;
+    if (tl != null)
+      tl.next = node;      // link after the current tail
+    tl = node;
+    if (hd == null)        // first item in the queue
+      hd = node;
+  } // add
+
+public T remove ()
+  { if (hd == null)
+      throw new EmptyException("queue is empty");
+    T tmpData = hd.data;
+    hd = hd.next;
+    if (hd == null)        // was the last element
+      tl = null;
+    return tmpData;
+  } // remove
+
+public T head ()
+  { if (hd == null)
+      throw new EmptyException("queue is empty");
+    return hd.data;
+  } // head
+
+public boolean isEmpty ()
+  { return hd == null;
+  } // isEmpty`, { exam: "June 2023 Q3", given: R`public class ListQueue<T> implements Queue<T>
+  { private class QueueNode { public T data; public QueueNode next; }
+    private QueueNode hd, tl;
+    public ListQueue () { hd = tl = null; }` }),
+D("AdvProg", "5 · Stacks, queues, deques", "Priority queue add (Ex 5.12)", "Modify ListQueue so add(item, priority) inserts in ascending priority order (head = highest priority = smallest number).", R`
+public void add (T item, int priority)
+  { PQNode node = new PQNode();
+    node.data = item;
+    node.priority = priority;
+    PQNode curr = hd, prev = null;
+    while (curr != null && curr.priority <= priority)
+      { prev = curr;
+        curr = curr.next;
+      }
+    node.next = curr;
+    if (prev == null)
+      hd = node;
+    else
+      prev.next = node;
+    if (curr == null)
+      tl = node;
+  } // add`),
+D("AdvProg", "5 · Stacks, queues, deques", "Maze: breadth-first search (QSearch)", "Solve the maze with a queue of Position records and a beenThere matrix. Entrance is in column 0, exit in the last column.", R`
+record Position (int r, int c) { }
+
+private Queue<Position> posQueue = new ListQueue<>();
+private boolean[][] maze, beenThere;
+
+public void solveMaze ()
+  { for (int r = 0; r < MAX_COORD; r++)          // find the entrance
+      if (maze[r][0])
+        { addPosition(r, 0);
+          break;
+        }
+    boolean found = false;
+    while (!posQueue.isEmpty())
+      { Position p = posQueue.remove();
+        int r = p.r(), c = p.c();
+        beenThere[r][c] = true;
+        if (c == MAX_COORD - 1)
+          { found = true;                          // reached the exit
+            break;
+          }
+        if (maze[r-1][c] && !beenThere[r-1][c]) addPosition(r-1, c); // up
+        if (maze[r][c+1] && !beenThere[r][c+1]) addPosition(r, c+1); // right
+        if (maze[r+1][c] && !beenThere[r+1][c]) addPosition(r+1, c); // down
+        if (c > 0 && maze[r][c-1] && !beenThere[r][c-1])
+          addPosition(r, c-1);                    // left (not out the entrance)
+      }
+    System.out.println(found ? "Found a path" : "No path");
+  } // solveMaze
+
+private void addPosition (int row, int col)
+  { posQueue.add(new Position(row, col));
+  } // addPosition`, { notes: "Queue → breadth-first → shortest path guaranteed. Swap in a Stack → depth-first (may be quicker, not necessarily shortest)." }),
+D("AdvProg", "5 · Stacks, queues, deques", "Deque: fields + constructor with header node", "Doubly-, circularly-linked deque with a header node that points to itself when empty.", R`
+public class Deque<T>
+  { private class DequeNode
+      { public T data;
+        public DequeNode lt,   // left neighbour
+                         rt;   // right neighbour
+      } // inner class DequeNode
+
+    private DequeNode header;
+
+    public Deque ()
+      { header = new DequeNode();
+        header.lt = header;    // empty: header linked to itself
+        header.rt = header;
+      } // constructor`),
+D("AdvProg", "5 · Stacks, queues, deques", "Deque: addLeft & addRight", "Insert next to the header. No special cases, because the list is never empty.", R`
+public void addLeft (T item)
+  { DequeNode newNode = new DequeNode();
+    newNode.data = item;
+    newNode.lt = header;          // left of new node is the header
+    newNode.rt = header.rt;       // right is the old left-most node
+    header.rt.lt = newNode;       // old left-most points back to new
+    header.rt = newNode;          // header points to new left-most
+  } // addLeft
+
+public void addRight (T item)
+  { DequeNode newNode = new DequeNode();
+    newNode.data = item;
+    newNode.rt = header;
+    newNode.lt = header.lt;       // old right-most node
+    header.lt.rt = newNode;
+    header.lt = newNode;
+  } // addRight`, { notes: "The header's pointers look 'backwards': header.rt is the LEFT end and header.lt is the RIGHT end." }),
+D("AdvProg", "5 · Stacks, queues, deques", "Deque: removeLeft, removeRight, heads, isEmpty", "Removal and inspection using the header node.", R`
+public T removeLeft ()
+  { if (header.rt == header)
+      throw new EmptyException("deque is empty");
+    DequeNode node = header.rt;   // left-most node
+    header.rt = node.rt;
+    node.rt.lt = header;
+    return node.data;
+  } // removeLeft
+
+public T removeRight ()
+  { if (header.lt == header)
+      throw new EmptyException("deque is empty");
+    DequeNode node = header.lt;   // right-most node
+    header.lt = node.lt;
+    node.lt.rt = header;
+    return node.data;
+  } // removeRight
+
+public T leftHead ()
+  { if (header.rt == header)
+      throw new EmptyException("deque is empty");
+    return header.rt.data;
+  } // leftHead
+
+public T rightHead ()
+  { if (header.lt == header)
+      throw new EmptyException("deque is empty");
+    return header.lt.data;
+  } // rightHead
+
+public boolean isEmpty ()
+  { return header.rt == header;
+  } // isEmpty`, { notes: "**June 2023 Q4** asked you to *draw* a doubly-, circularly-linked list with a header node and three items: header ⇄ a ⇄ b ⇄ c ⇄ back to the header, with the header's rt pointing to a and its lt pointing to c." }),
+D("AdvProg", "5 · Stacks, queues, deques", "Circular list traversal (no nulls)", "Print all data in a circular list without looping forever.", R`
+public void printAll ()
+  { if (left != null)
+      { DequeNode curr = left;
+        do
+          { System.out.println(curr.data);
+            curr = curr.rt;
+          } while (curr != left);   // stop when back at the start
+      }
+  } // printAll`),
+
+// ===== Ch 6 =====
+D("AdvProg", "6 · Trees & graphs", "Tree<T> class", "General binary tree: data/lt/rt, two constructors, left/right/getData, addLeft/addRight (refusing to overwrite).", R`
+public class Tree<T>
+  { private T data;
+    private Tree<T> lt, rt;
+
+    public Tree (T value, Tree<T> left, Tree<T> right)
+      { data = value;
+        lt = left;
+        rt = right;
+      } // constructor
+
+    public Tree (T value)
+      { this(value, null, null);
+      } // constructor
+
+    public Tree<T> left ()  { return lt; }
+    public Tree<T> right () { return rt; }
+    public T getData ()     { return data; }
+
+    public void addLeft (Tree<T> left)
+      { if (lt != null)
+          throw new UnsupportedOperationException("left subtree exists");
+        lt = left;
+      } // addLeft
+
+    public void addRight (Tree<T> right)
+      { if (rt != null)
+          throw new UnsupportedOperationException("right subtree exists");
+        rt = right;
+      } // addRight
+  } // class Tree`),
+D("AdvProg", "6 · Trees & graphs", "Pre-order print (NLR)", "**June 2022 Q2.** Client method: recursive pre-order traversal of a Tree<Character>.", R`
+public void preOrderPrint (Tree<Character> root)
+  { if (root != null)
+      { System.out.println(root.getData());  // N
+        preOrderPrint(root.left());          // L
+        preOrderPrint(root.right());         // R
+      }
+  } // preOrderPrint`, { exam: "June 2022 Q2" }),
+D("AdvProg", "6 · Trees & graphs", "In-order & post-order print (LNR / LRN)", "The other two depth-first traversals.", R`
+public void LNRPrint (Tree<Character> root)
+  { if (root != null)
+      { LNRPrint(root.left());
+        System.out.println(root.getData());
+        LNRPrint(root.right());
+      }
+  } // LNRPrint
+
+public void LRNPrint (Tree<Character> root)
+  { if (root != null)
+      { LRNPrint(root.left());
+        LRNPrint(root.right());
+        System.out.println(root.getData());
+      }
+  } // LRNPrint`),
+D("AdvProg", "6 · Trees & graphs", "Breadth-order traversal with a queue (Ex 6.8)", "Level-by-level, top to bottom.", R`
+public void breadthPrint (Tree<Character> root)
+  { if (root == null)
+      return;
+    Queue<Tree<Character>> q = new ListQueue<>();
+    q.add(root);
+    while (!q.isEmpty())
+      { Tree<Character> t = q.remove();
+        System.out.println(t.getData());
+        if (t.left() != null)
+          q.add(t.left());
+        if (t.right() != null)
+          q.add(t.right());
+      }
+  } // breadthPrint`),
+D("AdvProg", "6 · Trees & graphs", "Guess-the-animal game loop", "Walk the knowledge-base tree: yes → left, no → right; leaves are animals.", R`
+public void play ()
+  { initTree();
+    Tree<String> pos = root;
+    while (pos != null)
+      { if (pos.left() != null)            // question node
+          { System.out.println(pos.getData());
+            if (answer())
+              pos = pos.left();            // yes
+            else
+              pos = pos.right();           // no
+          }
+        else                               // must be an animal
+          { System.out.println("It's a " + pos.getData() + ".");
+            break;
+          }
+      }
+  } // play`),
+D("AdvProg", "6 · Trees & graphs", "Count nodes, leaves & height", "Typical extra recursion questions on the Tree class.", R`
+public static <T> int countNodes (Tree<T> t)
+  { if (t == null) return 0;
+    return 1 + countNodes(t.left()) + countNodes(t.right());
+  } // countNodes
+
+public static <T> int countLeaves (Tree<T> t)
+  { if (t == null) return 0;
+    if (t.left() == null && t.right() == null) return 1;
+    return countLeaves(t.left()) + countLeaves(t.right());
+  } // countLeaves
+
+public static <T> int height (Tree<T> t)
+  { if (t == null) return 0;
+    return 1 + Math.max(height(t.left()), height(t.right()));
+  } // height`),
+D("AdvProg", "6 · Trees & graphs", "BST: node class + public insert", "BinarySearchTree<T extends Comparable> with a BSTreeNode (data, lt, rt, parent) and the public insert.", R`
+public class BinarySearchTree<T extends Comparable>
+  { private class BSTreeNode
+      { public T data;
+        public BSTreeNode lt, rt, parent;
+
+        public BSTreeNode (T value, BSTreeNode parent)
+          { data = value;
+            this.parent = parent;
+          } // constructor
+      } // inner class BSTreeNode
+
+    private BSTreeNode root;
+
+    public void insert (T newValue)
+      { if (root == null)
+          root = new BSTreeNode(newValue, null);
+        else
+          insert(newValue, root);
+      } // insert`),
+D("AdvProg", "6 · Trees & graphs", "BST: private insert (recursive)", "Smaller goes left; greater-or-equal goes right; always add as a leaf.", R`
+private void insert (T value, BSTreeNode root)
+  { if (value.compareTo(root.data) < 0)       // add to left subtree
+      { if (root.lt != null)
+          insert(value, root.lt);
+        else
+          root.lt = new BSTreeNode(value, root);
+      }
+    else                                       // add to right subtree
+      { if (root.rt != null)
+          insert(value, root.rt);
+        else
+          root.rt = new BSTreeNode(value, root);
+      }
+  } // insert`),
+D("AdvProg", "6 · Trees & graphs", "BST: contains", "Recursive search using equals and compareTo.", R`
+private boolean contains (T value, BSTreeNode root)
+  { if (root == null)
+      return false;
+    if (value.equals(root.data))
+      return true;
+    if (value.compareTo(root.data) < 0)
+      return contains(value, root.lt);     // look in left subtree
+    else
+      return contains(value, root.rt);     // look in right subtree
+  } // contains`),
+D("AdvProg", "6 · Trees & graphs", "BST: replaceInParent & deleteMin", "Helpers for deletion: relink a parent; remove and return the smallest value in a subtree.", R`
+private void replaceInParent (BSTreeNode parent, BSTreeNode child,
+                              BSTreeNode newChild)
+  { if (parent == null)
+      root = newChild;                 // child was the root
+    else if (parent.lt == child)
+      parent.lt = newChild;
+    else
+      parent.rt = newChild;
+    if (newChild != null)
+      newChild.parent = parent;
+  } // replaceInParent
+
+private T deleteMin (BSTreeNode root)
+  { if (root.lt != null)
+      return deleteMin(root.lt);       // smallest is further left
+    else
+      { T value = root.data;           // this node is the minimum
+        replaceInParent(root.parent, root, root.rt);
+        return value;
+      }
+  } // deleteMin`),
+D("AdvProg", "6 · Trees & graphs", "BST: remove (4 cases)", "No subtrees / only left / only right / both (replace with min of right subtree).", R`
+private void remove (T value, BSTreeNode root)
+  { if (root == null)
+      throw new NoSuchElementException("value not in tree");
+    if (value.compareTo(root.data) < 0)
+      remove(value, root.lt);                   // delete from left subtree
+    else if (value.compareTo(root.data) > 0)
+      remove(value, root.rt);                   // delete from right subtree
+    else                                        // this is the node
+      { if (root.lt != null && root.rt != null) // CASE 4: both subtrees
+          root.data = deleteMin(root.rt);
+        else if (root.lt == null && root.rt == null)
+          replaceInParent(root.parent, root, null);     // CASE 1: leaf
+        else if (root.lt == null)
+          replaceInParent(root.parent, root, root.rt);  // CASE 3: right only
+        else
+          replaceInParent(root.parent, root, root.lt);  // CASE 2: left only
+      }
+  } // remove`, { notes: "Exam 2023 Q5b deleted the root N from a BST: replace N with the smallest value in its right subtree." }),
+D("AdvProg", "6 · Trees & graphs", "BST: iterator (TreeIterator + build)", "The cs2 Iterator (get/next/atEnd) built by an in-order traversal into a Vector.", R`
+public interface Iterator<T>
+  { public T get ();
+    public void next ();
+    public boolean atEnd ();
+  } // interface Iterator
+
+private class TreeIterator implements Iterator<T>
+  { private Vector<T> list = new Vector<>();
+    private int index = 0;
+    public T get ()          { return list.get(index); }
+    public void next ()      { index++; }
+    public boolean atEnd ()  { return index >= list.size(); }
+    void add (T value)       { list.add(value); }
+  } // inner class TreeIterator
+
+private void buildLNRIterator (BSTreeNode root, TreeIterator t)
+  { if (root != null)
+      { buildLNRIterator(root.lt, t);
+        t.add(root.data);
+        buildLNRIterator(root.rt, t);
+      }
+  } // buildLNRIterator
+
+public Iterator<T> getLNRIterator ()
+  { TreeIterator t = new TreeIterator();
+    buildLNRIterator(root, t);
+    return t;
+  } // getLNRIterator
+
+// client
+Iterator<Character> it = tree.getLNRIterator();
+while (!it.atEnd())
+  { System.out.println(it.get());
+    it.next();
+  }`),
+D("AdvProg", "6 · Trees & graphs", "Graph: adjacency matrix & edge lists", "Represent a directed graph both ways and test for an edge.", R`
+// adjacency matrix: adj[v][w] true if there's an arc v -> w
+boolean[][] adj = new boolean[N][N];
+for (int v = 0; v < N; v++)
+  adj[v][v] = true;               // convention: vertex joined to itself
+adj[A][B] = true;                 // add arc A -> B (undirected: also adj[B][A])
+
+// edge lists: each vertex has a list of its neighbours
+public class CityNode
+  { public String name;
+    public GenericList<CityNode> edges = new GenericList<>();
+  } // class CityNode
+
+boolean connected (CityNode v, CityNode w)
+  { return v.edges.position(w) != -1;
+  } // connected`, { notes: "**June 2022 Q5** gave a 6-vertex directed graph and asked for both. Matrix rows are FROM and columns are TO. Edge lists only list outgoing arcs." }),
+
+// ===== Ch 7 =====
+D("AdvProg", "7 · Dictionaries & hashing", "Dictionary<K,V> and Pair<K,V> interfaces", "The interfaces used by all three dictionary ADTs.", R`
+public interface Pair<K, V>
+  { public K getKey ();
+    public V getValue ();
+    public void setValue (V value);
+  } // interface Pair
+
+public interface Dictionary<K, V>
+  { public void insert (K aKey, V aValue);
+    public void insert (K aKey);
+    public void insert (Pair<K, V> p);
+    public void remove (K aKey);
+    public V get (K aKey);
+    public boolean contains (K aKey);
+    public boolean isEmpty ();
+    public void makeEmpty ();
+    public Iterator<Pair<K, V>> getIterator ();
+  } // interface Dictionary`),
+D("AdvProg", "7 · Dictionaries & hashing", "ListDictionary: findNode", "Find the node for a key in a sorted linked list, inserting a new (value-less) node in order if it isn't there.", R`
+private ListNode findNode (K aKey)
+  { ListNode curr = first, prev = null;
+    while (curr != null && aKey.compareTo(curr.getKey()) > 0)
+      { prev = curr;
+        curr = curr.next;
+      }
+    if (curr == null || aKey.compareTo(curr.getKey()) != 0)
+      { ListNode node = new ListNode(aKey);    // not there: insert it
+        node.next = curr;
+        if (prev == null)
+          first = node;
+        else
+          prev.next = node;
+        curr = node;
+      }
+    return curr;
+  } // findNode
+
+public void insert (K aKey, V aValue)
+  { findNode(aKey).setValue(aValue);          // replaces any old value
+  } // insert
+
+public V get (K aKey)
+  { return findNode(aKey).getValue();         // creates entry if missing
+  } // get`),
+D("AdvProg", "7 · Dictionaries & hashing", "ListDictionary: remove & contains", "Use the sorted order to stop early.", R`
+public void remove (K aKey)
+  { ListNode curr = first, prev = null;
+    while (curr != null && aKey.compareTo(curr.getKey()) > 0)
+      { prev = curr;
+        curr = curr.next;
+      }
+    if (curr != null && aKey.compareTo(curr.getKey()) == 0)
+      { if (prev == null)
+          first = curr.next;
+        else
+          prev.next = curr.next;
+      }
+    else
+      throw new NoSuchElementException("key not found");
+  } // remove
+
+public boolean contains (K aKey)
+  { ListNode curr = first;
+    while (curr != null && aKey.compareTo(curr.getKey()) > 0)
+      curr = curr.next;
+    return curr != null && aKey.compareTo(curr.getKey()) == 0;
+  } // contains`),
+D("AdvProg", "7 · Dictionaries & hashing", "Concordance (client)", "Map each word to an IntegerList of the line numbers where it appears, then print them in order.", R`
+Dictionary<String, IntegerList> dict = new ListDictionary<>();
+BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+String line;
+int lineNum = 0;
+while ((line = in.readLine()) != null)
+  { lineNum++;
+    StringTokenizer st = new StringTokenizer(line);
+    while (st.hasMoreTokens())
+      { String word = st.nextToken();
+        IntegerList lst = dict.get(word);      // creates entry if new
+        if (lst == null)                      // first time we see word
+          { lst = new IntegerList();
+            lst.add(lineNum);
+            dict.insert(word, lst);
+          }
+        else
+          lst.add(lineNum);
+      }
+  }
+Iterator<Pair<String, IntegerList>> it = dict.getIterator();
+while (!it.atEnd())
+  { Pair<String, IntegerList> p = it.get();
+    System.out.println(p.getKey() + ": " + p.getValue());
+    it.next();
+  }`),
+D("AdvProg", "7 · Dictionaries & hashing", "String hash function", "Simple string hash: h = h·26 + char, made non-negative, then mod SIZE.", R`
+public int hash (String key)
+  { int h = 0;
+    for (int k = 0; k < key.length(); k++)
+      h = h * 26 + (int)key.charAt(k);
+    return (h & 0x7FFFFFFF) % SIZE;      // clear sign bit, then scale
+  } // hash
+
+// generic version used by the hash tables
+private int hash (K aKey)
+  { return (aKey.hashCode() & 0x7FFFFFFF) % table.length;
+  } // hash`),
+D("AdvProg", "7 · Dictionaries & hashing", "InternalHashTable: insert (linear probing)", "Probe until null or the same key; keep at least one empty slot; undelete if needed.", R`
+public void insert (K aKey, V aValue)
+  { int index = hash(aKey);
+    while (table[index] != null && !table[index].getKey().equals(aKey))
+      { index++;
+        if (index >= table.length)     // wrap around
+          index = 0;
+      }
+    if (table[index] == null)          // insert a new entry
+      { if (numEntries >= table.length - 1)
+          throw new NoSpaceAvailableException("table full");
+        table[index] = new TableEntry<>(aKey, aValue);
+        numEntries++;
+      }
+    else                               // update existing or deleted entry
+      { table[index].setValue(aValue);
+        if (!table[index].occupied)    // undelete it
+          table[index].occupied = true;
+      }
+  } // insert`, { notes: "Entry states: **empty** (null), **occupied** (not null, occupied = true), **deleted** (not null, occupied = false). Searches only stop at a genuinely empty slot." }),
+D("AdvProg", "7 · Dictionaries & hashing", "InternalHashTable: remove, contains, get", "Probe the same way; remove marks the entry as deleted.", R`
+public void remove (K aKey)
+  { int index = hash(aKey);
+    while (table[index] != null && !table[index].getKey().equals(aKey))
+      { index++;
+        if (index >= table.length) index = 0;
+      }
+    if (table[index] != null && table[index].occupied)
+      { table[index].occupied = false;   // mark deleted, don't null it
+        table[index].setValue(null);
+      }
+    else
+      throw new NoSuchElementException("key not found");
+  } // remove
+
+public boolean contains (K aKey)
+  { int index = hash(aKey);
+    while (table[index] != null && !table[index].getKey().equals(aKey))
+      { index++;
+        if (index >= table.length) index = 0;
+      }
+    return table[index] != null && table[index].occupied;
+  } // contains
+
+public V get (K aKey)
+  { int index = hash(aKey);
+    while (table[index] != null && !table[index].getKey().equals(aKey))
+      { index++;
+        if (index >= table.length) index = 0;
+      }
+    if (table[index] == null || !table[index].occupied)
+      { insert(aKey);                    // create entry if missing
+        return null;
+      }
+    return table[index].getValue();
+  } // get`),
+D("AdvProg", "7 · Dictionaries & hashing", "ExternalHashTable: insert, get, contains", "An array of linked-list buckets; new nodes go at the front of their bucket.", R`
+public void insert (K aKey, V aValue)
+  { int index = hash(aKey);
+    EntryNode<K, V> c;
+    for (c = bucket[index]; c != null && !c.getKey().equals(aKey); c = c.next)
+      ; // look for aKey in the bucket
+    if (c == null)                       // new: insert at front of bucket
+      { EntryNode<K, V> node = new EntryNode<>(aKey, aValue);
+        node.next = bucket[index];
+        bucket[index] = node;
+      }
+    else
+      c.setValue(aValue);                // update existing entry
+  } // insert
+
+public boolean contains (K aKey)
+  { EntryNode<K, V> c = bucket[hash(aKey)];
+    while (c != null && !c.getKey().equals(aKey))
+      c = c.next;
+    return c != null;
+  } // contains`),
+D("AdvProg", "7 · Dictionaries & hashing", "ExternalHashTable: remove & isEmpty", "Unlink from the bucket's list; isEmpty has to scan every bucket.", R`
+public void remove (K aKey)
+  { int index = hash(aKey);
+    EntryNode<K, V> c = bucket[index], prev = null;
+    while (c != null && !c.getKey().equals(aKey))
+      { prev = c;
+        c = c.next;
+      }
+    if (c != null)                       // unlink the node
+      { if (prev == null)
+          bucket[index] = c.next;
+        else
+          prev.next = c.next;
+      }
+  } // remove
+
+public boolean isEmpty ()
+  { for (int k = 0; k < bucket.length; k++)
+      if (bucket[k] != null)
+        return false;
+    return true;
+  } // isEmpty`),
+
+// ===== Ch 8-9 =====
+D("AdvProg", "8–9 · Big-O & searching", "Sequential search", "Unordered array search; then the sorted-list version that stops early.", R`
+public static <T extends Comparable<T>> int seqSearch (T[] list, T item)
+  { for (int k = 0; k < list.length; k++)
+      if (list[k].compareTo(item) == 0)
+        return k;
+    return -1;                                  // O(n)
+  } // seqSearch
+
+public static <T extends Comparable<T>> int sortedSeqSearch (T[] list, T item)
+  { int k = 0;
+    while (k < list.length && list[k].compareTo(item) < 0)
+      k++;                                      // stop once we pass it
+    if (k < list.length && list[k].compareTo(item) == 0)
+      return k;
+    return -1;
+  } // sortedSeqSearch`),
+D("AdvProg", "8–9 · Big-O & searching", "Binary search (int[])", "**June 2023 Q7b.** Return the index of item, or -1.", R`
+public static int binarySearch (int[] list, int item)
+  { int left = 0,
+        right = list.length - 1,
+        look;
+    while (left <= right)
+      { look = left + (right - left) / 2;   // safe midpoint
+        if (list[look] == item)
+          return look;
+        else if (list[look] > item)
+          right = look - 1;                 // must be to the left
+        else
+          left = look + 1;                  // must be to the right
+      }
+    return -1;                              // indices crossed: not found
+  } // binarySearch`, { exam: "June 2023 Q7", notes: "O(log n). `(left + right) / 2` can overflow for huge arrays (Bloch's bug), so `left + (right - left) / 2` is safer. The notes' version uses a do-while that stops when the item is found or left > right." }),
+D("AdvProg", "8–9 · Big-O & searching", "Binary search (generic, notes style)", "Generic do-while version bounded by Comparable.", R`
+public static <T extends Comparable<T>> int binarySearch (T[] list, T item)
+// PRE:  list is sorted in ascending order
+// POST: returns the index of item, or -1 if not found
+  { int left = 0,
+        right = list.length - 1,
+        look;
+    do
+      { look = (left + right) / 2;
+        if (list[look].compareTo(item) > 0)
+          right = look - 1;
+        else
+          left = look + 1;
+      } while (list[look].compareTo(item) != 0 && left <= right);
+    if (list[look].compareTo(item) == 0)
+      return look;
+    else
+      return -1;
+  } // binarySearch`),
+D("AdvProg", "8–9 · Big-O & searching", "Interpolated binary search", "Guess `look` in proportion to the value; guard against division by zero and keep look in range.", R`
+public static int intBinarySearch (double[] list, double item)
+  { int left = 0,
+        right = list.length - 1,
+        look;
+    while (left <= right && item >= list[left] && item <= list[right])
+      { if (list[right] == list[left])          // avoid divide by zero
+          look = left;
+        else
+          look = left + (int)((item - list[left]) /
+                              (list[right] - list[left]) * (right - left));
+        if (list[look] == item)
+          return look;
+        if (list[look] > item)
+          right = look - 1;
+        else
+          left = look + 1;
+      }
+    return -1;
+  } // intBinarySearch`, { notes: "O(log log n) for evenly distributed keys." }),
+
+// ===== Ch 10 =====
+D("AdvProg", "10 · Sorting", "Bubble Sort (int[])", "**June 2023 Q8.** With the early-exit flag and the shrinking inner loop.", R`
+public static void bubbleSort (int[] list)
+  { boolean madeSwap = true;
+    for (int pass = 0; pass < list.length - 1 && madeSwap; pass++)
+      { madeSwap = false;
+        for (int k = 0; k < list.length - pass - 1; k++)
+          if (list[k] > list[k + 1])
+            { int tmp = list[k];
+              list[k] = list[k + 1];
+              list[k + 1] = tmp;
+              madeSwap = true;
+            }
+      }
+  } // bubbleSort`, { exam: "June 2023 Q8", notes: "Comparisons: best O(n), average and worst O(n²). Swaps: best 0 (O(1)), average and worst O(n²)." }),
+D("AdvProg", "10 · Sorting", "Insertion Sort (int[]), notes' right-to-left version", "**June 2022 Q8.** Insert each item into the sorted part on its right.", R`
+public static void insertionSort (int[] list)
+  { for (int k = list.length - 2; k >= 0; k--)
+      { int tmp = list[k];
+        int j = k + 1;
+        while (j < list.length && tmp > list[j])
+          { list[j - 1] = list[j];          // move data down
+            j++;
+          }
+        list[j - 1] = tmp;
+      }
+  } // insertionSort`, { exam: "June 2022 Q8", notes: "Comparisons and moves: best O(n), average and worst O(n²). The usual left-to-right version is just as acceptable in an exam." }),
+D("AdvProg", "10 · Sorting", "Insertion Sort, standard left-to-right", "The textbook-elsewhere version, in case you prefer it.", R`
+public static void insertionSort (int[] list)
+  { for (int k = 1; k < list.length; k++)
+      { int tmp = list[k];
+        int j = k - 1;
+        while (j >= 0 && list[j] > tmp)
+          { list[j + 1] = list[j];
+            j--;
+          }
+        list[j + 1] = tmp;
+      }
+  } // insertionSort`),
+D("AdvProg", "10 · Sorting", "Selection Sort", "Find the smallest remaining item and swap it into place. Exactly n−1 swaps.", R`
+public static <T extends Comparable<T>> void selectionSort (T[] list)
+  { for (int k = 0; k < list.length - 1; k++)
+      { int minPos = k;
+        for (int j = k + 1; j < list.length; j++)
+          if (list[j].compareTo(list[minPos]) < 0)
+            minPos = j;
+        T tmp = list[k];                  // swap k'th and smallest
+        list[k] = list[minPos];
+        list[minPos] = tmp;
+      }
+  } // selectionSort`),
+D("AdvProg", "10 · Sorting", "Indirect Insertion Sort", "Sort an index array by the keys it refers to, without moving the (large) records.", R`
+public static <T extends Comparable<T>> void insertionSort (T[] list, int[] index)
+  { for (int k = 0; k < index.length; k++)
+      index[k] = k;                       // start in subscript order
+    for (int k = index.length - 2; k >= 0; k--)
+      { int tmp = index[k];
+        int j = k + 1;
+        while (j < index.length && list[tmp].compareTo(list[index[j]]) > 0)
+          { index[j - 1] = index[j];
+            j++;
+          }
+        index[j - 1] = tmp;
+      }
+  } // insertionSort
+// access in order:  list[index[0]], list[index[1]], ...`),
+D("AdvProg", "10 · Sorting", "Quick Sort: partition", "Use list[start] as the partition element. Return its final position.", R`
+private static <T extends Comparable<T>> int partition (T[] list, int start, int end)
+  { int left = start,
+        right = end;
+    T tmp;
+    while (left < right)
+      { while (list[right].compareTo(list[start]) > 0)   // work down from right
+          right--;
+        while (left < right && list[left].compareTo(list[start]) <= 0)
+          left++;                                       // work up from left
+        if (left < right)
+          { tmp = list[left];
+            list[left] = list[right];
+            list[right] = tmp;
+          }
+      }
+    tmp = list[start];                    // put partition element in place
+    list[start] = list[right];
+    list[right] = tmp;
+    return right;
+  } // partition`),
+D("AdvProg", "10 · Sorting", "Quick Sort: recursive", "recursiveQS plus the public wrapper.", R`
+private static <T extends Comparable<T>> void recursiveQS (T[] list, int start, int end)
+  { if (start < end)
+      { int partitionPoint = partition(list, start, end);
+        recursiveQS(list, start, partitionPoint - 1);
+        recursiveQS(list, partitionPoint + 1, end);
+      }
+  } // recursiveQS
+
+public static <T extends Comparable<T>> void quickSort (T[] list)
+  { recursiveQS(list, 0, list.length - 1);
+  } // quickSort`, { notes: "Best and average O(n log n) (about 1.38 n log n); worst O(n²) on already-sorted input when the first element is the pivot." }),
+D("AdvProg", "10 · Sorting", "Quick Sort: iterative with a stack", "Remember the sublists still to be sorted on a stack of (start, end) records.", R`
+record Sublist (int start, int end) { }
+
+public static <T extends Comparable<T>> void iterativeQuickSort (T[] list)
+  { java.util.Stack<Sublist> s = new java.util.Stack<>();
+    s.push(new Sublist(0, list.length - 1));
+    while (!s.empty())
+      { Sublist sub = s.pop();
+        int start = sub.start(), end = sub.end();
+        while (start < end)
+          { int p = partition(list, start, end);
+            s.push(new Sublist(start, p - 1));   // remember the left part
+            start = p + 1;                       // carry on with the right
+          }
+      }
+  } // iterativeQuickSort`),
+D("AdvProg", "10 · Sorting", "Quick Sort: median-of-three pivot (Ex 10.7)", "Move the median of first/middle/last to `start` before partitioning.", R`
+private static <T extends Comparable<T>> void medianToStart (T[] list, int start, int end)
+  { int mid = (start + end) / 2;
+    int m;
+    T a = list[start], b = list[mid], c = list[end];
+    if ((a.compareTo(b) <= 0 && b.compareTo(c) <= 0) ||
+        (c.compareTo(b) <= 0 && b.compareTo(a) <= 0))
+      m = mid;
+    else if ((b.compareTo(a) <= 0 && a.compareTo(c) <= 0) ||
+             (c.compareTo(a) <= 0 && a.compareTo(b) <= 0))
+      m = start;
+    else
+      m = end;
+    T tmp = list[start];
+    list[start] = list[m];
+    list[m] = tmp;
+  } // medianToStart`),
+D("AdvProg", "10 · Sorting", "Merge Sort: recursive", "Split in half, sort each half, merge.", R`
+private static <T extends Comparable<T>> void recursiveMS (T[] list, int start, int end)
+  { if (start < end)
+      { int mid = (start + end) / 2;
+        recursiveMS(list, start, mid);
+        recursiveMS(list, mid + 1, end);
+        merge(list, start, mid, end);
+      }
+  } // recursiveMS
+
+public static <T extends Comparable<T>> void mergeSort (T[] list)
+  { recursiveMS(list, 0, list.length - 1);
+  } // mergeSort`),
+D("AdvProg", "10 · Sorting", "Merge Sort: merge", "Merge list[first..mid] and list[mid+1..last] through a temporary array.", R`
+@SuppressWarnings("unchecked")
+public static <T extends Comparable<T>> void merge (T[] list, int first, int mid, int last)
+  { T[] tmp = (T[])new Comparable[last - first + 1];
+    int i = first,          // subscript for first sublist
+        j = mid + 1,        // subscript for second sublist
+        k = 0;              // subscript for tmp
+    while (i <= mid && j <= last)
+      if (list[i].compareTo(list[j]) < 0)
+        tmp[k++] = list[i++];
+      else
+        tmp[k++] = list[j++];
+    while (i <= mid)                    // copy remnant of first list
+      tmp[k++] = list[i++];
+    while (j <= last)                   // or of second list
+      tmp[k++] = list[j++];
+    for (k = 0; k < tmp.length; k++)    // copy back
+      list[first + k] = tmp[k];
+  } // merge`, { notes: "Always O(n log n) but needs about twice the memory, which is why Quick Sort is used more." }),
+D("AdvProg", "10 · Sorting", "Shell Sort (Ex 10.17)", "Bubble-style compare/swap with a gap that halves after a pass with no swaps.", R`
+public static void shellSort (int[] list)
+  { int gap = list.length / 2;
+    while (gap > 0)
+      { boolean swapped = false;
+        for (int k = 0; k + gap < list.length; k++)
+          if (list[k] > list[k + gap])
+            { int tmp = list[k];
+              list[k] = list[k + gap];
+              list[k + gap] = tmp;
+              swapped = true;
+            }
+        if (!swapped)
+          gap /= 2;
+      }
+  } // shellSort`),
+];
+
+// Code drills: MIPS (book conventions: $sp points just past the top of the stack; main glue -4/+4) and C (Section C).
+DRILLS.push(
+D("MIPS", "MIPS 2–3 · Basics", "Minimal program (exit)", "Smallest legal SPIM program: a main label and the exit system call. If you leave out the exit, SPIM runs off the end of your code into garbage (June 2023 Q9).", R`
+        .text
+main:   li   $v0, 10        # system call code for exit = 10
+        syscall             # call OS`, { exam: "June 2023 Q9" }),
+D("MIPS", "MIPS 2–3 · Basics", "for loop: sum = 0+1+…+(N-1)", "Bottom-test for loop template with N = 4 in $t2, sum in $t0, i in $t1.", R`
+        .text
+# $t0: sum   $t1: i   $t2: N
+main:   li   $t2, 4             # N = 4;
+        move $t0, $zero         # sum = 0;
+        move $t1, $zero         # for (i = 0; i < N; i++)
+        j    test               # test before 1st iteration
+body:   add  $t0, $t0, $t1      #   sum += i;
+        addi $t1, $t1, 1        #   increment loop counter
+test:   blt  $t1, $t2, body     # not done? go again
+        li   $v0, 10
+        syscall`, { notes: "3 instructions per iteration. `blt` is a pseudoinstruction that becomes `slt $at,$t1,$t2` + `bne $at,$zero,body`." }),
+D("MIPS", "MIPS 2–3 · Basics", "while loop: count doublings", "while (age < 100) { age = age * 2; doublings++; } with age = 42.", R`
+# $t0: doublings   $t1: age   $t2: constant 100
+main:   move $t0, $zero         # int doublings = 0;
+        li   $t1, 42            # int age = 42;
+        li   $t2, 100
+        j    test               # while (age < 100) {
+body:   add  $t1, $t1, $t1      #   age = age * 2;
+        addi $t0, $t0, 1        #   doublings++;
+test:   blt  $t1, $t2, body     # }
+        li   $v0, 10
+        syscall`, { notes: "Ends with doublings = 2 (42 → 84 → 168)." }),
+D("MIPS", "MIPS 2–3 · Basics", "if: count a negative input", "Read an int with syscall 5; if (value < 0) negatives++. Note the inverted branch.", R`
+READ_INT = 5
+EXIT = 10
+        .text
+# $s0: value   $s1: negatives
+main:   li   $s1, 0             # negatives = 0;
+        li   $v0, READ_INT      # scanf("%d", &value);
+        syscall
+        move $s0, $v0
+        bge  $s0, $zero, done   # if (value < 0)   -- inverted condition
+        addi $s1, $s1, 1        #   negatives++;
+done:   li   $v0, EXIT
+        syscall`),
+D("MIPS", "MIPS 2–3 · Basics", "if-else: negatives / positives", "if (value < 0) negatives++; else positives++;", R`
+# $s0: value   $s1: negatives   $s2: positives
+main:   li   $s1, 0
+        li   $s2, 0
+        li   $v0, 5             # read int
+        syscall
+        move $s0, $v0
+        bge  $s0, $zero, else   # if (value < 0)
+        addi $s1, $s1, 1        #   negatives++;
+        j    done
+else:   addi $s2, $s2, 1        # else positives++;
+done:   li   $v0, 10
+        syscall`),
+D("MIPS", "MIPS 2–3 · Basics", "Load a 32-bit constant (420000)", "Immediates are only 16 bits. Build 0x000668A0 from its halves.", R`
+# population = 420000;   (0x000668A0)
+main:   lui  $t0, 0x0006        # high 16 bits, low 16 bits zeroed
+        ori  $t0, $t0, 0x68A0   # OR in the low 16 bits
+        li   $v0, 10
+        syscall`, { notes: "Long-hand: `li $t0, 6` / `sll $t0, $t0, 16` / `ori $t0, $t0, 0x68A0`." }),
+D("MIPS", "MIPS 2–3 · Basics", "Global variables: la / lw / sw with offsets", "Load two words from .data using one base address, and store a register to memory.", R`
+        .data
+population: .word 420000
+max_age:    .word 120
+saveSP:     .word 0
+        .text
+main:   la   $t0, population    # base address (just a lui here)
+        lw   $t1, 0($t0)        # load population
+        lw   $t2, 4($t0)        # load max_age (next word)
+        sw   $sp, 8($t0)        # store stack pointer into saveSP
+        li   $v0, 10
+        syscall`),
+D("MIPS", "MIPS 2–3 · Basics", "age × 365 < 10000 (bool in a byte)", "Words and a byte in .data, multiply with overflow checking, set-less-than, store a byte.", R`
+        .data
+age:         .word 21
+daysperyear: .word 365
+ageLT10k:    .byte 0
+        .text
+main:   la   $t0, age
+        lw   $t1, 0($t0)        # age
+        lw   $t2, 4($t0)        # daysperyear
+        mulo $t4, $t1, $t2      # temp = age * daysperyear (checks overflow)
+        slti $t3, $t4, 10000    # ageLT10k = temp < 10000
+        sb   $t3, 8($t0)        # store the byte
+        li   $v0, 10
+        syscall`),
+D("MIPS", "MIPS 2–3 · Basics", "Halfword overflow check", "Check that the 32-bit value in $t0 still fits in a signed 16-bit halfword.", R`
+        sll  $t1, $t0, 16       # shift low halfword to the top
+        sra  $t1, $t1, 16       # arithmetic shift back (copies sign)
+        beq  $t1, $t0, ok       # unchanged? no overflow
+        break 0                 # otherwise: overflow error
+ok:     nop`),
+D("MIPS", "MIPS 2–3 · Basics", "Uppercase a letter / test for a digit", "Ch 1 exercise: lowercase→uppercase is −32 (or clear bit 5); digit test is '0' ≤ c ≤ '9'.", R`
+# $a0 holds a character
+        addi $t0, $a0, -32      # 'a'(97) -> 'A'(65)
+        andi $t1, $a0, 0xDF     # same effect: clear bit 5 (0x20)
+
+        li   $t2, 48            # '0'
+        li   $t3, 57            # '9'
+        li   $v1, 0             # isDigit = false
+        blt  $a0, $t2, notdig
+        bgt  $a0, $t3, notdig
+        li   $v1, 1             # isDigit = true
+notdig: nop`),
+D("MIPS", "MIPS 2–3 · Basics", "Extract a byte by shifting and masking", "Get byte 2 (counting from the low end) of the word in $t0, independent of endianness.", R`
+        srl  $t1, $t0, 16       # move byte 2 down to the low end
+        andi $t1, $t1, 0xFF     # mask off everything else`),
+D("MIPS", "MIPS 3 · Floating point & I/O", "Circle area (floats)", "Read radius, print π·r² as a float and rounded to an int, with newlines.", R`
+READ_FLOAT = 6
+PRINT_FLOAT = 2
+PRINT_INT = 1
+PRINT_CHAR = 11
+EXIT = 10
+        .data
+consts: .float 3.14159265 0.5   # no FP immediates: constant pool
+        .text
+main:   li    $v0, READ_FLOAT   # radius -> $f0
+        syscall
+        mul.s $f0, $f0, $f0     # radius squared
+        la    $s0, consts
+        l.s   $f10, 0($s0)      # pi
+        mul.s $f12, $f10, $f0   # area in $f12 (print arg)
+        li    $v0, PRINT_FLOAT
+        syscall
+        li    $a0, 10           # '\n'
+        li    $v0, PRINT_CHAR
+        syscall
+        l.s   $f0, 4($s0)       # 0.5
+        add.s $f0, $f12, $f0    # round to nearest
+        cvt.w.s $f0, $f0        # float -> int (still in FPU)
+        mfc1  $a0, $f0          # move from coprocessor 1
+        li    $v0, PRINT_INT
+        syscall
+        li    $v0, EXIT
+        syscall`),
+D("MIPS", "MIPS 3 · Floating point & I/O", "Print a string & read a string", "June 2023 Q12: printing a labelled string needs its **address** in $a0, so use `la` (not li, lw or move).", R`
+        .data
+str_pr: .asciiz "Enter your name: "
+buf:    .space 40
+        .text
+main:   la   $a0, str_pr        # address of the string
+        li   $v0, 4             # PRINT_STRING
+        syscall
+        la   $a0, buf           # buffer address
+        li   $a1, 40            # max length
+        li   $v0, 8             # READ_STRING
+        syscall
+        li   $v0, 10
+        syscall`, { exam: "June 2023 Q12" }),
+D("MIPS", "MIPS 4 · Functions & stack", "Function frame template (book convention)", "Minimal function start and return. $sp points just past the top of the stack.", R`
+func:   sw   $ra, 0($sp)        # save return address
+        sw   $fp, -4($sp)       # save frame pointer
+        move $fp, $sp           # fp = old sp
+        addi $sp, $sp, -8       # move SP past frame (add -4 per extra word)
+
+        # ... body: locals/spills at -8($fp), -12($fp), ...
+
+        move $sp, $fp           # restore SP
+        lw   $fp, -4($sp)       # restore FP
+        lw   $ra, 0($sp)        # restore return address
+        jr   $ra                # return to caller`),
+D("MIPS", "MIPS 4 · Functions & stack", "Leaf function: max(a, b)", "A leaf needs no frame: params in $a0/$a1, result in $v0, return with jr $ra. Call it from main.", R`
+        .text
+main:   addi $sp, $sp, -4       # glue: SPIM sp -> book convention
+        sw   $ra, 0($sp)        # root function: save $ra (start-up did a jal)
+        addi $sp, $sp, -4
+        li   $a0, 17
+        li   $a1, 42
+        jal  max                # $v0 = max(17, 42)
+        move $a0, $v0
+        li   $v0, 1             # print it
+        syscall
+        addi $sp, $sp, 4
+        lw   $ra, 0($sp)
+        addi $sp, $sp, 4        # undo glue
+        jr   $ra
+
+max:    move $v0, $a0           # assume a is bigger
+        bge  $a0, $a1, maxret
+        move $v0, $a1
+maxret: jr   $ra`),
+D("MIPS", "MIPS 4 · Functions & stack", "Exam-style one-liners", "June 2022 Q11a / June 2023 Q16a: (i) N = Z with N in $t0 and Z at frame offset 8; (ii) return 42 from a leaf; (iii) Z = N + 27; return Z with Z in $t0 and N in $t1.", R`
+# (i) N = Z;   Z is a local at offset 8 (stack offsets are negative)
+        lw   $t0, -8($fp)
+
+# (ii) return 42;   leaf function, no stack frame
+        li   $v0, 42
+        jr   $ra
+
+# (iii) Z = N + 27; return Z;   (leaf)
+        addi $t0, $t1, 27
+        move $v0, $t0
+        jr   $ra`, { exam: "June 2022 Q11a, June 2023 Q16a" }),
+D("MIPS", "MIPS 4 · Functions & stack", "Globals via $gp", "Keep two counters as globals at offsets from $gp and increment one.", R`
+NEGATIVES = 0                   # offsets in the global area
+POSITIVES = 4
+        lw   $t0, NEGATIVES($gp)
+        addi $t0, $t0, 1
+        sw   $t0, NEGATIVES($gp) # negatives++;`),
+D("MIPS", "MIPS 4 · Functions & stack", "readint/printint loop program", "June 2022 Q11b: read until a non-positive value, add values < 10, print the sum, calling separately-loaded readint/printint functions.", R`
+EXIT = 10
+        .text
+# $s0: next   $s1: sum   $s2: constant 10
+main:   addi $sp, $sp, -4       # glue to book stack convention
+        sw   $ra, 0($sp)        # root: save return address
+        sw   $fp, -4($sp)
+        move $fp, $sp
+        addi $sp, $sp, -8
+        jal  readint            # int next = readint();
+        move $s0, $v0
+        li   $s1, 0             # int sum = 0;
+        li   $s2, 10
+        j    wtest              # while (next > 0) {
+wbody:  bge  $s0, $s2, ifdone   #   if (next < 10)   (inverted)
+        add  $s1, $s1, $s0      #     sum += next;
+ifdone: jal  readint            #   next = readint();
+        move $s0, $v0
+wtest:  bgt  $s0, $zero, wbody  # }
+        move $a0, $s1           # printint(sum);
+        jal  printint
+        move $sp, $fp
+        lw   $fp, -4($sp)
+        lw   $ra, 0($sp)
+        addi $sp, $sp, 4
+        li   $v0, EXIT
+        syscall`, { exam: "June 2022 Q11b", notes: "Use $s registers because you call functions: callees must preserve them. Marks were given for comments linking each line to the C code." }),
+D("MIPS", "MIPS 4 · Functions & stack", "Recursive Fibonacci", "int fib(int n) { if (n <= 2) return 1; return fib(n-1) + fib(n-2); }, with a stack frame saving n and fib(n-1).", R`
+# frame: 0($fp) ra | -4($fp) old fp | -8($fp) n | -12($fp) fib(n-1)
+fib:    sw   $ra, 0($sp)
+        sw   $fp, -4($sp)
+        move $fp, $sp
+        addi $sp, $sp, -16      # 4 words: ra, fp, n, partial result
+        sw   $a0, -8($fp)       # save n
+        li   $t0, 2
+        bgt  $a0, $t0, recur    # if (n <= 2)
+        li   $v0, 1             #   return 1;
+        j    fibret
+recur:  addi $a0, $a0, -1
+        jal  fib                # fib(n-1)
+        sw   $v0, -12($fp)      # save it (calls clobber $t/$v)
+        lw   $a0, -8($fp)
+        addi $a0, $a0, -2
+        jal  fib                # fib(n-2)
+        lw   $t0, -12($fp)
+        add  $v0, $v0, $t0      # fib(n-1) + fib(n-2)
+fibret: move $sp, $fp
+        lw   $fp, -4($sp)
+        lw   $ra, 0($sp)
+        jr   $ra`),
+D("MIPS", "MIPS 4 · Functions & stack", "Recursive Ackermann", "June 2022 Q11c style: A(0,n)=n+1; A(m,0)=A(m-1,1); A(m,n)=A(m-1, A(m,n-1)). Save m because the inner call clobbers $a0.", R`
+ackermann:
+        sw   $ra, 0($sp)        # save return address
+        sw   $fp, -4($sp)       # save frame pointer
+        move $fp, $sp
+        addi $sp, $sp, -12      # 3 words: ra, fp, saved m
+        sw   $a0, -8($fp)       # save m
+        bne  $a0, $zero, notm0  # if (m == 0)
+        addi $v0, $a1, 1        #   return n + 1;
+        j    ackret
+notm0:  bne  $a1, $zero, notn0  # if (n == 0)
+        addi $a0, $a0, -1       #   return ackermann(m-1, 1);
+        li   $a1, 1
+        jal  ackermann
+        j    ackret             # share the one unwind sequence
+notn0:  addi $a1, $a1, -1       # inner: ackermann(m, n-1)
+        jal  ackermann
+        lw   $a0, -8($fp)       # m was clobbered: reload it
+        addi $a0, $a0, -1
+        move $a1, $v0           # outer: ackermann(m-1, result)
+        jal  ackermann          # a real call: must come back here to unwind
+ackret: move $sp, $fp
+        lw   $fp, -4($sp)
+        lw   $ra, 0($sp)
+        jr   $ra`, { exam: "June 2022 Q11c", notes: "−12 = three words of frame (return address, old frame pointer, saved m). The stack grows down, so the frame is reserved by subtracting. The `j ackret` jumps to a single shared unwind point instead of duplicating it. The last call is `jal` because control must return here so this frame can be unwound before returning to our own caller." }),
+D("MIPS", "MIPS 5 · Data structures", "strlen (null-terminated string)", "Leaf function: $a0 = address of string, return its length in $v0.", R`
+strlen: move $v0, $zero         # i = 0
+        move $t0, $a0           # pointer to current char
+sloop:  lbu  $t1, 0($t0)        # load byte (unsigned)
+        beq  $t1, $zero, sdone  # if (string[i] == 0) return i
+        addi $v0, $v0, 1        # i++
+        addi $t0, $t0, 1        # next byte (chars are 1 byte)
+        j    sloop
+sdone:  jr   $ra`),
+D("MIPS", "MIPS 5 · Data structures", "Array maximum → variable", "June 2023 Q16b: find the max of the 20-int array my_arr and store it in max_val.", R`
+        .data
+my_arr:  .word 5, 13, 14, 18, 22, 26, 29, 34, 39, 41, 3, 7, 1, 0, 9, 8, 2, 6, 4, 11
+max_val: .word 0
+        .text
+# $t0: array base   $t1: max   $t2: i   $t3: 20   $t4: address   $t5: element
+main:   la   $t0, my_arr
+        lw   $t1, 0($t0)        # max = arr[0];
+        li   $t2, 1             # for (i = 1; i < 20; i++)
+        li   $t3, 20
+        j    test
+body:   sll  $t4, $t2, 2        #   offset = i * 4
+        add  $t4, $t4, $t0      #   address of arr[i]
+        lw   $t5, 0($t4)
+        ble  $t5, $t1, skip     #   if (arr[i] > max)   (inverted)
+        move $t1, $t5           #     max = arr[i];
+skip:   addi $t2, $t2, 1
+test:   blt  $t2, $t3, body
+        la   $t6, max_val
+        sw   $t1, 0($t6)        # max_val = max;
+        li   $v0, 10
+        syscall`, { exam: "June 2023 Q16b", notes: "Array indexes are only known at run time, so scale the index (×4 with sll 2) instead of using a fixed offset. Or step a pointer by 4 each time." }),
+D("MIPS", "MIPS 5 · Data structures", "Array sum with a pointer that steps by 4", "Same idea using a separate counter that increments by the element size.", R`
+# $a0 = array address, $a1 = number of elements; result in $v0
+sumarr: move $v0, $zero
+        sll  $t1, $a1, 2        # byte length = n * 4
+        add  $t1, $t1, $a0      # address just past the end
+        j    stest
+sbody:  lw   $t2, 0($a0)
+        add  $v0, $v0, $t2
+        addi $a0, $a0, 4        # step by element size
+stest:  blt  $a0, $t1, sbody
+        jr   $ra`),
+D("MIPS", "MIPS 5 · Data structures", "switch with a jump table", "switch (value) { case 0: zeroes++; break; case 1: case 2: onesAndTwos++; break; default: others++; }", R`
+        .data
+jtable: .word case0, case12, case12   # one code address per case value
+        .text
+# $s0: value  $s1: zeroes  $s2: onesAndTwos  $s3: others
+        bltz $s0, default       # out of range?  -> default
+        li   $t0, 2
+        bgt  $s0, $t0, default
+        la   $t1, jtable
+        sll  $t2, $s0, 2        # value * 4
+        add  $t1, $t1, $t2
+        lw   $t3, 0($t1)        # fetch target address
+        jr   $t3                # jump to it
+case0:  addi $s1, $s1, 1        # zeroes++;
+        j    swdone             # break;
+case12: addi $s2, $s2, 1        # onesAndTwos++;
+        j    swdone             # break;
+default:addi $s3, $s3, 1        # others++;
+swdone: nop`),
+D("MIPS", "MIPS 5 · Data structures", "Minimal malloc using sbrk", "Allocate n bytes with a 1-word size header before the block (syscall 9 grows the heap).", R`
+# $a0 = bytes wanted; returns pointer to usable block in $v0
+malloc: addi $t0, $a0, 4        # room for a header word
+        move $t1, $a0           # remember requested size
+        move $a0, $t0
+        li   $v0, 9             # SBRK: $a0 bytes -> start address in $v0
+        syscall
+        sw   $t1, 0($v0)        # header: block size
+        addi $v0, $v0, 4        # hand back the address after the header
+        jr   $ra`, { notes: "free() can find the size in the word just before the pointer. In C, freeing a pointer that didn't come from malloc is an error." }),
+D("MIPS", "MIPS 5 · Data structures", "Linked list: build and walk", "Node = {int data; node* next} (8 bytes). Prepend a node, then sum the list.", R`
+# prepend: $a0 = old head, $a1 = value  ->  $v0 = new head
+prepend:sw   $ra, 0($sp)
+        sw   $fp, -4($sp)
+        move $fp, $sp
+        addi $sp, $sp, -16
+        sw   $a0, -8($fp)       # save args across the malloc call
+        sw   $a1, -12($fp)
+        li   $a0, 8             # sizeof(node)
+        jal  malloc
+        lw   $t0, -12($fp)
+        sw   $t0, 0($v0)        # node->data = value  (offset 0)
+        lw   $t0, -8($fp)
+        sw   $t0, 4($v0)        # node->next = old head (offset 4)
+        move $sp, $fp
+        lw   $fp, -4($sp)
+        lw   $ra, 0($sp)
+        jr   $ra
+
+# sumlist: $a0 = head -> $v0 = sum   (leaf)
+sumlist:move $v0, $zero
+lloop:  beq  $a0, $zero, ldone  # while (p != NULL)
+        lw   $t0, 0($a0)        #   sum += p->data;
+        add  $v0, $v0, $t0
+        lw   $a0, 4($a0)        #   p = p->next;
+        j    lloop
+ldone:  jr   $ra`),
+D("MIPS", "MIPS 5 · Data structures", "Object method call via a method table", "Each object's first word points to its class's method table; calling area() loads the method address and jalr's to it with the object as an implicit parameter.", R`
+        .data
+circleMT: .word circleArea      # method table for Circle
+squareMT: .word squareArea      # method table for Square
+        .text
+# $a0 = pointer to object; object word 0 = method table pointer
+callArea:
+        sw   $ra, 0($sp)
+        sw   $fp, -4($sp)
+        move $fp, $sp
+        addi $sp, $sp, -8
+        lw   $t0, 0($a0)        # method table of this object
+        lw   $t1, 0($t0)        # entry 0: area method
+        jalr $t1                # dynamic dispatch, $a0 = "this"
+        move $sp, $fp
+        lw   $fp, -4($sp)
+        lw   $ra, 0($sp)
+        jr   $ra`),
+
+// ===== C (Section C of the exam) =====
+D("C", "C · Systems-level (exam Section C)", "swap / minimise with pointers", "June 2022 Q16 and June 2023 Q22: pass-by-value can't change the caller's variables, so pass pointers.", R`
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+/* call:  swap(&small, &big); */
+
+void minimise(int *a, int *b) {
+    if (*a < *b)
+        *b = *a;
+    else
+        *a = *b;
+}
+/* also fix: else if (small == big)   -- '=' was assignment! */`, { exam: "June 2022 Q16, June 2023 Q22" }),
+D("C", "C · Systems-level (exam Section C)", "Modifying a string literal (and the fix)", "June 2022 Q13: `char *data = \"hello\"; data[2] = 'p';` is undefined behaviour. Fix it.", R`
+#include <stdio.h>
+
+int main() {
+    char data[] = "hello";   /* array copy on the stack: writable */
+    data[2] = 'p';
+    printf("%s\n", data);     /* heplo */
+    return 0;
+}`, { exam: "June 2022 Q13", notes: "A string literal lives in read-only static storage. Writing to it is **undefined behaviour**: the standard places no requirements, so it may crash, appear to work, or do anything else." }),
+D("C", "C · Systems-level (exam Section C)", "Heap strings with malloc / calloc / free", "Allocate, null-terminate and free correctly. Shows where each pointer points.", R`
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char w[] = "twip";                 /* w: array on the STACK          */
+    char *lit = "zoot";                /* points to DATA segment (literal) */
+    char *h = malloc(3);               /* points to the HEAP              */
+    char *z = calloc(1, 20);           /* heap, zero-filled               */
+    char **arr = malloc(3 * sizeof(char*));   /* heap array of pointers   */
+    h[0] = 'y';                        /* same as **(&h) / *h             */
+    h[1] = 'c';                        /* same as *(h + 1)                */
+    h[2] = '\0';                       /* MUST terminate before printing  */
+    arr[0] = w;                        /* same as *arr = w                */
+    arr[1] = lit;                      /* same as *(arr + 1) = lit        */
+    printf("%s - %s - %s\n", h, w, lit);   /* yc - twip - zoot */
+    free(h);                           /* every malloc/calloc needs a free */
+    free(z);
+    free(arr);
+    return 0;
+}`, { exam: "June 2022 Q17, June 2023 Q23" }),
+D("C", "C · Systems-level (exam Section C)", "struct vs union", "June 2023 Q20: sizes with 32-bit int and 64-bit pointers, and when to use a union.", R`
+#include <stdio.h>
+
+typedef struct { int a; char *b; } one;   /* 4 + 4 padding + 8 = 16 bytes */
+typedef union  { int a; char *b; } two;   /* largest member  =  8 bytes   */
+
+int main() {
+    printf("%zu %zu\n", sizeof(one), sizeof(two));   /* 16 8 */
+    return 0;
+}
+/* Use a union when only ONE of the members is meaningful at a time:
+   all members share the same memory, saving space. */`, { exam: "June 2023 Q20" }),
+D("C", "C · Systems-level (exam Section C)", "Function pointers: declare & use", "Declare a function that takes a comparison function pointer, as in the exam's maxBy / d / k declarations.", R`
+#include <stdio.h>
+
+int byValue(void *p) { return *(int *)p; }
+
+/* maxBy: pointer to function (void*, int, int(*)(void*)) returning void* */
+void *maxByImpl(void *arr, int n, int (*key)(void *)) {
+    int *a = arr, *best = a;
+    for (int i = 1; i < n; i++)
+        if (key(&a[i]) > key(best))
+            best = &a[i];
+    return best;
+}
+
+int main() {
+    void *(*maxBy)(void *, int, int (*)(void *)) = maxByImpl;
+    int nums[] = {3, 9, 4};
+    printf("%d\n", *(int *)maxBy(nums, 3, byValue));   /* 9 */
+    return 0;
+}`, { exam: "June 2023 Q21b" }),
+D("C", "C · Systems-level (exam Section C)", "Array decay & pointer arithmetic", "Show that an array name becomes a pointer to its first element, and that a[i] == *(a + i).", R`
+#include <stdio.h>
+
+void show(int *p, int n) {          /* receives a pointer, size is lost */
+    for (int i = 0; i < n; i++)
+        printf("%d ", *(p + i));     /* identical to p[i] */
+}
+
+int main() {
+    int a[4] = {10, 20, 30, 40};
+    printf("%zu\n", sizeof(a));      /* 16: no decay inside sizeof */
+    show(a, 4);                      /* a decays to &a[0]           */
+    int *q = &a[1];                  /* & gives the address          */
+    printf("\n%d %d\n", *q, q[1]);   /* 20 30 */
+    return 0;
+}`),
+D("C", "C · Systems-level (exam Section C)", "Compile pipeline with gcc", "The four stages and the gcc flags to stop after each.", R`
+gcc -E prog.c -o prog.i     # 1. preprocess: .c   -> .i  (expand #include/#define, strip comments)
+gcc -S prog.i -o prog.s     # 2. compile:    .i   -> .s  (C -> assembly)
+gcc -c prog.s -o prog.o     # 3. assemble:   .s   -> .o  (assembly -> machine-code object file)
+gcc prog.o -o prog          # 4. link:       .o + libraries -> executable (resolve symbols)`, { exam: "June 2022 Q15, June 2023 Q19" }),
+);
+
+// Past papers (questions paraphrased, with model answers written for practice) + predicted papers.
+const Q = (sec, n, m, q, a, img) => ({ sec, n, m, q, a, img });
+const SA = "Section A: Advanced Programming (85)", SB = "Section B: Architecture / MIPS (55)", SC = "Section C: Systems-level programming in C (40)";
+
+const PAPERS = [
+{ name: "June 2023", mins: 180, intro: "180 marks, 3 hours. Questions are paraphrased from the June 2023 CS201 paper. Model answers were written for this page, not taken from an official memo. Type your answer, then reveal and mark yourself.", qs: [
+Q(SA, "Q1a", 2, "What is a **precondition**?", "A condition (statement about the program state) that must be true **when a method is called** for it to work correctly. If the caller violates it, the method's postcondition isn't guaranteed."),
+Q(SA, "Q1b", 2, "Define **abstract data type**.", "An ADT is a pair **<V, O>**: a set of values V, together with a set of operations O defined on those values. It's used through its operations without knowing how it's implemented."),
+Q(SA, "Q1c", 2, "Define **proper binary tree**.", "A binary tree in which every node has an outdegree of **0 or 2**: every non-leaf node has exactly two children."),
+Q(SA, "Q1d", 2, "What does it mean to say \"algorithm XYZ is O(f(n))\"?", "There exist positive constants c and n₀ such that the time (or resource use) t of the algorithm satisfies **t ≤ c·f(n) for all n > n₀**. Its growth is bounded above by a constant multiple of f(n) for large inputs."),
+Q(SA, "Q2", 10, "Towers of Hanoi. Given a `Tower` class (`add(int)`, `remove()`, `getID()`) and a working `moveDisk(Tower from, Tower to)`, complete the recursive method:\n```\nprivate static void hanoi (int numDisks, Tower fromTower,\n                           Tower toTower, Tower spareTower)\n```", "```\nprivate static void hanoi (int numDisks, Tower fromTower,\n                           Tower toTower, Tower spareTower)\n  { if (numDisks == 1)\n      moveDisk(fromTower, toTower);\n    else\n      { hanoi(numDisks - 1, fromTower, spareTower, toTower);\n        moveDisk(fromTower, toTower);\n        hanoi(numDisks - 1, spareTower, toTower, fromTower);\n      }\n  } // hanoi\n```\nMarks for: the stop case (n == 1), the first recursive call with the spare and destination swapped, moving the largest disk, and the second recursive call with spare and source swapped."),
+Q(SA, "Q3", 15, "Implement `add`, `remove`, `head` and `isEmpty` for `ListQueue<T>`, which has an inner `QueueNode {T data; QueueNode next;}` and fields `hd` and `tl` (both null when empty).", "```\npublic void add (T item)\n  { QueueNode node = new QueueNode();\n    node.data = item;\n    node.next = null;\n    if (tl != null) tl.next = node;\n    tl = node;\n    if (hd == null) hd = node;      // first item\n  }\n\npublic T remove ()\n  { if (hd == null) throw new EmptyException(\"queue is empty\");\n    T tmpData = hd.data;\n    hd = hd.next;\n    if (hd == null) tl = null;      // removed the last item\n    return tmpData;\n  }\n\npublic T head ()\n  { if (hd == null) throw new EmptyException(\"queue is empty\");\n    return hd.data;\n  }\n\npublic boolean isEmpty ()\n  { return hd == null; }\n```"),
+Q(SA, "Q4", 6, "Draw a **doubly-, circularly-linked list with a header node** containing three data items.", "Header node H (no data) plus nodes a, b, c, each with lt/rt pointers:\n```\n      +-----------------------------------------------+\n      v                                               |\n   [ H ] <-> [ a ] <-> [ b ] <-> [ c ] <-> (back to H)\n   H.rt -> a      a.lt -> H      c.rt -> H      H.lt -> c\n```\nMarks for: the header node, both links between every adjacent pair, the circular links (c.rt → H and H.lt → c) and three data nodes. Empty list: H.lt = H.rt = H."),
+Q(SA, "Q5a", 4, "A BST has root **N**; N's left child is **A**, whose right child is **J**, whose left child is **G**; N's right child is **X**, whose left child is **S**. Show the tree after adding **D** then **T**.", "D < N → left to A; D > A → right to J; D < J → left to G; D < G → **D becomes G's left child**.\nT > N → X; T < X → S; T ≥ S → **T becomes S's right child**.\n```\n          N\n        /   \\\n       A     X\n        \\   /\n         J S\n        /   \\\n       G     T\n      /\n     D\n```", "The original paper showed this tree as a diagram. It is described in words here."),
+Q(SA, "Q5b", 4, "Using the **original** tree from Q5a, show it after **N** is deleted.", "N has two subtrees, so replace it with the **smallest value in its right subtree**: S (go right to X, then as far left as possible). S has no children, so X's left becomes null.\n```\n          S\n        /   \\\n       A     X\n        \\\n         J\n        /\n       G\n```"),
+Q(SA, "Q6a", 2, "Keys 18, 13, 24, 17, 20 go into hash tables of size **6** (Integer hashCode = the value). Give the hash values.", "hash = key % 6:  18→**0**, 13→**1**, 24→**0**, 17→**5**, 20→**2**"),
+Q(SA, "Q6b", 5, "Show the **internal** hash table (linear probing) after inserting them in that order (slots 0–5).", "18→0. 13→1. 24→0 is taken, 1 is taken, so **2**. 17→5. 20→2 is taken, so **3**.\n```\n slot:  0    1    2    3    4    5\n       18   13   24   20   --   17\n```"),
+Q(SA, "Q6c", 5, "Show the **external** hash table (buckets) for the same insertions.", "New nodes go at the **front** of their bucket:\n```\n0: 24 -> 18\n1: 13\n2: 20\n3: (empty)\n4: (empty)\n5: 17\n```\n(If you append at the end instead, 18 -> 24 is usually accepted. The notes insert at the front.)"),
+Q(SA, "Q7a", 3, "Binary search for **39** in `5 13 14 18 22 26 29 34 39 41` (indices 0–9). Which subscripts are examined?", "look = (0+9)/2 = **4** (22 < 39, so left = 5) → (5+9)/2 = **7** (34 < 39, so left = 8) → (8+9)/2 = **8** (39 found). Sequence: **4, 7, 8**."),
+Q(SA, "Q7b", 7, "Implement `public static int binarySearch(int[] list, int item)` returning the position or -1.", "```\npublic static int binarySearch (int[] list, int item)\n  { int left = 0, right = list.length - 1;\n    while (left <= right)\n      { int look = (left + right) / 2;\n        if (list[look] == item) return look;\n        if (list[look] > item) right = look - 1;\n        else left = look + 1;\n      }\n    return -1;\n  }\n```"),
+Q(SA, "Q7c", 2, "Algorithmic complexity of binary search?", "**O(log n)**. Each comparison halves the remaining list (C_n = C_{n/2} + 1, so C_n = log₂n + 1)."),
+Q(SA, "Q8a", 10, "Implement Bubble Sort for `int[] list`.", "```\npublic static void bubbleSort (int[] list)\n  { boolean madeSwap = true;\n    for (int pass = 0; pass < list.length - 1 && madeSwap; pass++)\n      { madeSwap = false;\n        for (int k = 0; k < list.length - pass - 1; k++)\n          if (list[k] > list[k + 1])\n            { int tmp = list[k];\n              list[k] = list[k + 1];\n              list[k + 1] = tmp;\n              madeSwap = true;\n            }\n      }\n  }\n```"),
+Q(SA, "Q8b", 4, "Big-O of Bubble Sort (best/average/worst) for comparisons and for data moves.", "```\n              Comparisons   Data moves\nBest case       O(n)          O(1)  (no swaps)\nAverage case    O(n²)         O(n²)\nWorst case      O(n²)         O(n²)\n```"),
+Q(SB, "Q9", 1, "A program runs normally in SPIM but then reports *\"Attempt to execute non-instruction at 0x0040002c\"*. Most likely cause? (a) no main label (b) no exit system call (c) a non-existent opcode (d) none of these", "**(b)**. Without the exit syscall, execution runs past the end of your code into memory that doesn't hold instructions. (A missing main gives an 'undefined symbol main' error before anything runs.)"),
+Q(SB, "Q10", 1, "If an IEEE single is `0x2168CCCC`, its negative is: (a) 0xA168CCCC (b) 0x6168CCCC (c) invert all bits and add 1 (d) 2's complement of the significand (e) 2's complement of the exponent", "**(a)**. IEEE uses signed magnitude, so just flip the sign bit: 0x2 = 0010 → 1010 = 0xA. Two's complement doesn't apply to floats."),
+Q(SB, "Q11", 1, "Which gate is considered *universal*? OR / AND / NAND / XOR / NOR", "**NAND** (NOR is universal too, but the book's answer is NAND)."),
+Q(SB, "Q12", 1, "To print the string at label `str_pr` with PRINT_STRING, how do you set $a0? (a) `li $a0, str_pr` (b) `lw $a0, 0(str_pr)` (c) `move $a0, str_pr` (d) a and b (e) none", "**(e)**. You need the string's **address**: `la $a0, str_pr`. None of the options does that."),
+Q(SB, "Q13", 1, "A *directive* is: (a) an instruction to the assembler itself (b) an instruction that expands to several opcodes (c) an area of memory (d) a and b (e) none", "**(a)**. Directives (.data, .text, .word, .asciiz…) tell the assembler what to do and generate no instruction. (b) describes a pseudoinstruction."),
+Q(SB, "Q14a", 4, "Draw the logic circuit of a **half adder** with outputs s (sum) and c (carry).", "Inputs A and B both feed an **XOR gate → s** and an **AND gate → c**.\n```\nA ---+---\\\\ XOR )---- s\n     |   //\nB -+-|---\n   | |\n   | +---[ AND ]---- c\n   +-----[     ]\n```"),
+Q(SB, "Q14b", 1, "Write the logic expressions of the half adder.", "**s = A ⊕ B**,  **c = A ∧ B**"),
+Q(SB, "Q14c", 5, "Use a truth table to prove the half adder works.", "```\nA B | A+B (binary) | s = A⊕B | c = A∧B\n0 0 |      00      |    0    |   0\n0 1 |      01      |    1    |   0\n1 0 |      01      |    1    |   0\n1 1 |      10      |    0    |   1\n```\nFor every input, c s matches the 2-bit sum A + B, so the circuit adds correctly."),
+Q(SB, "Q15a", 3, "Convert 42 to binary, showing working.", "42÷2=21 r**0**; 21÷2=10 r**1**; 10÷2=5 r**0**; 5÷2=2 r**1**; 2÷2=1 r**0**; 1÷2=0 r**1** → read upwards: **101010₂**."),
+Q(SB, "Q15b", 2, "Given 50 = 0x32, give −50 in 8-bit two's complement hex.", "0x32 = 0011 0010 → invert: 1100 1101 → add 1: **1100 1110 = 0xCE**"),
+Q(SB, "Q15c", 5, "Convert 0.3 to binary. Is it recurring? Show the recursion.", "Multiply by 2 and take the whole part:\n0.3×2=0.6 → 0\n0.6×2=1.2 → 1\n0.2×2=0.4 → 0\n0.4×2=0.8 → 0\n0.8×2=1.6 → 1\n0.6×2=1.2 → 1   ← 0.6 again: the pattern repeats\n**0.3 = 0.0 1001 1001 1001…₂**, recurring (the block 1001 repeats forever)."),
+Q(SB, "Q15d", 5, "Given 124 = 0111 1100₂ and 0.125 = 0.001₂, give −0.125 as an IEEE 32-bit float in binary and hex.", "0.001₂ = 1.0 × 2⁻³. Sign = 1; exponent = −3 + 127 = **124 = 01111100**; significand = 0 (the leading 1 is implicit).\n```\n1 | 01111100 | 00000000000000000000000\n1011 1110 0000 0000 0000 0000 0000 0000 = 0xBE000000\n```"),
+Q(SB, "Q16a", 2, "In a leaf function, translate `Z = N + 27; return Z;` (Z in $t0, N in $t1).", "```\naddi $t0, $t1, 27   # Z = N + 27\nmove $v0, $t0       # return value in $v0\njr   $ra            # return\n```"),
+Q(SB, "Q16b", 10, "Write MIPS to find the maximum of a 20-int array at label `my_arr` and store it at label `max_val`.", "```\n        la   $t0, my_arr      # base address\n        lw   $t1, 0($t0)      # max = arr[0]\n        li   $t2, 1           # i = 1\n        li   $t3, 20\n        j    test\nbody:   sll  $t4, $t2, 2      # i*4\n        add  $t4, $t4, $t0\n        lw   $t5, 0($t4)      # arr[i]\n        ble  $t5, $t1, skip   # if (arr[i] > max)\n        move $t1, $t5         #   max = arr[i]\nskip:   addi $t2, $t2, 1      # i++\ntest:   blt  $t2, $t3, body   # while i < 20\n        la   $t6, max_val\n        sw   $t1, 0($t6)      # max_val = max\n```"),
+Q(SB, "Q16c", 3, "Calling a **non-leaf** function: list the **caller's** responsibilities.", "Before the call: **save (spill) any unsaved registers** ($t, $a, $v) it still needs after the call; put the first 4 parameters in **$a0–$a3** and any extra or large ones on the stack; then **jal** (which puts the return address in $ra).\nAfter the call: take the result from **$v0/$v1** and **restore** the spilled temporaries (and pop any stack parameters)."),
+Q(SB, "Q17a", 5, "Explain pipelining and how it speeds up MIPS code.", "Instruction execution is split into stages (IF fetch, ID decode/register read, EX execute, MEM memory access, WB write back). Like an assembly line, a different instruction is in each stage at the same time, so once the pipeline is full about one instruction completes per stage-time. Each instruction still takes as long, but **throughput** rises by up to N× for N stages. Losses come from overheads between stages and from branches/hazards (MIPS uses a branch delay slot). MIPS's simple, uniform RISC instructions make pipelining easy."),
+Q(SB, "Q17b-i", 2, "Caching speeds up array iteration. Is that spatial or temporal locality?", "**Spatial locality**: consecutive array elements are next to each other in memory."),
+Q(SB, "Q17b-ii", 3, "Explain how caching works and why it helps array iteration.", "A cache is a small, fast (SRAM) memory managed by hardware that keeps recently used data. On a miss it fetches a whole **block (line)**, e.g. 64 bytes, from slower memory. Iterating through an array, the first access to a line misses but the following elements in that line (e.g. 16 ints) are **hits**, so most accesses run at cache speed instead of DRAM speed."),
+Q(SC, "Q18a", 2, "Difference between a high-level and a low-level language?", "A **high-level** language uses statements and abstractions far from the hardware (machine-independent; one statement becomes many instructions). A **low-level** language (assembly/machine code) uses opcodes that map almost one-to-one onto the machine's instructions and registers."),
+Q(SC, "Q18b", 2, "\"An array decays into a pointer.\" Meaning?", "In most expressions an array's name is converted to a **pointer to its first element** (&a[0]), losing its size information. Exceptions: `sizeof`, `&a`, and string initialisers."),
+Q(SC, "Q18c", 2, "Define **undefined behaviour**.", "Behaviour for which the C standard imposes **no requirements**, e.g. writing out of bounds, modifying a string literal, or using freed memory. Anything may happen: a crash, wrong results, or *apparently* correct output."),
+Q(SC, "Q18d", 2, "What does `&x` do in C?", "It gives the **address of x**, i.e. a pointer to x (type `T*` if x has type T)."),
+Q(SC, "Q19", 6, "A C program goes through preprocessing, compilation, assembly and linking. Give the steps **in order** with each step's input and output.", "```\nInput                 Step            Output\n.c source             Preprocessing   expanded source (.i)\n.i expanded source    Compilation     assembly code (.s)\n.s assembly           Assembly        object file (.o)\n.o files + libraries  Linking         executable\n```"),
+Q(SC, "Q20", 3, "`struct one {int a; char *b;}` and `union two {int a; char *b;}`, with 32-bit ints and 64-bit pointers. (a) sizeof one (b) sizeof two (c) why use a union?", "(a) **16 bytes**: 4 for a, 4 padding to align b, 8 for b.\n(b) **8 bytes**: the size of the largest member (members overlap).\n(c) When only **one** of the members is in use at a time. They share storage, which saves memory."),
+Q(SC, "Q21a", 3, "Describe in English: `int **p[4]`", "p is an **array of 4 pointers to pointers to int**."),
+Q(SC, "Q21b", 7, "Describe in English: `void* (*maxBy)(void*, int, int (*)(void*))`", "maxBy is a **pointer to a function** that takes (1) a pointer to void, (2) an int, and (3) a pointer to a function that takes a pointer to void and returns an int, and **returns a pointer to void**."),
+Q(SC, "Q22", 6, "`void minimise(int a, int b) { if (a < b) b = a; else a = b; }` is meant to set both ints to the smaller value. (a) Why can't it work? (b) Rewrite it.", "(a) C passes arguments **by value**: the function changes its own copies of a and b, and the caller's variables are untouched.\n(b)\n```\nvoid minimise(int *a, int *b) {\n    if (*a < *b) *b = *a;\n    else         *a = *b;\n}\n/* call: minimise(&x, &y); */\n```"),
+Q(SC, "Q23", 7, "```\n6  char k[20] = \"yellow\";\n7  char *m = \"green\";\n8  char *test = calloc(1, 20);\n9  char **arr = malloc(3 * sizeof(char*));\n10 *arr = k + 2;\n11 arr[1] = m;\n12 memcpy(&k, test, strlen(k));\n13 return 0;\n```\n(a) Before line 12, where do k, m, test and arr point (stack/heap/data)? (b) Which two lines are missing, and where? (c) Rewrite the left side of line 11 differently.", "(a) **k → stack** (local array); **m → data segment** (string literal); **test → heap**; **arr → heap**.\n(b) `free(test);` and `free(arr);` after line 12 (before `return`). Otherwise the memory leaks.\n(c) `*(arr + 1) = m;`"),
+]},
+{ name: "June 2022", mins: 180, intro: "180 marks, 3 hours. Paraphrased from the June 2022 CS201 paper. Three questions relied on diagrams that weren't in the text version. They're marked, and an equivalent practice version is supplied.", qs: [
+Q(SA, "Q1a", 2, "______ is the most important attribute of a good program.", "**Correctness**."),
+Q(SA, "Q1b", 2, "Complete a generic class header whose type parameter must implement Comparable: `public class SomeClass ______`", "`public class SomeClass<T extends Comparable<T>>` (or `<T extends Comparable>` as in the notes). Note: `extends` is used even for interfaces."),
+Q(SA, "Q1c", 2, "Definition of a graph?", "A graph **G = (V, E)** is a set of vertices V and a set of edges E, where each edge is a pair (v, w) with v, w ∈ V."),
+Q(SA, "Q1d", 2, "Accessing the element at a given position in a list of n elements is O(__) with an array and O(__) with a linked list.", "**O(1)** for an array, **O(n)** for a linked list."),
+Q(SA, "Q2", 8, "Using the course's `Tree<T>` class (getData, left, right, addLeft, addRight), write a client method `preOrderPrint` that recursively prints a tree of chars in pre-order.", "```\npublic void preOrderPrint (Tree<Character> root)\n  { if (root != null)\n      { System.out.println(root.getData());\n        preOrderPrint(root.left());\n        preOrderPrint(root.right());\n      }\n  }\n```"),
+Q(SA, "Q3", 15, "Implement `add`, `remove`, `head`, `isEmpty` for the **circular** `ArrayQueue<T>` (fields `T[] data`, `int hd, tl`; both −1 when empty).", "```\npublic void add (T item)\n  { tl++;\n    if (tl >= data.length) tl = 0;          // wrap around\n    if (tl == hd) throw new NoSpaceAvailableException(\"full\");\n    data[tl] = item;\n    if (hd == -1) hd = tl;                  // first item\n  }\npublic T remove ()\n  { if (hd == -1) throw new EmptyException(\"empty\");\n    T tmp = data[hd];\n    if (hd == tl) hd = tl = -1;             // last item\n    else { hd++; if (hd >= data.length) hd = 0; }\n    return tmp;\n  }\npublic T head ()\n  { if (hd == -1) throw new EmptyException(\"empty\");\n    return data[hd];\n  }\npublic boolean isEmpty () { return hd == -1; }\n```"),
+Q(SA, "Q4a", 7, "In the linked-list `IntegerList` (fields `first`, `numElements`, inner `ListNode{int data; ListNode next;}`), write the overloaded `position(int item, int pos)` that starts searching at position pos (so repeated values can be found).", "```\npublic int position (int item, int pos)\n  { ListNode curr = first;\n    int k = 0;\n    while (k < pos && curr != null)\n      { curr = curr.next; k++; }\n    while (curr != null && curr.data != item)\n      { curr = curr.next; k++; }\n    return (curr == null) ? -1 : k;\n  }\n```"),
+Q(SA, "Q4b", 3, "Use it to print the position of every 42 in `myList`.", "```\nint p = myList.position(42, 0);\nwhile (p != -1)\n  { System.out.println(p);\n    p = myList.position(42, p + 1);\n  }\n```"),
+Q(SA, "Q5", 12, "Directed graph (practice version, since the paper's figure isn't in the text). Arcs: A→B, A→C, B→D, C→B, C→E, D→F, E→D, F→A. Give (a) the edge-list representation and (b) the adjacency matrix.", "(a) Edge lists:\n```\nA: B, C\nB: D\nC: B, E\nD: F\nE: D\nF: A\n```\n(b) Adjacency matrix (row = from, col = to; the notes' convention puts 1s on the diagonal):\n```\n   A B C D E F\nA  1 1 1 0 0 0\nB  0 1 0 1 0 0\nC  0 1 1 0 1 0\nD  0 0 0 1 0 1\nE  0 0 0 1 1 0\nF  1 0 0 0 0 1\n```\nA directed graph's matrix is generally **not** symmetric.", "The paper's graph was a figure with vertices A–F. This is an equivalent practice graph."),
+Q(SA, "Q6a", 2, "Keys 13, 8, 25, 18, 15 into hash tables of size 6. Hash values?", "13→**1**, 8→**2**, 25→**1**, 18→**0**, 15→**3**"),
+Q(SA, "Q6b", 5, "Internal hash table (linear probing), inserted in that order.", "13→1. 8→2. 25→1 taken, 2 taken, so **3**. 18→0. 15→3 taken, so **4**.\n```\n slot:  0    1    2    3    4    5\n       18   13    8   25   15   --\n```"),
+Q(SA, "Q6c", 5, "External hash table for the same keys.", "```\n0: 18\n1: 25 -> 13     (new node at the front)\n2: 8\n3: 15\n4:\n5:\n```"),
+Q(SA, "Q7", 8, "Draw the BST equivalent to binary-searching `6 10 13 19 24 28 34 35 39 42` (indices 0–9).", "The root is the first midpoint, then recurse on each half using mid = (left+right)/2:\n```\n                 24 (4)\n             /          \\\n         10 (1)          35 (7)\n        /    \\          /     \\\n     6 (0)  13 (2)   28 (5)   39 (8)\n               \\        \\        \\\n              19 (3)   34 (6)   42 (9)\n```"),
+Q(SA, "Q8a", 8, "Implement Insertion Sort for `int[] list`.", "```\npublic static void insertionSort (int[] list)\n  { for (int k = list.length - 2; k >= 0; k--)\n      { int tmp = list[k];\n        int j = k + 1;\n        while (j < list.length && tmp > list[j])\n          { list[j - 1] = list[j]; j++; }\n        list[j - 1] = tmp;\n      }\n  }\n```\n(The left-to-right version is equally correct.)"),
+Q(SA, "Q8b", 4, "Big-O of Insertion Sort (best/average/worst) for comparisons and data moves.", "```\n              Comparisons   Data moves\nBest case       O(n)          O(n)    (sorted: n-1 trivial moves)\nAverage case    O(n²)         O(n²)\nWorst case      O(n²)         O(n²)   (reverse order)\n```"),
+Q(SB, "Q9a", 4, "Practice version (the paper's expression was an image): simplify, showing each step: **(A ∧ B) ∨ (A ∧ ¬B)**.", "(A ∧ B) ∨ (A ∧ ¬B)\n= A ∧ (B ∨ ¬B)      distribution of and over or\n= A ∧ 1            B ∨ ¬B = 1\n= **A**            and-identity", "The original Q9a expression was a graphic that isn't in the text version. This is a similar 4-mark simplification."),
+Q(SB, "Q9b", 6, "A half subtractor computes D = A − B with **D = A ⊕ B** and **Bout = ¬A ∧ B**. (i) Write the truth table for these equations. (ii) How does the table show the circuit is correct?", "(i)\n```\nA B | D = A⊕B | Bout = ¬A∧B\n0 0 |    0    |    0\n0 1 |    1    |    1\n1 0 |    1    |    0\n1 1 |    0    |    0\n```\n(ii) Write the circuit's own truth table (its outputs for all four input combinations). If its D and Bout columns are identical to these for **every** input row, the circuit implements the equations. That also matches binary subtraction: 0−1 = 1 borrow 1, 1−0 = 1, 1−1 = 0, 0−0 = 0."),
+Q(SB, "Q10a", 3, "Convert 19 to base 2, showing working.", "19÷2=9 r1; 9÷2=4 r1; 4÷2=2 r0; 2÷2=1 r0; 1÷2=0 r1 → **10011₂**"),
+Q(SB, "Q10b", 4, "−20 in 8-bit two's complement, showing all steps.", "20 = **0001 0100** → invert: 1110 1011 → add 1: **1110 1100**"),
+Q(SB, "Q10c-i", 3, "IEEE single: what is the stored **exp** field (in decimal) for 0.001101₂? List the steps.", "Normalise: 0.001101 = **1.101 × 2⁻³** (move the point 3 places right). Add the bias: −3 + 127 = **124**."),
+Q(SB, "Q10c-ii", 3, "97.6 is `0x42C33333`. What is −97.6 in hex? Steps?", "Only the sign bit changes (signed magnitude): first hex digit 4 = 0100 → 1100 = C. **0xC2C33333**."),
+Q(SB, "Q11a", 4, "With int N in $t0 and int Z at offset 8 in the current stack frame: (i) N = Z; (ii) `return 42;` from a leaf function with no frame.", "(i) `lw $t0, -8($fp)`  (stack-frame offsets are negative because the stack grows down)\n(ii)\n```\nli  $v0, 42\njr  $ra\n```"),
+Q(SB, "Q11b", 12, "Write a complete MIPS program that calls separately-loaded `readint()` and `printint(int)` to implement:\n```\nint next = readint(); int sum = 0;\nwhile (next > 0) { if (next < 10) sum += next; next = readint(); }\nprintint(sum);\n```\nMarks are given for comments on register use.", "```\nEXIT = 10\n        .text\n# $s0: next  $s1: sum  $s2: 10   (s regs: survive the calls)\nmain:   addi $sp, $sp, -4      # glue to book stack convention\n        sw   $ra, 0($sp)       # root: save return address\n        sw   $fp, -4($sp)\n        move $fp, $sp\n        addi $sp, $sp, -8\n        jal  readint           # next = readint();\n        move $s0, $v0\n        li   $s1, 0            # sum = 0;\n        li   $s2, 10\n        j    wtest\nwbody:  bge  $s0, $s2, ifdone  # if (next < 10)\n        add  $s1, $s1, $s0     #   sum += next;\nifdone: jal  readint           # next = readint();\n        move $s0, $v0\nwtest:  bgt  $s0, $zero, wbody # while (next > 0)\n        move $a0, $s1\n        jal  printint          # printint(sum);\n        move $sp, $fp\n        lw   $fp, -4($sp)\n        lw   $ra, 0($sp)\n        addi $sp, $sp, 4\n        li   $v0, EXIT\n        syscall\n```"),
+Q(SB, "Q11c-i", 2, "Ackermann: A(m,n) = n+1 if m = 0; A(m−1, 1) if n = 0; otherwise A(m−1, A(m, n−1)). Explain what makes the C version a **recursive** function, referring to its lines.", "A recursive function **calls itself**. The two `return ackermann(...)` lines (the n == 0 case, and the nested call in the general case) make recursive calls on 'smaller' arguments. The `m == 0` case (return n+1) is the **stop case**, which ends the recursion."),
+Q(SB, "Q11c-ii", 3, "In the MIPS version, the function start does `addi $sp, $sp, -12`. Why −12?", "It **allocates the stack frame**: 3 words (12 bytes) for the saved return address, the saved old frame pointer, and m (saved at −8($fp) because $a0 is overwritten by the inner call). Subtracting is correct because the **stack grows down**, so $sp is moved past the new frame."),
+Q(SB, "Q11c-iii", 2, "After the `n == 0` call (`jal ackermann`) the code does `j ackermannreturn` rather than unwinding the frame right there. Why?", "The stack-unwinding and return code is written **once**, at the `ackermannreturn` label. Every return path jumps there, which avoids duplicating code (and its bugs). The frame must still be unwound exactly once."),
+Q(SB, "Q11c-iv", 2, "Why is the final call to ackermann a `jal` (not a `j`)?", "It's a real function call: `jal` saves the **return address in $ra** so the callee comes back here. This function can then unwind its own frame and return the result in $v0 to its own caller. A plain `j` would never come back."),
+Q(SB, "Q12a", 4, "Three clusters of memory references illustrate locality: 1,2,3 = the same location again; 4,5,6 = nearby locations; 7,8,9 = scattered locations. (i) Is 4,5,6 spatial or temporal? Justify. (ii) Will repeated access to 7,8,9 be faster or slower than the others? Explain.", "(i) **Spatial**: the accesses are to locations **near each other**, so they're likely in the same cache block, which is fetched once.\n(ii) **Slower**: scattered (poor locality) accesses don't share cache blocks and aren't reused, so they miss the cache more often and pay DRAM-speed costs.", "The paper's figure isn't in the text. These cluster meanings follow the book's locality figure (temporal / spatial / poor)."),
+Q(SB, "Q12b", 2, "Why does a cache speed up a CPU even though it's a small fraction of total memory?", "Because of **locality**: programs reuse recent data (temporal) and use nearby data (spatial). The small fast cache holds exactly that working set, so most accesses hit at cache speed and the average access time approaches the cache's speed."),
+Q(SC, "Q13", 5, "```\n4  char* data = \"hello\";\n5  data[2] = 'p';\n6  printf(\"%s\", data);\n```\n(a) Which line causes a problem? (b) Why? (c) It printed \"heplo\" anyway. What is undefined behaviour?", "(a) **Line 5**.\n(b) `data` points to a **string literal** in read-only static (data segment) storage. Modifying a literal is not allowed (undefined behaviour). Fix: `char data[] = \"hello\";`\n(c) Behaviour the C standard places **no requirements** on. The program may crash, misbehave, or seem to work. Seeming to work doesn't make it correct."),
+Q(SC, "Q14", 9, "Describe in English: (a) `char **p[3]` (b) `void * (*d)(int*, int)` (c) `char *k(int* (*)(int, int), int**)`", "(a) p is an **array of 3 pointers to pointers to char**.\n(b) d is a **pointer to a function** taking (a pointer to int, an int) and **returning a pointer to void**.\n(c) k is a **function** taking (1) a pointer to a function that takes (int, int) and returns a pointer to int, and (2) a pointer to a pointer to int, and **returning a pointer to char**."),
+Q(SC, "Q15", 8, "Explain the purpose of each step: (a) preprocessing (b) compiling (c) assembly (d) linking.", "(a) **Preprocessing**: handles # directives (expands #include files and #define macros, conditional compilation) and strips comments, producing pure C.\n(b) **Compiling**: translates the preprocessed C into **assembly language** for the target machine (checks syntax and types).\n(c) **Assembly**: translates assembly into machine code in an **object file** (.o) with unresolved external references.\n(d) **Linking**: combines object files and libraries, **resolves symbols** (e.g. printf) and produces the executable."),
+Q(SC, "Q16", 9, "```\nvoid swap(int a, int b) { int temp = a; a = b; b = temp; }\nchar *mogrify(int big, int small) {\n  if (small > big) { swap(small, big); }\n  else if (small = big) { big++; }\n  ...\n}\n```\n(a) Why can't swap work? (b) Rewrite swap. (c) Rewrite the call. (d) Fix the other error.", "(a) Arguments are passed **by value**: swap exchanges its local copies only.\n(b)\n```\nvoid swap(int *a, int *b) { int temp = *a; *a = *b; *b = temp; }\n```\n(c) `swap(&small, &big);`\n(d) `else if (small == big) {`  (`=` assigns, so the condition was the value of big)"),
+Q(SC, "Q17", 9, "```\n5  char w[] = \"twip\";\n6  char *p[3] = { malloc(3), w, \"zoot\" };\n7  **p = 'y';\n8  p[0][1] = 'c';\n9  *(*p + 2) = '\\0';\n10 printf(\"%s - %s - %s\", p[0], p[1], p[2]);\n11 free(*p);\n```\n(a) Where do p, w, p[0], p[1], p[2] point (stack/heap/data)? (b) Output? (c) Why is line 9 important? (d) Why line 11? (e) Rewrite the left side of line 8.", "(a) **p → stack** (array of pointers decays to the address of p[0]); **w → stack**; **p[0] → heap**; **p[1] → stack** (it's w); **p[2] → data segment** (literal).\n(b) **yc - twip - zoot**\n(c) It **null-terminates** the heap string. malloc doesn't zero memory, so without it printf could read past the 3 bytes (undefined behaviour or a crash).\n(d) It **frees** the heap memory from malloc and avoids a memory leak.\n(e) `*(*p + 1)` or `*(p[0] + 1)`"),
+]},
+];
+
+const PREDICTED = [
+{ name: "Predicted A: AdvProg", mins: 90, intro: "Questions in the style of Section A on topics the last two papers **didn't** test (so they're likely next). Same 'implement this method / trace this / define this' format.", qs: [
+Q(SA, "P1", 8, "Define: (a) postcondition (b) tractable problem (c) collision (in hashing) (d) iterator.", "(a) What a method guarantees will be true **after** it finishes (if its preconditions held).\n(b) A problem with an algorithm of **polynomial complexity or better**. Exponential and worse are intractable.\n(c) Two different keys hash to the **same** table position.\n(d) An object with methods (get/next/atEnd) that lets a client step through the contents of an ADT without knowing its implementation."),
+Q(SA, "P2", 12, "Implement `push`, `pop`, `top` and `isEmpty` for `ArrayStack<T>` (fields `T[] data`, `int topIndex`, −1 when empty), checking preconditions.", "```\npublic void push (T item)\n  { if (topIndex + 1 >= data.length) throw new NoSpaceAvailableException(\"full\");\n    data[++topIndex] = item; }\npublic T pop ()\n  { if (topIndex < 0) throw new EmptyException(\"empty\");\n    return data[topIndex--]; }\npublic T top ()\n  { if (topIndex < 0) throw new EmptyException(\"empty\");\n    return data[topIndex]; }\npublic boolean isEmpty () { return topIndex < 0; }\n```\nPrefix ++ in push and postfix -- in pop are essential."),
+Q(SA, "P3", 10, "Implement `addLeft(T item)` and `removeRight()` for the circular doubly-linked `Deque<T>` with a header node (`header.rt` = left end, `header.lt` = right end).", "```\npublic void addLeft (T item)\n  { DequeNode n = new DequeNode(); n.data = item;\n    n.lt = header; n.rt = header.rt;\n    header.rt.lt = n; header.rt = n; }\npublic T removeRight ()\n  { if (header.lt == header) throw new EmptyException(\"empty\");\n    DequeNode n = header.lt;\n    header.lt = n.lt; n.lt.rt = header;\n    return n.data; }\n```"),
+Q(SA, "P4", 8, "Write the private recursive `insert(T value, BSTreeNode root)` for BinarySearchTree (left < node ≤ right; nodes have a parent pointer).", "```\nprivate void insert (T value, BSTreeNode root)\n  { if (value.compareTo(root.data) < 0)\n      { if (root.lt != null) insert(value, root.lt);\n        else root.lt = new BSTreeNode(value, root); }\n    else\n      { if (root.rt != null) insert(value, root.rt);\n        else root.rt = new BSTreeNode(value, root); }\n  }\n```"),
+Q(SA, "P5", 6, "Insert M, F, T, B, H, P, X, D into an empty BST. Give the in-order, pre-order and post-order traversals.", "Tree: M(F(B(-,D), H), T(P, X)).\nIn-order: **B D F H M P T X**\nPre-order: **M F B D H T P X**\nPost-order: **D B H F P X T M**"),
+Q(SA, "P6", 6, "Convert the general tree a(b(e), c(f, g), d) to a binary tree (left = left-most child, right = right sibling). Draw it.", "```\n  a\n /\nb\n| \\\ne  c\n  / \\\n f   d\n  \\\n   g\n```\na.left = b; b.left = e, b.right = c; c.left = f, c.right = d; f.right = g."),
+Q(SA, "P7", 10, "Implement `partition(T[] list, int start, int end)` for Quick Sort (pivot = list[start]) and show the list after the first partition of `5 2 8 1 9 3`.", "Code: see the drill *Quick Sort: partition*.\nTrace with pivot 5: right stops at 3 (index 5); left moves up to 8 (index 2); swap → 5 2 3 1 9 8. right moves down to 1 (index 3); left stops at index 3 (left == right). Swap the pivot with list[3]: **1 2 3 5 9 8**. Returns 3."),
+Q(SA, "P8", 6, "Fill in the Big-O table: Selection, Quick and Merge Sort, best/average/worst comparisons. Why is Quick Sort preferred to Merge Sort?", "```\n           Best        Average     Worst\nSelection  O(n²)       O(n²)       O(n²)   (only n-1 swaps)\nQuick      O(n log n)  O(n log n)  O(n²)   (sorted input, first pivot)\nMerge      O(n log n)  O(n log n)  O(n log n)\n```\nMerge Sort needs extra temporary arrays (about **2× memory**). Quick Sort's worst case is rare and avoidable with median-of-three or random pivots."),
+Q(SA, "P9", 6, "Internal hashing: explain why a deleted slot can't be set back to empty, and describe primary and secondary clustering.", "If you emptied the slot, a later search for a key that was placed **after** it by probing would stop early at the empty slot and wrongly report 'not found'. So slots have 3 states: empty, occupied, deleted, and searches only stop at empty.\n**Primary clustering**: keys hashing to the same location fill consecutive slots. **Secondary clustering**: a key collides with a slot taken by a *displaced* key with a different hash value. Both grow as the table fills."),
+Q(SA, "P10", 5, "Write an iterative factorial and say why the recursive version shouldn't be used in practice. What is the complexity of Towers of Hanoi?", "```\nint f = 1; for (int k = 2; k <= n; k++) f *= k; return f;\n```\nRecursion adds call/return and stack-frame overhead for every step, and an iterative loop does the same work more efficiently. Towers of Hanoi is **O(2ⁿ)** (2ⁿ − 1 moves), an intractable problem."),
+Q(SA, "P11", 6, "Interpolated binary search: explain how it chooses `look`, give its complexity, and say when it beats ordinary binary search.", "look = left + (item − list[left]) / (list[right] − list[left]) × (right − left): it estimates the position in proportion to the value (like opening a phone book near 'W'). **O(log log n)** when the keys are evenly distributed (about 3 comparisons for 1000 items vs about 10). It needs numeric keys and loses its advantage on badly skewed data."),
+]},
+{ name: "Predicted B: Architecture", mins: 70, intro: "Section B-style questions on book material that hasn't been examined much yet.", qs: [
+Q(SB, "P1", 5, "Prove De Morgan's law ¬(A ∨ B) = ¬A ∧ ¬B with a truth table.", "```\nA B | A∨B | ¬(A∨B) | ¬A | ¬B | ¬A∧¬B\n0 0 |  0  |   1    | 1  | 1  |   1\n0 1 |  1  |   0    | 1  | 0  |   0\n1 0 |  1  |   0    | 0  | 1  |   0\n1 1 |  1  |   0    | 0  | 0  |   0\n```\nThe ¬(A∨B) and ¬A∧¬B columns are identical for every input, so the law holds."),
+Q(SB, "P2", 6, "Full adder: give the truth table (Cin, A, B → S, Cout) and expressions for S and Cout.", "```\nCin A B | S Cout\n 0  0 0 | 0  0\n 0  0 1 | 1  0\n 0  1 0 | 1  0\n 0  1 1 | 0  1\n 1  0 0 | 1  0\n 1  0 1 | 0  1\n 1  1 0 | 0  1\n 1  1 1 | 1  1\n```\nS = A ⊕ B ⊕ Cin;  Cout = (A ∧ B) ∨ (Cin ∧ (A ⊕ B))"),
+Q(SB, "P3", 5, "Add 100 and 50 as 8-bit two's complement numbers. Is the result correct? Use the carry rule to explain.", "100 = 0110 0100, 50 = 0011 0010. Sum = **1001 0110**, which reads as −106. There is a carry **into** the sign bit but **none out** of it, so **overflow**: 150 > 127, the 8-bit maximum."),
+Q(SB, "P4", 6, "Encode −6.75 as an IEEE single (binary and hex).", "6.75 = 110.11₂ = 1.1011 × 2². Sign 1; exp = 2 + 127 = 129 = 10000001; fraction = 1011000…\n```\n1 10000001 10110000000000000000000\n1100 0000 1101 1000 0000 ... = 0xC0D80000\n```"),
+Q(SB, "P5", 6, "Give the R, I and J formats with field widths, an example instruction of each, and explain how 420000 is loaded into a register.", "R: op6 rs5 rt5 rd5 shamt5 funct6 (e.g. `add`); I: op6 rs5 rt5 imm16 (e.g. `addi`, `lw`, `beq`); J: op6 addr26 (`j`, `jal`). Immediates are 16 bits, so 420000 = 0x000668A0 needs `lui $t0, 0x0006` then `ori $t0, $t0, 0x68A0`."),
+Q(SB, "P6", 4, "What do `li`, `move`, `blt` and `la` turn into? Why does the assembler need `$at`?", "li → `ori $r, $0, imm` (or lui+ori); move → `addu $r, $0, $s`; blt → `slt $at, a, b` + `bne $at, $zero, label`; la → `lui` (+ `ori`). `$at` is reserved so the assembler has a scratch register when one pseudoinstruction becomes several real instructions."),
+Q(SB, "P7", 10, "Write a leaf function `strlen` ($a0 = string address, result in $v0) and the code in main that calls it on label `msg` and prints the result.", "```\n        la   $a0, msg\n        jal  strlen\n        move $a0, $v0\n        li   $v0, 1          # PRINT_INT\n        syscall\n\nstrlen: move $v0, $zero\nloop:   lbu  $t1, 0($a0)\n        beq  $t1, $zero, done\n        addi $v0, $v0, 1\n        addi $a0, $a0, 1\n        j    loop\ndone:   jr   $ra\n```\n(main must save $ra before the jal, since it's a root function.)"),
+Q(SB, "P8", 5, "List the **callee's** responsibilities at function entry and exit (book convention).", "Entry: save $ra and the old $fp on the stack, set $fp = $sp, move $sp past the new frame (locals and spilled $s registers), and save any $s registers it will change.\nExit: put the result in $v0/$v1, restore the $s registers, restore $sp from $fp, reload $fp and $ra, then `jr $ra`."),
+Q(SB, "P9", 4, "A 5-unit instruction is split into 5 equal stages with 0.25 units of overhead between stages. Ideal speedup?", "Time per instruction through the pipe = 5×1 + 4×0.25 = 6. Average per instruction = 6/5 = 1.2. Speedup = 5 / 1.2 ≈ **4.17**."),
+Q(SB, "P10", 4, "Amdahl's Law: 80% of a program can be parallelised over 8 cores. Speedup?", "S = 0.2, N = 8: speedup = 8 / (0.2×8 + 0.8) = 8 / 2.4 ≈ **3.33**."),
+Q(SB, "P11", 4, "L1 = 1 cycle; 2% of instructions go to L2 (12 cycles); 0.5% go to DRAM (150 cycles). Average cycles per instruction?", "0.975×1 + 0.02×12 + 0.005×150 = 0.975 + 0.24 + 0.75 = **1.965**"),
+Q(SB, "P12", 4, "Explain RISC vs CISC, and why RISC is called a load-store architecture.", "RISC: many general-purpose registers, simple fixed-length instruction formats, and memory touched only by **load/store** instructions (hence load-store architecture). This makes fast hardware and pipelining easier. CISC (e.g. Intel): variable-length instructions, operations directly on memory, and special-purpose registers, giving more compact code (RISC code uses about 25% more memory)."),
+]},
+{ name: "Predicted C: C programming", mins: 50, intro: "Section C (C programming) isn't in the provided textbooks, but it was worth 40 marks on both papers. These follow the exact question types that recur.", qs: [
+Q(SC, "P1", 6, "Describe in English: (a) `int *(*f)(char)` (b) `char (*a)[10]` (c) `int (*fs[5])(int)`", "(a) f is a **pointer to a function** taking a char and returning a pointer to int.\n(b) a is a **pointer to an array of 10 chars**.\n(c) fs is an **array of 5 pointers to functions** taking an int and returning an int."),
+Q(SC, "P2", 4, "Write a declaration for: a function g taking a pointer to pointer to char and returning a pointer to a function that takes (int, int) and returns int.", "`int (*g(char **))(int, int);`"),
+Q(SC, "P3", 6, "```\nint *make() { int x = 5; return &x; }\nint main() { int *p = make(); printf(\"%d\", *p); }\n```\nWhat's wrong? Give two fixes.", "It returns the address of a **local (stack) variable** whose lifetime ends when make returns, so the pointer dangles and using it is undefined behaviour.\nFixes: allocate on the heap (`int *x = malloc(sizeof *x); *x = 5; return x;` and the caller frees it), or use a `static int x`, or pass in a pointer to the caller's variable."),
+Q(SC, "P4", 5, "```\nchar *s = malloc(6);\nstrcpy(s, \"hello\");\nchar *t = s;\nfree(s);\nprintf(\"%s\", t);\n```\nIdentify the bug, and say what would happen without the free.", "**Use after free**: t points to the same block that was freed, so printing it is undefined behaviour. (malloc(6) is exactly enough for \"hello\" plus '\\0'.) Without the free there'd be a **memory leak** if s were never freed later."),
+Q(SC, "P5", 4, "sizeof each (32-bit int, 64-bit pointers, normal alignment): `struct {char c; int i;}`, `struct {char c; char *p;}`, `union {char c[10]; int i;}`.", "8 (1 + 3 padding + 4); 16 (1 + 7 padding + 8); 12 (the 10-byte array rounded up to a multiple of int's 4-byte alignment)."),
+Q(SC, "P6", 5, "Given `int a[5] = {1,2,3,4,5}; int *p = a + 1;`, evaluate: `*p`, `p[2]`, `*(a+4)`, `sizeof(a)`, `*p++` (and what p points to afterwards).", "*p = **2**; p[2] = **4**; *(a+4) = **5**; sizeof(a) = **20** (no decay inside sizeof); *p++ gives **2**, then p points to a[2] (3)."),
+Q(SC, "P7", 4, "For each, is it stack, heap or data segment? A global `int g;`, a `static int s;` in a function, a local `int x;`, `malloc(10)`, the string literal in `char *m = \"hi\";`", "g → **data** segment; s → **data** segment (static lifetime); x → **stack**; malloc → **heap**; the literal → **data** (read-only)."),
+Q(SC, "P8", 6, "Write `void reverse(char *s)` that reverses a string in place using pointers.", "```\n#include <string.h>\nvoid reverse(char *s) {\n    char *e = s + strlen(s) - 1;\n    while (s < e) {\n        char t = *s;\n        *s++ = *e;\n        *e-- = t;\n    }\n}\n```"),
+]},
+];
+
+const ABOUT = `**Three ways to practise:**
+
+**1. Code drills**: every algorithm and code example from *Advanced Programming* (chapters 1–10) and the MIPS half of *MIPS2C* (chapters 2–5), plus the C programs Section C keeps asking about. For each drill you can:
+- ✍️ **Write from memory** in the editor (Tab inserts spaces; your answer is saved), then compare with the model solution side by side.
+- 🧩 **Fill the gaps**: about a third of the lines are blanked at random. Type them in and check. Press *New gaps* to get different blanks.
+- 📖 **Study** the solution with notes.
+Rate each one *Shaky* or *Nailed it*. The dot in the sidebar tracks it. Drills tagged **came up in …** were asked in a past paper.
+
+**2. Past papers**: June 2023 and June 2022, question by question with marks, an answer box, a model answer to reveal, and a self-mark box that totals your score. There's an optional 3-hour timer.
+
+**3. Predicted questions**: three extra sets in the same style, aimed at topics the last two papers skipped (stacks, deques, BST insert, quick/merge sort, full adders, IEEE encoding, strlen, function frames, Amdahl, C pointers and declarations).
+
+**Notes**
+- The code was written fresh for this page in the course's style, using the same class and method names as the notes. Where the notes' version differs slightly (e.g. Insertion Sort runs right-to-left), that's mentioned.
+- The paper questions are paraphrased, and the model answers are written for practice. They aren't an official memo.
+- Three 2022 questions used figures that weren't in the text, so practice equivalents are given (marked in yellow).
+- Everything is saved in this browser only.
+- See also *AdvProg-practice.html* and *MIPS-practice.html* in this repo for 440+ quick-fire quiz questions.`;
+
+
+// ---------- utilities ----------
+const LS = "practice:cs201-exam";
+let store = {}; try { store = JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) {}
+store.drill = store.drill || {}; store.marks = store.marks || {}; store.ans = store.ans || {};
+const save = () => { try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) {} };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function md(s) {
+  if (s == null) return "";
+  return String(s).split("```").map((p, i) => i % 2
+    ? "<pre><code>" + esc(p.replace(/^\n/, "")) + "</code></pre>"
+    : esc(p).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>")).join("");
+}
+const squash = s => s.replace(/\/\/.*$|#.*$/g, "").replace(/\s+/g, "").replace(/;$/, "");
+
+// ---------- tabs ----------
+document.getElementById("tabs").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
+  ["drills", "papers", "predict", "about"].forEach(v => document.getElementById("v-" + v).classList.toggle("hidden", v !== b.dataset.v));
+  window.scrollTo({ top: 0 });
+};
+
+// ---------- code drills ----------
+let cur = 0, filter = "", mode = "write";
+const dEl = document.getElementById("v-drills");
+dEl.innerHTML = `<div class="layout"><aside class="side"><input id="dsearch" placeholder="Search algorithms…">
+  <div class="row" style="margin-bottom:4px"><button class="chip on" data-b="all">All</button><button class="chip" data-b="AdvProg">AdvProg</button><button class="chip" data-b="MIPS">MIPS</button><button class="chip" data-b="C">C</button></div>
+  <div id="dlist"></div><div class="meta" id="dcount" style="margin:10px 4px"></div></aside><div id="dmain"></div></div>`;
+let book = "all";
+document.getElementById("dsearch").oninput = e => { filter = e.target.value.toLowerCase(); renderList(); };
+dEl.querySelector(".side .row").onclick = e => { const b = e.target.closest("[data-b]"); if (!b) return; book = b.dataset.b; dEl.querySelectorAll("[data-b]").forEach(x => x.classList.toggle("on", x === b)); renderList(); };
+function visible() { return DRILLS.map((d, i) => [d, i]).filter(([d]) => (book === "all" || d.book === book) && (!filter || (d.title + d.group + d.task).toLowerCase().includes(filter))); }
+function renderList() {
+  let html = "", g = null;
+  visible().forEach(([d, i]) => {
+    if (d.group !== g) { g = d.group; html += `<div class="grp">${esc(g)}</div>`; }
+    const st = store.drill[i];
+    html += `<button class="item ${i === cur ? "on" : ""}" data-i="${i}"><span>${esc(d.title)}</span><span class="dot ${st === 2 ? "ok" : st === 1 ? "meh" : ""}"></span></button>`;
+  });
+  document.getElementById("dlist").innerHTML = html || `<div class="meta">No matches.</div>`;
+  const done = Object.values(store.drill).filter(v => v === 2).length;
+  document.getElementById("dcount").textContent = `${DRILLS.length} drills · ${done} marked “nailed it”`;
+}
+document.getElementById("dlist").onclick = e => { const b = e.target.closest("[data-i]"); if (!b) return; cur = +b.dataset.i; renderList(); renderDrill(); window.scrollTo({ top: 0 }); };
+function pickGaps(lines) {
+  const cand = lines.map((l, i) => [l, i]).filter(([l]) => { const t = l.trim(); return t.length > 3 && !/^(\/\/|#|\/\*|\*|\}|\{|else$|[})\]]+;?$|\.text|\.data)/.test(t); });
+  const n = Math.max(2, Math.round(cand.length * 0.35));
+  const pick = new Set(); const arr = cand.slice();
+  while (pick.size < Math.min(n, arr.length)) pick.add(arr[Math.floor(Math.random() * arr.length)][1]);
+  return pick;
+}
+function renderDrill() {
+  const d = DRILLS[cur]; if (!d) return;
+  const lines = d.code.replace(/^\n/, "").replace(/\s+$/, "").split("\n");
+  const m = document.getElementById("dmain");
+  m.innerHTML = `<div class="card">
+    <div class="row" style="justify-content:space-between"><span><span class="tag">${esc(d.book)}</span><span class="tag">${esc(d.group)}</span>${d.exam ? `<span class="tag" style="color:var(--bad);border-color:var(--bad)">came up in ${esc(d.exam)}</span>` : ""}</span>
+    <span class="row"><button class="btn ghost" id="prev">←</button><button class="btn ghost" id="nxt">→</button></span></div>
+    <h2 style="margin-top:8px">${esc(d.title)}</h2>
+    <div>${md(d.task)}</div>
+    ${d.given ? `<h3>Given / starting point</h3><pre><code>${esc(d.given)}</code></pre>` : ""}
+    <div class="row" style="margin-top:12px">
+      <button class="chip ${mode === "write" ? "on" : ""}" data-m="write">✍️ Write from memory</button>
+      <button class="chip ${mode === "gaps" ? "on" : ""}" data-m="gaps">🧩 Fill the gaps</button>
+      <button class="chip ${mode === "read" ? "on" : ""}" data-m="read">📖 Study the solution</button>
+    </div>
+    <div id="work" style="margin-top:12px"></div>
+    <div class="row" style="margin-top:14px;justify-content:flex-end"><span class="meta">How did it go?</span>
+      <button class="btn bad" id="r1">Shaky</button><button class="btn good" id="r2">Nailed it</button></div>
+  </div>`;
+  m.querySelectorAll("[data-m]").forEach(b => b.onclick = () => { mode = b.dataset.m; renderDrill(); });
+  const step = k => { const v = visible().map(x => x[1]); const p = v.indexOf(cur); if (v.length) { cur = v[(p + k + v.length) % v.length]; renderList(); renderDrill(); } };
+  document.getElementById("prev").onclick = () => step(-1);
+  document.getElementById("nxt").onclick = () => step(1);
+  document.getElementById("r1").onclick = () => { store.drill[cur] = 1; save(); renderList(); step(1); };
+  document.getElementById("r2").onclick = () => { store.drill[cur] = 2; save(); renderList(); step(1); };
+  const w = document.getElementById("work");
+  const sol = `<h3>Model solution</h3><pre><code>${esc(lines.join("\n"))}</code></pre>${d.notes ? `<div class="fb info">${md(d.notes)}</div>` : ""}`;
+  if (mode === "read") { w.innerHTML = sol; return; }
+  if (mode === "write") {
+    const key = "w" + cur;
+    w.innerHTML = `<textarea id="ta" spellcheck="false" placeholder="Write the code here from memory, then press Compare…">${esc(store.ans[key] || "")}</textarea>
+      <div class="row" style="margin-top:8px"><button class="btn" id="cmp">Compare with solution</button><button class="btn ghost" id="clr">Clear</button></div><div id="cmpout"></div>`;
+    const ta = document.getElementById("ta");
+    ta.addEventListener("keydown", e => { if (e.key === "Tab") { e.preventDefault(); const s = ta.selectionStart; ta.value = ta.value.slice(0, s) + "    " + ta.value.slice(ta.selectionEnd); ta.selectionStart = ta.selectionEnd = s + 4; } });
+    ta.oninput = () => { store.ans[key] = ta.value; save(); };
+    document.getElementById("clr").onclick = () => { ta.value = ""; store.ans[key] = ""; save(); };
+    document.getElementById("cmp").onclick = () => {
+      const mine = new Set(ta.value.split("\n").map(squash).filter(Boolean));
+      const real = lines.map(squash).filter(x => x.length > 2);
+      const hit = real.filter(x => mine.has(x)).length;
+      document.getElementById("cmpout").innerHTML = `<div class="cols" style="margin-top:10px"><div><h3>Yours</h3><pre><code>${esc(ta.value || "(empty)")}</code></pre></div><div>${sol}</div></div>
+        <div class="fb info">Rough line match: <b>${hit}/${real.length}</b> lines identical (ignoring spaces and comments). Different but equivalent code is fine. Judge the logic, then rate yourself below.</div>`;
+    };
+    return;
+  }
+  const gaps = pickGaps(lines);
+  w.innerHTML = `<div class="gap" id="gapbox">${lines.map((l, i) => gaps.has(i)
+      ? `<div class="ln">${esc(l.match(/^\s*/)[0])}<input data-i="${i}" spellcheck="false" autocomplete="off"></div>`
+      : `<div class="ln">${esc(l) || " "}</div>`).join("")}</div>
+    <div class="row" style="margin-top:8px"><button class="btn" id="chk">Check gaps</button><button class="btn ghost" id="newg">New gaps</button><button class="btn ghost" id="show">Reveal</button></div><div id="gapfb"></div>`;
+  document.getElementById("newg").onclick = renderDrill;
+  document.getElementById("chk").onclick = () => {
+    let ok = 0, n = 0;
+    w.querySelectorAll(".gap input").forEach(inp => { n++; const good = squash(inp.value) === squash(lines[+inp.dataset.i]); inp.className = good ? "ok" : "no"; if (good) ok++; });
+    document.getElementById("gapfb").innerHTML = `<div class="fb ${ok === n ? "ok" : "no"}">${ok} / ${n} gaps exact. ${ok === n ? "Perfect." : "Red ones differ. They may still be equivalent, so press Reveal to compare."}</div>`;
+  };
+  document.getElementById("show").onclick = () => w.querySelectorAll(".gap input").forEach(inp => { if (inp.className !== "ok") { inp.value = lines[+inp.dataset.i].trim(); inp.className = "no"; } });
+}
+renderList(); renderDrill();
+
+// ---------- papers ----------
+function renderPaperSet(el, sets, prefix) {
+  let which = 0, timerId = null, left = 0;
+  function draw() {
+    const P = sets[which];
+    const total = P.qs.reduce((a, q) => a + q.m, 0);
+    const got = P.qs.reduce((a, q, i) => a + (+store.marks[prefix + which + ":" + i] || 0), 0);
+    let sec = null;
+    el.innerHTML = `<div class="card"><div class="row" style="justify-content:space-between">
+        <div class="row">${sets.map((s, i) => `<button class="chip ${i === which ? "on" : ""}" data-p="${i}">${esc(s.name)}</button>`).join("")}</div>
+        <div class="row"><span class="timer" id="tm"></span><button class="btn ghost" id="tbtn">${timerId ? "Stop timer" : "Start " + (P.mins || 180) + "-min timer"}</button></div></div>
+        ${P.intro ? `<div style="margin-top:10px">${md(P.intro)}</div>` : ""}
+        <div class="row" style="margin-top:10px"><span class="meta">Self-marked: <b>${got}</b> / ${total}</span>
+        <button class="btn ghost" id="showall">Show all answers</button><button class="btn ghost" id="hideall">Hide all</button><button class="btn ghost" id="reset">Reset my marks</button></div></div>
+      ${P.qs.map((q, i) => {
+        const head = q.sec && q.sec !== sec ? `<div class="sec">${esc(sec = q.sec)}</div>` : "";
+        const k = prefix + which + ":" + i;
+        return head + `<div class="card q"><div class="head"><b>${esc(q.n)}</b><span class="marks">[${q.m}]</span></div>
+          ${q.img ? `<div class="note">${md(q.img)}</div>` : ""}
+          <div style="margin-top:6px">${md(q.q)}</div>
+          <textarea class="short" data-k="${k}" spellcheck="false" placeholder="Your answer…">${esc(store.ans[k] || "")}</textarea>
+          <div class="row" style="margin-top:8px"><button class="btn ghost" data-a="${i}">Show model answer</button>
+          <span class="meta" style="margin-left:auto">My mark</span><input class="score" type="number" min="0" max="${q.m}" step="0.5" data-s="${k}" value="${store.marks[k] ?? ""}"><span class="meta">/ ${q.m}</span></div>
+          <div class="ans hidden" id="a-${prefix}${i}">${md(q.a)}</div></div>`;
+      }).join("")}`;
+    el.querySelectorAll("[data-p]").forEach(b => b.onclick = () => { which = +b.dataset.p; draw(); });
+    el.querySelectorAll("[data-a]").forEach(b => b.onclick = () => document.getElementById("a-" + prefix + b.dataset.a).classList.toggle("hidden"));
+    el.querySelectorAll("textarea[data-k]").forEach(t => t.oninput = () => { store.ans[t.dataset.k] = t.value; save(); });
+    el.querySelectorAll("[data-s]").forEach(inp => inp.onchange = () => { store.marks[inp.dataset.s] = Math.min(+inp.max, Math.max(0, +inp.value || 0)); save(); draw(); });
+    document.getElementById("showall").onclick = () => el.querySelectorAll(".ans").forEach(a => a.classList.remove("hidden"));
+    document.getElementById("hideall").onclick = () => el.querySelectorAll(".ans").forEach(a => a.classList.add("hidden"));
+    document.getElementById("reset").onclick = () => { if (confirm("Clear your marks and answers for this paper?")) { P.qs.forEach((q, i) => { delete store.marks[prefix + which + ":" + i]; delete store.ans[prefix + which + ":" + i]; }); save(); draw(); } };
+    document.getElementById("tbtn").onclick = () => {
+      if (timerId) { clearInterval(timerId); timerId = null; draw(); return; }
+      left = (P.mins || 180) * 60;
+      timerId = setInterval(() => { left--; const t = document.getElementById("tm"); if (t) t.textContent = `${Math.floor(left / 3600)}:${String(Math.floor(left / 60) % 60).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`; if (left <= 0) { clearInterval(timerId); timerId = null; alert("Time's up!"); } }, 1000);
+      draw();
+    };
+  }
+  draw();
+}
+renderPaperSet(document.getElementById("v-papers"), PAPERS, "p");
+renderPaperSet(document.getElementById("v-predict"), PREDICTED, "x");
+document.getElementById("v-about").innerHTML = `<div class="card">${md(ABOUT)}</div>`;
+</script>
+</body>
+</html>

@@ -11,3 +11,9 @@ for data, out, title, sub, bid in [
     html = eng.replace("__TITLE__", title).replace("__SUBTITLE__", sub).replace("__BANKID__", bid).replace("/*DATA*/", p.read_text(encoding="utf-8"))
     (src.parent / out).write_text(html, encoding="utf-8")
     print("built", out)
+
+# CS201 exam-prep page: drills + papers into its own engine
+ex = (src / "exam-engine.html").read_text(encoding="utf-8")
+data = "\n".join((src / f).read_text(encoding="utf-8") for f in ["exam-drills-adv.js", "exam-drills-mips.js", "exam-papers.js"])
+(src.parent / "CS201-exam-prep.html").write_text(ex.replace("/*DATA*/", data), encoding="utf-8")
+print("built CS201-exam-prep.html")
