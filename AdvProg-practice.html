@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advanced Programming: Practice</title>
+<style>
+:root{
+  --bg:#f6f5f1;--panel:#ffffff;--ink:#1d1d1b;--muted:#6b6a65;--line:#e3e1da;
+  --accent:#2f5d8a;--accent-soft:#e6eef6;--good:#2e7d4f;--good-soft:#e5f3ea;--bad:#b3402f;--bad-soft:#f8e6e2;
+  --code-bg:#f1efe8;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#17181a;--panel:#212226;--ink:#ecebe6;--muted:#9a9993;--line:#34353a;
+  --accent:#7fb0e0;--accent-soft:#25313d;--good:#6fcf97;--good-soft:#1f3328;--bad:#f08a78;--bad-soft:#3a2420;--code-bg:#1b1c1f;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar{max-width:980px;margin:0 auto;padding:12px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px}
+nav.tabs{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+nav.tabs button{border:1px solid var(--line);background:transparent;color:var(--ink);padding:6px 12px;border-radius:8px;cursor:pointer;font:inherit;font-size:14px}
+nav.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+main{max-width:980px;margin:0 auto;padding:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:4px 11px;font-size:13px;cursor:pointer;font:inherit;font-size:13px}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.btn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font:inherit;font-size:14px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+.meta{color:var(--muted);font-size:13px}
+.tag{display:inline-block;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin-right:6px}
+.q{font-size:17px;font-weight:550;margin:8px 0 12px}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow:auto;font:13.5px/1.5 var(--mono);margin:10px 0}
+code{font-family:var(--mono);font-size:.92em;background:var(--code-bg);padding:1px 4px;border-radius:4px}
+pre code{background:none;padding:0}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:10px 13px;cursor:pointer;font:inherit;display:flex;gap:10px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt .k{font-weight:700;color:var(--muted);min-width:18px}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+input.ans{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:15px var(--mono)}
+.fb{margin-top:12px;padding:11px 14px;border-radius:9px;font-size:15px}
+.fb.ok{background:var(--good-soft);border-left:4px solid var(--good)}
+.fb.no{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.fb.info{background:var(--accent-soft);border-left:4px solid var(--accent)}
+.progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 2px}
+.progress>i{display:block;height:100%;background:var(--accent);width:0}
+.flash{min-height:230px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;text-align:center;user-select:none}
+.flash .front{font-size:20px;font-weight:600}
+.flash .back{margin-top:16px;text-align:left;border-top:1px dashed var(--line);padding-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat b{font-size:22px;display:block}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+.notes h3{margin:18px 0 6px;font-size:16px}
+.notes ul{margin:4px 0 8px;padding-left:20px}
+.notes li{margin:3px 0}
+.kbd{font:12px var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div><h1>Advanced Programming: Practice</h1><div class="sub">Quiz, flashcards and cheat sheet for every chapter of the CS2 AdvProg notes</div></div>
+  <nav class="tabs" id="tabs">
+    <button data-v="quiz" class="on">Quiz</button>
+    <button data-v="cards">Flashcards</button>
+    <button data-v="notes">Cheat sheet</button>
+    <button data-v="stats">Progress</button>
+  </nav>
+</div></header>
+<main>
+  <section class="card" id="filters">
+    <div class="row" style="justify-content:space-between">
+      <b>Topics</b>
+      <span class="row"><button class="chip" id="allOn">All</button><button class="chip" id="allOff">None</button></span>
+    </div>
+    <div class="chips" id="topicChips" style="margin-top:8px"></div>
+    <div class="row" style="margin-top:12px">
+      <span class="meta">Mode:</span>
+      <div class="chips" id="modeChips">
+        <button class="chip on" data-m="all">Everything</button>
+        <button class="chip" data-m="weak">Ones I got wrong</button>
+        <button class="chip" data-m="new">Not seen yet</button>
+      </div>
+      <span class="meta" id="poolInfo" style="margin-left:auto"></span>
+    </div>
+  </section>
+
+  <section id="v-quiz"></section>
+  <section id="v-cards" class="hidden"></section>
+  <section id="v-notes" class="hidden"></section>
+  <section id="v-stats" class="hidden"></section>
+</main>
+<script>
+const BANK_ID = "advprog";
+const TOPICS = [
+  { id: "quality", name: "1 · Program quality" },
+  { id: "recint", name: "2 · Recursion & interfaces" },
+  { id: "abstr", name: "3 · Abstraction & ADTs" },
+  { id: "lists", name: "4 · Vectors & lists" },
+  { id: "stackq", name: "5 · Stacks, queues, deques" },
+  { id: "trees", name: "6 · Trees & graphs" },
+  { id: "hash", name: "7 · Dictionaries & hashing" },
+  { id: "bigo", name: "8 · Big-O" },
+  { id: "search", name: "9 · Searching" },
+  { id: "sort", name: "10 · Sorting" },
+];
+// M = multiple choice (a = index of correct option), I = typed answer (a = accepted answers), C = flashcard only
+const M = (t, q, o, a, e, code) => ({ t, type: "mcq", q, o, a, e, code });
+const I = (t, q, a, e, code) => ({ t, type: "input", q, a, e, code });
+const C = (t, q, a, code) => ({ t, type: "card", q, a, code });
+
+const QUESTIONS = [
+// ---------------- Chapter 1 ----------------
+M("quality", "Which program-quality criterion do the notes call the most important?", ["Efficiency", "Correctness", "Clarity", "Portability"], 1, "A program that doesn't work correctly is of no use whatsoever, so correctness comes first."),
+M("quality", "For a **one-shot program** (used once, then discarded), which criterion has top priority?", ["Efficiency", "Generality", "Ease of coding", "Amenability to modification"], 2, "Writing time far exceeds usage time, so ease of coding wins. Generality, efficiency and modifiability don't matter."),
+M("quality", "For **service routines and program components** (e.g. a sort routine or a square-root method), which criterion is critically important?", ["Efficiency", "Ease of use", "Ease of coding", "Portability"], 0, "Library routines are short and used many times, so efficiency is critical."),
+M("quality", "Which two criteria do the notes say tend to be mutually exclusive, so a compromise is usually needed?", ["Correctness and clarity", "Generality and efficiency", "Portability and ease of use", "Clarity and ease of modification"], 1),
+M("quality", "In Java, what does `x = a * b / c * d;` actually compute?", ["(a*b)/(c*d)", "((a*b)/c)*d", "a*(b/(c*d))", "a*b/(c*d) rounded"], 1, "* and / have equal precedence and associate left-to-right, so it's ((a·b)/c)·d. The correct code for ab/cd is `(a * b) / (c * d)`. Brackets are free, so use them."),
+M("quality", "Which is **not** one of the common errors listed under Correctness?", ["Off-by-one errors", "Precedence errors", "Real (floating point) numbers not stored exactly", "Using too many interfaces"], 3, "The list: incomplete solution, initialisation, off-by-one, real numbers, typographical (1/I/l, 0/O), precedence."),
+M("quality", "A **precondition** is…", ["What must hold true at the start of a method's execution", "What the method guarantees at the end", "A runtime check the JVM always does", "The method's return type"], 0, "The postcondition describes the state the method leaves the program in when it finishes."),
+M("quality", "If calling code violates a method's precondition, what is guaranteed about the postcondition?", ["It still holds", "Nothing. The method may return garbage", "An AssertionError is always thrown", "The compiler rejects the call"], 1),
+M("quality", "In a postcondition, what does `n<entry>` mean?", ["The value of parameter n on entry to the method", "The final value of n", "n is an input-only parameter", "n must be non-negative"], 0),
+M("quality", "Since which Java version is the `assert` statement supported?", ["1.0", "1.2", "1.4", "5.0"], 2),
+M("quality", "What does a failing `assert` statement throw?", ["AssertionException", "IllegalArgumentException", "AssertionError", "RuntimeException"], 2, "Strictly it's an error, not an exception: java.lang.AssertionError."),
+M("quality", "By default, are Java assertions checked at runtime?", ["Yes, always", "No. Assertion checking is disabled by default and must be enabled at runtime", "Only in main()", "Only inside constructors"], 1, "This lets you check them during development and testing, then disable them for efficiency when you ship."),
+M("quality", "In `assert ch != ' ' : \"Character is not a space\";` what is the part after the colon used for?", ["A boolean that must also be true", "The error message for the AssertionError", "A label for a break statement", "A default value"], 1, "The second form takes an expression of any type, converted to a string for the error message."),
+M("quality", "According to Oracle's guidelines (quoted in the notes), how should a **public** method check its preconditions?", ["With assert statements", "By throwing exceptions (e.g. IllegalArgumentException)", "With comments only", "By returning -1"], 1),
+M("quality", "Javadoc documentation comments begin with…", ["`//*`", "`/*`", "`/**`", "`#doc`"], 2),
+I("quality", "Which Javadoc tag documents a method parameter? (type the tag, e.g. @something)", ["@param"]),
+I("quality", "Which Javadoc tag documents what a method returns?", ["@return", "@returns"]),
+M("quality", "Which of these is **not** one of the Javadoc tags used in the Roots example?", ["@author", "@version", "@throws", "@precondition"], 3),
+M("quality", "Main quality benefit of Javadoc-style automated documentation?", ["Faster code", "Code and documentation are written together in one set of files, so they stay in agreement", "Removes the need for comments", "It checks preconditions"], 1),
+M("quality", "These notes follow a **bottom-up** approach. What does that mean?", ["Study applications first, then implementation", "Study the implementation of a data structure first, then its use", "Start with sorting, end with lists", "Start with assembly language"], 1),
+C("quality", "List the 8 program-quality criteria.", "Correctness, ease of use, generality, efficiency, portability, clarity, ease of coding and testing, amenability to modification."),
+C("quality", "Suggested priority order for **production programs**", "Correctness → ease of use → clarity → portability → generality → ease of modification → ease of coding. (Efficiency is about level with clarity for editors/compilers.)"),
+C("quality", "What is *literate programming*?", "Placing a program's code in the middle of a document that discusses and explains it. These notes embed code snippets in explanations; full listings are in Appendix A."),
+
+// ---------------- Chapter 2 ----------------
+M("recint", "Every correct recursive algorithm needs…", ["A loop", "A stop (base) case, with each call working on a simpler case", "A global variable", "An interface"], 1, "Without the stop case it never terminates."),
+I("recint", "What does `factorial(4)` return, using the notes' method?", ["24"], "4 × 3 × 2 × 1 × 0! with 0! = 1.", `public int factorial(int n)
+{ if (n == 0)
+    return 1;                  // stop case
+  else
+    return n * factorial(n-1); // recursive call
+}`),
+M("recint", "The notes say the recursive factorial should be used in practice when…", ["n is small", "n is large", "Never. The iterative version is far more efficient", "Always, because it's elegant"], 2),
+M("recint", "Why does `readAndWriteBackwards()` correctly print the input reversed?", ["It uses a StringBuffer", "Each recursive call has its own copy of the local variable ch", "It uses a class variable to store characters", "Java strings are immutable"], 1, "If ch were a class/instance variable, every call would share it and the program would break.", `public void readAndWriteBackwards()
+{ char ch;
+  ch = (char)System.in.read();
+  if (ch != '\\n')
+    readAndWriteBackwards();
+  System.out.print(ch);
+}`),
+I("recint", "Fibonacci with f1 = f2 = 1. What is f7?", ["13"], "1, 1, 2, 3, 5, 8, 13"),
+I("recint", "Towers of Hanoi: minimum number of moves to move 4 disks?", ["15"], "2ⁿ − 1 = 15. The problem is O(2ⁿ) and is the notes' example of an intractable problem."),
+M("recint", "Recursive Towers of Hanoi: to move n disks from A to B, the first step is…", ["Move the largest disk to B", "Move n−1 disks from A to C using B as temporary", "Move n−1 disks from A to B", "Move 1 disk to C"], 1, "Then move disk n from A to B, then move n−1 disks from C to B using A as temporary. Steps 1 and 3 are recursive."),
+M("recint", "Gene sequence exercise: how many full sequences can be generated from `ACXGX`?", ["2", "4", "8", "16"], 3, "Each X can be A, C, T or G: 4 × 4 = 16."),
+M("recint", "Why can't Java model a PersonalAssistant as both a Manager and a Secretary through inheritance?", ["Java only allows single inheritance (one superclass)", "Manager is final", "Interfaces can't extend classes", "Secretary is abstract"], 0, "The solution is to extend Secretary and **implement** a ManagerialResponsibilities interface."),
+M("recint", "What does a Java interface (as described in the notes) contain?", ["Data members and method bodies", "Method headings (followed by ;) that implementing classes must provide", "Only constructors", "A single abstract superclass"], 1),
+M("recint", "Can a class both extend a class and implement several interfaces?", ["No", "Yes, e.g. `class MyClass extends SomeOtherClass implements IntA, IntB, IntC`", "Only if the interfaces are empty", "Only with generics"], 1),
+M("recint", "Given `ManagerialResponsibilities mgr = new Director();` (Director extends Manager, which implements the interface), what can you call through `mgr`?", ["Any Director method", "Only the methods declared in the interface (manage)", "Nothing until it's cast", "Only Object methods"], 1, "Using an interface type means you lose access to class-specific features unless you test with instanceof and cast."),
+M("recint", "Which operator checks the actual class of the object an interface reference refers to?", ["typeof", "instanceof", "getClass==", "is"], 1),
+M("recint", "In the notes' class diagrams, dashed lines indicate…", ["Inheritance", "Implementing an interface (not class inheritance)", "Private members", "Aggregation"], 1),
+
+// ---------------- Chapter 3 ----------------
+M("abstr", "Formally, an abstract data type is…", ["A pair <V, O>: a set of values and a set of operations on them", "A class with only abstract methods", "An interface", "A record type"], 0),
+M("abstr", "Which level is called the **conventional machine level** (the lowest level most programmers know about)?", ["Microcode", "Machine code", "Assembly language", "Operating system"], 1),
+M("abstr", "Order these from lowest to highest abstraction: Assembly, Machine code, Microcode, Operating System.", ["Microcode → Machine code → OS → Assembly", "Machine code → Microcode → Assembly → OS", "Microcode → OS → Machine code → Assembly", "Machine code → Assembly → Microcode → OS"], 0, "Full hierarchy: Quantum physics → Electronic circuits → Microcode → Machine code → Operating system → Assembly → High level → 4GL → 5GL."),
+M("abstr", "Assembly languages are referred to as…", ["First generation", "Second generation", "Third generation", "Fourth generation"], 1, "1GL = machine code, 2GL = assembly, 3GL = high-level (Java, C#, Python…), 4GL = business/database, 5GL = AI techniques."),
+M("abstr", "Which was the first third-generation (high level) language?", ["COBOL", "FORTRAN", "C", "Pascal"], 1, "Developed by IBM in the 1950s."),
+M("abstr", "The program that translates assembly language into machine code is called…", ["A compiler", "An interpreter", "An assembler", "A linker"], 2),
+M("abstr", "A feature that distinguishes high-level languages from earlier generations:", ["They run faster", "They are far more machine independent", "They have one-to-one correspondence with machine code", "They need no translation"], 1),
+M("abstr", "Using a method like `writeObject` without knowing how the object is converted and written is an example of…", ["Procedural abstraction", "Data abstraction", "Inheritance", "Polymorphism"], 0),
+M("abstr", "Which two Java class features make the class a truly powerful ADT mechanism (beyond a simple record)?", ["Inheritance and static methods", "Visibility control (public/private) and methods for the operations", "Generics and arrays", "Constructors and finalizers"], 1),
+M("abstr", "Information hiding gives two views of an ADT. They are…", ["Static and dynamic", "Client (user) view and implementor view", "Public and protected", "Compile-time and run-time"], 1),
+M("abstr", "In the notes' simplified class diagrams, members shown with a grey background are…", ["Public", "Private", "Static", "Abstract"], 1),
+C("abstr", "Mary Shaw on abstraction (the gist)", "Software problems come from complexity and our human limits in handling it. We deal with complexity by abstracting: ignoring inessential details and working with a generalised model, the object's \"essence\"."),
+C("abstr", "Describe the Java `int` type as an ADT <V, O>.", "V = { −2 147 483 648 … 2 147 483 647 }\nO = { +, −, *, /, %, ~, |, &, ^, <<, >>, >>>, <, <=, ==, >=, >, !=, = }"),
+
+// ---------------- Chapter 4 ----------------
+M("lists", "What is the main problem with plain Java arrays that IntegerVector starts to address?", ["They can't hold ints", "Their size is fixed when created", "They're slow to index", "They can't be passed to methods"], 1),
+I("lists", "What is the default initial size of an IntegerVector created with `new IntegerVector()`?", ["100"], "`this(100);` calls the other constructor."),
+I("lists", "After these calls, what does v1 contain? Give values in order, separated by spaces.", ["3 21 -8 -7"], "add(21, 1) inserts at position 1, shifting -8 up. add(-7, 92) has position ≥ numElements, so it just appends.", `IntegerVector v1 = new IntegerVector();
+v1.add(3);
+v1.add(-8);
+v1.add(21, 1);
+v1.add(-7, 92);`),
+M("lists", "What does `data[numElements++] = item;` do?", ["Increments numElements, then stores item at the new index", "Stores item at index numElements, then increments numElements", "Stores item at numElements+1", "Compile error"], 1, "Postfix ++ uses the old value as the index, then increments."),
+M("lists", "In `add(int item, int position)` for IntegerVector, how is space made for the new item?", ["A new array is allocated", "Elements from numElements−1 down to position are moved up one place", "Elements are moved down one place", "The last element is deleted"], 1, `for (k = numElements - 1; k >= position; k--)
+  data[k + 1] = data[k];
+data[position] = item;
+numElements++;`),
+M("lists", "What does IntegerVector's `position(item)` return if the item is not found?", ["0", "-1", "numElements", "It throws an exception"], 1),
+M("lists", "Why does toString() use a StringBuffer?", ["Strings can't be returned", "String objects are immutable, so building one piece by piece creates many new objects; StringBuffer can be changed freely", "StringBuffer is thread-safe", "It's required by the Object class"], 1),
+M("lists", "Why is a `toString()` method better than an `output()` method that prints to System.out?", ["It's faster", "It works with any output stream or GUI text box, not just System.out", "It doesn't need a loop", "It is called by the garbage collector"], 1),
+M("lists", "get/set methods are generally called…", ["Mutators", "Accessor methods", "Iterators", "Constructors"], 1),
+M("lists", "Exercise 4.2 deleteAll for IntegerVector: the easy way is…", ["Loop and remove each element", "Set numElements = 0", "Create a new array", "Set data = null"], 1),
+M("lists", "In IntegerList, `ListNode` is declared as a private inner class with public fields. Why is it OK for its fields to be public?", ["Inner classes can't have private fields", "Because ListNode itself is private, its members are only visible inside IntegerList", "Public fields are faster", "It isn't OK, it's a bug"], 1, "One of the rare occasions where public data members are acceptable."),
+M("lists", "Why is adding at the beginning of a linked list the simplest case?", ["No need to search for the position: just link the new node to first and update first", "The list is always sorted", "No new node is needed", "It doesn't change numElements"], 0),
+M("lists", "Correct order of steps to add `node` at the front of a linked list?", ["first = node; node.next = first;", "node.next = first; first = node;", "node = first; first.next = node;", "first.next = node; node.next = null;"], 1, "If you set first = node first, you lose the old list."),
+M("lists", "In the linked-list `add(item, position)`, why does the for loop test both `k < position` and `curr != null`?", ["To support negative positions", "So it doesn't run off the end when position is bigger than the list (then it adds at the end)", "To skip the header node", "To handle duplicates"], 1),
+M("lists", "Efficiency: which statement about IntegerVector vs IntegerList is right?", ["get/set are O(1) for both", "get/set are fast for the array but need a loop for the linked list; inserting in the middle is cheap for the linked list but needs data moves for the array", "Linked lists are faster for everything", "Arrays are faster for everything"], 1),
+M("lists", "What is the common Java idiom for walking a linked list?", ["`for (ListNode curr = first; curr != null; curr = curr.next)`", "`while (first.next)`", "`for (int k = 0; k < list.length; k++)`", "`do { curr++; } while (curr)`"], 0),
+M("lists", "In `for (k = 0, curr = first; curr != null && curr.data != item; k++, curr = curr.next) ;` why is the test safe when curr is null?", ["Java auto-initialises curr", "Short-circuit evaluation: if curr != null is false, curr.data is never evaluated", "NullPointerException is caught", "The loop body is empty"], 1),
+M("lists", "Why do linked-list add/remove need a special case (the `if (prev != null)` test)?", ["For adding/removing at the start of the list, where `first` itself must change", "For the end of the list", "For duplicate values", "For empty strings"], 0),
+M("lists", "Why are the client interfaces of IntegerVector and IntegerList almost identical?", ["Coincidence", "To hide implementation details: clients can switch implementations with almost no change (just the class name)", "Java requires it", "Both extend the same class"], 1),
+M("lists", "Exercise 4.19: how can adding to the end of a linked list be simplified?", ["Use an array", "Keep a reference to the last node (e.g. `last`)", "Use a doubly-linked list only", "Sort the list"], 1),
+M("lists", "In ObjectList, what changed in `position()` compared with IntegerList?", ["It uses `.equals` instead of `==`", "It returns an Object", "It uses recursion", "Nothing"], 0),
+M("lists", "What is **autoboxing**?", ["Automatic conversion of a primitive to an object of its wrapper class (e.g. int → Integer)", "Automatic garbage collection", "Type erasure", "Packing objects into arrays"], 0, "The Integer objects are still created; the compiler just does it for you."),
+M("lists", "With ObjectList, `Student s = list.get(0);` gives…", ["A compile error, because get returns Object; you need a cast `(Student)list.get(0)`", "A runtime error", "It works fine", "A warning only"], 0),
+M("lists", "Which is pattern matching for instanceof (newer Java)?", ["`if (obj instanceof Student s) { … s … }`", "`if (obj is Student)`", "`switch(obj) case Student:`", "`Student s = obj as Student;`"], 0, "Combines the test, cast and assignment in one step. Simpler and safer."),
+M("lists", "Main drawback of polymorphism-based ObjectList compared with GenericList<T>?", ["It's slower", "No compile-time type checking, and casts are needed", "It can't hold Strings", "It uses more memory"], 1),
+M("lists", "What is the `<>` in `GenericList<Student> l = new GenericList<>();` called?", ["The diamond", "The wildcard", "The bound", "Raw type"], 0, "Allowed since Java 7. The compiler infers the type."),
+M("lists", "What happens with `GenericList<Student> l = new GenericList();` (no diamond)?", ["Same as with diamond", "A 'raw' object is created without the type checking, and the compiler warns", "Compile error", "Runtime error"], 1),
+M("lists", "Which java.util classes match the ADTs from this chapter?", ["LinkedList (like GenericList), Vector/ArrayList (array-based)", "HashMap and TreeMap", "Stack and Queue", "Arrays and Collections"], 0),
+C("lists", "Table 4.1: operations on lists", "Construct an empty list · add an element · access an element · remove an element · find an element · find the length · display the contents."),
+
+// ---------------- Chapter 5 ----------------
+M("stackq", "A stack is a…", ["FIFO list", "LIFO list", "Sorted list", "Circular list"], 1, "Last in, first out. Items are added (push) and removed (pop) at the top."),
+M("stackq", "A queue is a…", ["FIFO list", "LIFO list", "Priority list", "Tree"], 0, "First in, first out. Items join at the tail and leave from the head."),
+I("stackq", "Starting with an empty stack: push G, e, o, r, g, e then pop twice. What is on top now?", ["r"], "Pops remove e then g. Top is r."),
+M("stackq", "In ArrayStack, the value of topIndex for an empty stack is…", ["0", "-1", "null", "data.length"], 1),
+M("stackq", "Why must push use **prefix** ++ (`data[++topIndex] = item`) and pop use **postfix** -- (`return data[topIndex--]`)?", ["Style only", "topIndex points AT the top item: push must move up before storing, pop must read before moving down", "Prefix is faster", "To avoid generics warnings"], 1),
+M("stackq", "Why does ArrayStack create its array as `(T[])new Object[initSize]` with @SuppressWarnings(\"unchecked\")?", ["Java doesn't allow creating an array of a generic type parameter like T", "Object arrays are faster", "To allow primitives", "To make the stack immutable"], 0, "The cast creates a compiler warning, which the annotation switches off."),
+M("stackq", "The extra stack operations beyond push and pop are…", ["top and isEmpty", "peek and size", "front and back", "first and last"], 0),
+M("stackq", "Linked-list stack push. Which order is correct?", ["topNode = node; node.next = topNode;", "node.next = topNode; topNode = node;", "Either order works", "node.next = null; topNode = node;"], 1, "Reversing them makes the node point to itself and loses the rest of the stack."),
+M("stackq", "Why does ListStack.pop() use a temporary variable `tmpData`?", ["To save the data of the node being removed so it can be returned after topNode is updated", "For thread safety", "Generics require it", "To call the garbage collector"], 0),
+M("stackq", "Advantages of the linked-list stack over the array stack:", ["Faster indexing", "No space wasted, and size limited only by available memory", "Uses less memory per item", "No need for isEmpty"], 1),
+M("stackq", "Why can the reversing-a-string client program swap between ArrayStack and ListStack so easily?", ["Both implement the same Stack<T> interface", "Both extend Vector", "Strings are immutable", "Java picks automatically"], 0),
+I("stackq", "Evaluate this RPN (postfix) expression: `2 5 + 10 3 - *`", ["49"], "(2 + 5) × (10 − 3) = 7 × 7 = 49"),
+I("stackq", "Evaluate this RPN expression: `2 5 + 10 * 3 -`", ["67"], "(2 + 5) × 10 − 3 = 67"),
+I("stackq", "Write `(4 + 6) * 2` in RPN (postfix). Separate tokens with spaces.", ["4 6 + 2 *"]),
+M("stackq", "Bracket checking with a stack: which situation means the brackets are mismatched?", ["A right bracket is found but the stack is empty", "The stack is empty at the end", "A left bracket is pushed", "Two left brackets in a row"], 0, "Also mismatched: a popped bracket doesn't match the right bracket, or items are left on the stack at the end."),
+M("stackq", "What is the **travelling queue problem**?", ["The queue moves through the array as items are added and removed, so it overflows at the end while slots at the front are unused", "Items are removed in the wrong order", "The head passes the tail", "Linked list nodes get lost"], 0),
+M("stackq", "The better solution to the travelling queue problem is…", ["Moving all data down whenever overflow occurs", "A circular queue, where the array wraps around", "Doubling the array", "Using a stack"], 1),
+I("stackq", "Circular ArrayQueue of size 5 (indices 0–4), initially empty (hd = tl = -1). Add a, b, c; remove twice; add p, q, r. What is `tl` now?", ["0"], "After abc: hd=0 tl=2. Remove 2: hd=2. Add p→3, q→4, r wraps→0. hd=2, tl=0."),
+I("stackq", "Continuing: from hd=2, tl=0 (contents r _ c p q), remove one item, then add z. What are hd and tl? Answer as `hd tl`.", ["3 1"], "Removing c moves hd to 3. Adding z moves tl to 1."),
+M("stackq", "Which line wraps the tail index around in a circular array queue?", ["`tl = (tl + 1) % data.length;`", "`tl = tl++ / data.length;`", "`tl = data.length - tl;`", "`tl = (tl - 1) % data.length;`"], 0),
+M("stackq", "How does ArrayQueue.add detect that the queue is full?", ["tl == -1", "After incrementing (with wrap-around), tl == hd", "hd == 0", "tl == data.length"], 1, "It's hard to check at the start, so it's checked after updating tl."),
+M("stackq", "In ArrayQueue.remove, what happens when the last item is removed (hd == tl)?", ["hd and tl are both set back to -1", "hd is set to 0", "Exception thrown", "Nothing special"], 0),
+M("stackq", "In ListQueue.add, why the check `if (hd == null) hd = node;`?", ["To update the head pointer when the first item is added to an empty queue", "To remove duplicates", "To make the queue circular", "To check for overflow"], 0),
+M("stackq", "In ListQueue.remove, why set `tl = null` when hd becomes null?", ["The last element was removed, so the tail must not keep pointing at it", "To free memory", "Generics require it", "To restart from the beginning"], 0),
+M("stackq", "Could ListQueue work without a tail pointer?", ["No, never", "Yes, by walking from the head every time you add, but that's much less efficient", "Yes, and it would be faster", "Only for queues of ints"], 1),
+M("stackq", "A **priority queue** differs from a normal queue because…", ["Items are placed according to an integer priority; remove still takes from the head (highest priority)", "Items are removed from both ends", "It's always array-based", "It is LIFO"], 0),
+M("stackq", "Maze search using a **queue** of positions is a…", ["Depth-first search", "Breadth-first search, which is guaranteed to find the shortest path", "Binary search", "Random search"], 1),
+M("stackq", "If the maze program used a **stack** instead of a queue, it would be…", ["Breadth-first", "Depth-first, which may find a solution sooner but not necessarily the shortest", "Unable to find any path", "Exactly the same"], 1),
+M("stackq", "What is the `beenThere` matrix for in QSearch?", ["Marks the walls", "Records which positions have already been explored, so paths aren't repeated", "Stores the queue", "Stores the answer path"], 1),
+M("stackq", "Why does the 'move left' test in QSearch include `c > 0`?", ["To stop the search walking back out of the entrance in column 0", "To find the exit", "Java arrays start at 1", "To avoid the beenThere matrix"], 0),
+M("stackq", "QSearch represents positions as a Java **record**. Which is true of records?", ["Mutable fields with setters", "Immutable fields, with constructor and accessor methods created automatically; accessors have the same names as the fields", "They can't be used with generics", "They are interfaces"], 1),
+M("stackq", "A **deque** allows…", ["Adding and removing at both ends (left and right)", "Only adding at the left", "Random access by index", "Sorted insertion"], 0, "Pronounced 'deck'. Operations: addLeft, addRight, removeLeft, removeRight."),
+M("stackq", "Why does the Deque implementation use a **doubly-linked** list?", ["We may work through the list from either end, so each node needs left and right pointers", "To save memory", "To allow sorting", "For thread safety"], 0),
+M("stackq", "Main danger when traversing a **circularly-linked** list?", ["NullPointerException", "Infinite loops, because there are no null pointers to stop at", "Losing the head", "Duplicate data"], 1),
+M("stackq", "What is the advantage of a **header node** (list-head node)?", ["It stores the list length", "The list is never empty, so the special cases for adding the first or removing the last node disappear", "Faster searching", "It sorts the list"], 1),
+M("stackq", "In the circular doubly-linked deque with a header node, how do you test for empty?", ["header == null", "header.rt == header (header points back to itself)", "header.data == null", "size == 0"], 1),
+M("stackq", "A deque where you add and remove at one end but only add at the other is called…", ["Input-restricted", "Output-restricted", "Priority deque", "Circular deque"], 1, "Useful for a partially prioritised search: promising states go to the front."),
+M("stackq", "A stack can be thought of as a deque that…", ["Adds and removes at the same end only", "Adds at one end and removes at the other", "Never removes", "Is sorted"], 0),
+C("stackq", "Table 5.1: which ADTs have which implementations?", "List of int: IntegerVector (array) / IntegerList (linked)\nGeneric lists: ObjectList and GenericList (linked)\nStack: ArrayStack / ListStack\nQueue: ArrayQueue / ListQueue\nDeque: Deque (linked, doubly + circular + header node)"),
+
+// ---------------- Chapter 6 ----------------
+M("trees", "Formal definition: a tree is a finite set of one or more nodes with one designated root, where the remaining nodes are…", ["Sorted in order", "Partitioned into m ≥ 0 disjoint sets, each of which is a tree", "Linked in a cycle", "All leaves"], 1, "The definition is recursive, which is why tree algorithms are naturally recursive."),
+M("trees", "For a tree, the **indegree** of a node can be…", ["Any number", "Only 0 (the root) or 1 (all other nodes)", "Only 2", "Equal to the outdegree"], 1),
+M("trees", "The **depth** of a node is…", ["The number of children it has", "The length of the path from it to the root", "The number of leaves below it", "Its outdegree"], 1),
+M("trees", "A leaf node always has an outdegree of…", ["0", "1", "2", "It varies"], 0),
+M("trees", "A **proper binary tree** is one where…", ["Every node has 0 or 2 children", "Every node has exactly 2 children", "It is sorted", "All leaves are at the same depth"], 0, "An ancestor tree is always a proper binary tree."),
+M("trees", "To convert a general tree to a binary tree, each node's left pointer points to its ____ and its right pointer to its ____.", ["parent / sibling", "left-most child / right sibling", "right-most child / left sibling", "first leaf / last leaf"], 1, "The resulting binary trees tend to be 'long and thin' and aren't proper binary trees."),
+I("trees", "For this tree, give the **in-order (LNR)** traversal (letters separated by spaces).", ["d b e a f c g"], "", `        a
+      /   \\
+     b     c
+    / \\   / \\
+   d   e f   g`),
+I("trees", "Same tree: give the **pre-order (NLR)** traversal.", ["a b d e c f g"], "", `        a
+      /   \\
+     b     c
+    / \\   / \\
+   d   e f   g`),
+I("trees", "Same tree: give the **post-order (LRN)** traversal.", ["d e b f g c a"], "", `        a
+      /   \\
+     b     c
+    / \\   / \\
+   d   e f   g`),
+M("trees", "A breadth-order traversal is most naturally done using a…", ["Stack", "Queue", "Hash table", "Recursion only"], 1, "Add the root's children to a queue, then repeatedly visit the head and add its children to the tail."),
+M("trees", "Why can the Tree<T> class represent a whole tree with a single node (it might be better named TreeNode)?", ["Recursion: every node is the root of some subtree", "Java limitation", "Trees only have one node", "It uses an array internally"], 0),
+M("trees", "What does Tree.addLeft do if a left subtree already exists?", ["Replaces it", "Throws UnsupportedOperationException (checks the precondition so a subtree isn't lost)", "Adds to the right instead", "Ignores the call"], 1),
+M("trees", "In the 'guess the animal' knowledge base, a 'yes' answer means you follow the…", ["Right subtree", "Left subtree", "Parent", "Root"], 1, "Internal nodes are questions and leaves are animals."),
+M("trees", "Binary search tree rule used in the notes:", ["Left subtree < node; right subtree ≥ node (duplicates go right)", "Left ≤ node < right", "Left > node > right", "All leaves at the same level"], 0),
+M("trees", "Which traversal of a BST visits the nodes in ascending order?", ["Pre-order (NLR)", "In-order (LNR)", "Post-order (LRN)", "Breadth-order"], 1),
+I("trees", "Insert into an empty BST in this order: 50, 30, 70, 20, 40, 60, 80. Give the **pre-order** traversal.", ["50 30 20 40 70 60 80"]),
+I("trees", "Same BST (50,30,70,20,40,60,80). Give the **post-order** traversal.", ["20 40 30 60 80 70 50"]),
+M("trees", "Where does insert put a new node in a BST?", ["Always as a new leaf", "At the root", "At an interior point", "In the middle level"], 0),
+M("trees", "Deleting a BST node with **two** subtrees (notes' method):", ["Delete the whole subtree", "Replace its data with the smallest value in the right subtree (removed with deleteMin)", "Replace it with its left child", "Swap it with the root"], 1, "That smallest node never has a left subtree, so it's easy to remove: its right subtree just moves up."),
+M("trees", "How many cases does BST remove() distinguish?", ["2", "3", "4: no subtrees, only left, only right, both", "5"], 2),
+M("trees", "Why is the class declared `BinarySearchTree<T extends Comparable>`?", ["Items must be comparable so the ordering can be maintained (a bounded generic type)", "So it can extend a class called Comparable", "To allow primitive types", "For iteration"], 0, "Comparable is an interface; the generic syntax uses `extends` for both meanings."),
+M("trees", "`obj1 <= obj2` rewritten with compareTo is…", ["`obj1.compareTo(obj2) <= 0`", "`obj1.compareTo(obj2) >= 0`", "`obj1.compareTo(obj2) == -1`", "`obj2.compareTo(obj1) < 0`"], 0, "Rule: write the comparison, replace the operator with compareTo, and compare the result to 0 with the same operator."),
+M("trees", "compareTo returns a negative value when…", ["The objects are equal", "This object is less than the argument", "This object is greater than the argument", "An error occurred"], 1),
+M("trees", "BSTreeNode includes a `parent` pointer. Why?", ["It is needed by some algorithms (e.g. replaceInParent during deletion)", "Required by Java", "For in-order traversal only", "To make the tree circular"], 0),
+M("trees", "What three methods does the cs2 `Iterator<T>` interface specify?", ["get(), next(), atEnd()", "hasNext(), next(), remove()", "first(), last(), size()", "begin(), end(), step()"], 0),
+M("trees", "How does the BST's TreeIterator work?", ["It walks the tree lazily", "A buildXXXIterator method traverses the tree in the right order and adds the data to a Vector inside the iterator", "It copies the tree", "It uses a hash table"], 1),
+M("trees", "Graph definition: G = (V, E) where…", ["V is vertices, E is a set of edges, each a pair (v, w) with v, w ∈ V", "V is values, E is equations", "V is vectors, E is elements", "V is edges, E is vertices"], 0),
+M("trees", "Edges that have a definite start and end are called…", ["Weighted", "Directed", "Undirected", "Cyclic"], 1),
+M("trees", "In the notes' adjacency matrix, the diagonal is filled with…", ["0s", "1s, because by convention a vertex is joined to itself", "Weights", "Infinity"], 1),
+M("trees", "The adjacency matrix of an **undirected** graph is…", ["Symmetrical about the diagonal", "Upper triangular", "All ones", "Always sparse"], 0),
+M("trees", "When is the edge-list representation preferred over an adjacency matrix?", ["Many vertices but few edges (the matrix would be mostly zeroes)", "Dense graphs", "Undirected graphs only", "Weighted graphs only"], 0),
+M("trees", "Biggest practical danger in graph algorithms (per the notes)?", ["Stack overflow from deep trees", "Infinite loops, visiting the same nodes over and over", "Integer overflow", "Running out of edges"], 1),
+M("trees", "Searching a **balanced** BST has complexity…", ["O(1)", "O(log n)", "O(n)", "O(n log n)"], 1),
+
+// ---------------- Chapter 7 ----------------
+M("hash", "The central idea of a dictionary ADT is…", ["Values accessed by position", "Values accessed using a unique key", "A sorted array", "A FIFO list"], 1, "Clients have no concept of where an item sits in the data structure."),
+M("hash", "If you insert a key that is already in a ListDictionary, what happens?", ["A duplicate node is added", "The existing value is replaced (keys are unique)", "An exception is thrown", "It's ignored"], 1),
+M("hash", "ListDictionary keeps its linked list…", ["Unordered", "In ascending order of keys (so K extends Comparable)", "In insertion order", "In descending order"], 1),
+M("hash", "What is special about ListDictionary's `get(aKey)`?", ["It returns null and does nothing if the key is missing", "It creates a new entry (via findNode) if the key isn't there", "It throws if missing", "It removes the entry"], 1),
+M("hash", "In DictionaryPair, once constructed, which can be changed?", ["The key only", "The value only (the key is fixed)", "Both", "Neither"], 1),
+M("hash", "The concordance program uses a dictionary with keys of type ____ and values of type ____.", ["Integer / String", "String (the word) / IntegerList (line numbers)", "String / String", "Character / int"], 1),
+M("hash", "Which standard Java class does the concordance program use to split a line into words?", ["Scanner", "StringTokenizer", "String.split", "BufferedReader"], 1),
+I("hash", "Using the notes' hash function with SIZE = 100, what is `hash(\"AB\")`? ('A' = 65, 'B' = 66)", ["56"], "h = 0·26 + 65 = 65; h = 65·26 + 66 = 1756; 1756 % 100 = 56.", `public int hash(String key)
+{ int h = 0;
+  for (int k = 0; k < key.length(); k++)
+    h = h * 26 + (int)key.charAt(k);
+  return (h & 0x7FFFFFFF) % SIZE;
+}`),
+M("hash", "What is `(h & 0x7FFFFFFF)` for in the hash function?", ["Clears the sign bit so the value is non-negative (h may have overflowed to a negative)", "Rounds h", "Doubles h", "Makes h odd"], 0),
+M("hash", "Hashing 'programming' and 'words' both gave 59. This is called a…", ["Cluster", "Collision", "Probe", "Bucket"], 1),
+M("hash", "A **perfect hashing function**…", ["Maps distinct keys to distinct values (no collisions); only possible for very limited domains", "Has no clusters for any input", "Is always O(1) for any data", "Uses prime numbers"], 0, "A perfect *minimal* hashing function also makes the values contiguous, so the table has no gaps."),
+M("hash", "Hashing has one big downside for iteration. What is it?", ["It's slow", "Order is lost: hashing randomises positions, so you can't iterate in key order", "Keys must be ints", "It can't hold duplicates"], 1),
+M("hash", "Internal hashing with **linear probing**: if position 59 is taken, where does 'words' go?", ["Bucket 59's linked list", "60 (or the next unoccupied position after it)", "A random position", "Position 0"], 1),
+M("hash", "When you search an internal hash table, the search can stop when…", ["It reaches a deleted entry", "It finds the key or reaches the first **empty** entry", "It has made 3 probes", "It reaches the end of the array"], 1),
+M("hash", "Why can't you simply mark a removed entry as empty in open addressing?", ["It wastes memory", "Searches for keys placed after it (because of a collision) would stop early and wrongly fail", "Java won't allow it", "It changes the hash function"], 1, "So entries have three states: empty, occupied, deleted."),
+M("hash", "In InternalHashTable, how is a **deleted** entry represented?", ["table[i] == null", "table[i] != null and occupied == false", "table[i] != null and occupied == true", "key == null"], 1),
+M("hash", "**Primary clustering** is caused by…", ["Several keys hashing to the same location and filling successive entries", "A key hashing to a slot already taken by a displaced key", "Deleting entries", "Using external hashing"], 0),
+M("hash", "**Secondary clustering** is…", ["Collisions between keys with the same hash value", "A key mapping to an entry already occupied by a displaced key, i.e. a collision between keys with different hash values", "Too many buckets", "Deleted entries building up"], 1),
+M("hash", "The only real remedy for clustering in internal hashing (per the notes) is…", ["Make the table somewhat larger than needed", "Use a smaller table", "Use bigger keys", "Sort the table"], 0, "Alternatively, use external hashing. Other probing techniques can partly reduce secondary clustering."),
+M("hash", "Why does InternalHashTable always keep at least one empty slot?", ["So the probing loops are guaranteed to stop", "For the iterator", "To speed up hashing", "To store the size"], 0),
+I("hash", "What is the default table size of InternalHashTable?", ["101"]),
+M("hash", "What does `numEntries` count in InternalHashTable?", ["Only occupied slots", "Occupied **and** deleted slots (i.e. not genuinely empty)", "Empty slots", "Collisions"], 1),
+M("hash", "If deletions are frequent in an internal hash table, the notes suggest…", ["Rebuild the table from time to time, compacting clusters and removing deleted entries", "Switch to a stack", "Never delete", "Use a perfect hash"], 0),
+M("hash", "Which method does every Java object inherit that can be used as a hash function?", ["equals()", "hashCode()", "toString()", "compareTo()"], 1),
+M("hash", "External hashing handles collisions by…", ["Probing to the next slot", "Hashing to a 'bucket' that can hold several entries (e.g. a linked list)", "Rehashing with a second function", "Rejecting the key"], 1),
+M("hash", "In ExternalHashTable.insert, where is a new (non-duplicate) node placed?", ["At the end of the bucket's list", "At the start of the bucket's linked list", "In sorted position", "In the next bucket"], 1),
+M("hash", "Why is hashing on the first letter of the surname a poor hash function?", ["Letters aren't numbers", "First letters aren't evenly distributed: about half the entries land in only 5 of the 26 buckets", "It causes no collisions", "It's too slow"], 1),
+M("hash", "Main advantage of ExternalHashTable over InternalHashTable?", ["Ordered iteration", "Size isn't limited by the array: it can hold any number of entries", "Faster for an empty table", "No hash function needed"], 1),
+M("hash", "Which is true of ExternalHashTable as written in the notes?", ["It has a numEntries field", "It has no direct count, so isEmpty must scan the buckets", "Its buckets are binary search trees", "It's sorted"], 1),
+M("hash", "Table 7.3: which dictionary ADT is **ordered** but has slow access?", ["ListDictionary", "InternalHashTable", "ExternalHashTable", "All three"], 0, "ListDictionary: ordered, flexible size, slow access. Internal: fast, unordered, fixed size. External: fast, unordered, flexible size."),
+M("hash", "If ordered access is a requirement, which of the three dictionary structures can you use?", ["Only ListDictionary", "Only the hash tables", "Any", "Only ExternalHashTable"], 0),
+
+// ---------------- Chapter 8 ----------------
+M("bigo", "Cramer's Rule needs roughly how many operations for n equations?", ["n²", "2ⁿ", "n!", "10n"], 2, "30! ≈ 3×10³² operations, about 10¹⁶ years at 10⁹ ops/s. The tri-diagonal method needs about 10n."),
+M("bigo", "When the notes talk about 'algorithmic complexity', they mean…", ["How hard the code is to understand", "How the algorithm's time (or other resource) use grows", "Lines of code", "Number of classes"], 1),
+I("bigo", "What is the Big-O of f(n) = 3.5n² + 120n + 45? (e.g. O(n))", ["O(n^2)", "O(n²)", "n^2", "n²", "O(n2)"]),
+M("bigo", "Formal definition: an algorithm is O(f(n)) if there exist positive constants c and n₀ such that…", ["t ≤ c·f(n) for all n > n₀", "t ≥ c·f(n) for all n", "t = f(n) + c", "t ≤ f(n) for n < n₀"], 0),
+M("bigo", "Put these in order from best to worst: n log n, 2ⁿ, log n, n², n!", ["log n, n log n, n², 2ⁿ, n!", "log n, n², n log n, n!, 2ⁿ", "n log n, log n, n², 2ⁿ, n!", "log n, n log n, 2ⁿ, n², n!"], 0, "Full ranking: 1 < log n < n < n log n < n² < nᵐ < 2ⁿ < n! (rare: log log n, nⁿ)."),
+M("bigo", "**Tractable** problems are those with algorithms of complexity…", ["Polynomial or better", "Exponential or worse", "Exactly O(1)", "O(n log n) only"], 0, "Exponential and worse are intractable. Towers of Hanoi is proven O(2ⁿ)."),
+M("bigo", "With a computer 1 000 000 × faster, how much bigger a problem can an **O(n²)** algorithm handle in the same time?", ["1 000 000 n", "1000 n", "n + 20", "20 n"], 1, "O(n): 1 000 000n. O(n²): 1000n. O(2ⁿ): only n + 20."),
+M("bigo", "Same speed-up, for an **O(2ⁿ)** algorithm?", ["2n", "n + 20", "1000 n", "n²"], 1, "2²⁰ ≈ 10⁶."),
+M("bigo", "What is the complexity of this code, where 'do something' is simple?", ["O(1)", "O(n)", "O(log n)", "O(n²)"], 0, "It always loops exactly ten times, whatever the input size.", `for (int k = 0; k < 10; k++)
+  // do something`),
+M("bigo", "Two nested loops over the rows and columns of a matrix that holds n data items in total:", ["O(n²)", "O(n)", "O(log n)", "O(n log n)"], 1, "The n items are just arranged as a matrix. Don't confuse this with two nested loops each over n."),
+I("bigo", "How many times does 'do something' run? Answer as a formula in n.", ["n(n+1)/2", "n*(n+1)/2", "(n^2+n)/2", "n²/2+n/2", "n^2/2+n/2"], "n + (n−1) + … + 1 = n(n+1)/2, which is O(n²).", `for (int i = 0; i < n; i++)
+  for (int j = i; j < n; j++)
+    // do something`),
+M("bigo", "Sequential search of an **unsorted** list, if the item is present half the time: average comparisons?", ["n/2", "3n/4", "n", "log n"], 1, "Half the searches need n (not found), half need n/2 on average: (n + n/2)/2 = 3n/4. Still O(n)."),
+M("bigo", "Why might you choose an O(n²) sort over an O(n log n) sort?", ["Never", "For small lists, because the better algorithms often have larger constants", "For huge lists", "When memory is plentiful"], 1),
+M("bigo", "Three cases to consider when characterising an algorithm:", ["Best, worst, average", "Small, medium, large", "Time, space, energy", "Sorted, reversed, random"], 0),
+C("bigo", "Table 8.1 gist (1 µs per operation)", "At n = 1000: n² ≈ 1 s, n³ ≈ 16.7 min, 2ⁿ ≈ 3×10²⁸⁷ years. At n = 100, 2ⁿ is already 4×10¹⁶ years."),
+
+// ---------------- Chapter 9 ----------------
+M("search", "Why do searching/sorting algorithms prefer arrays to linked lists?", ["Arrays use less memory", "Accessing an array element is O(1); getting to a linked-list entry is O(n)", "Linked lists can't be sorted", "Arrays are generic"], 1, "You can build an `index` array of references into a linked list to 'leap into the middle' of it."),
+M("search", "How do you write a generic method bounded to comparable types (to avoid compiler warnings)?", ["`public <T extends Comparable<T>> void m(T x)`", "`public void <T> m(T x)`", "`public <T implements Comparable> void m(T x)`", "`public void m(Comparable<?> x)`"], 0),
+M("search", "Sequential search of a **sorted** list: average comparisons whether or not the item is found?", ["n/2", "3n/4", "log n", "n"], 0, "You can stop as soon as you pass where the item would be. The constant drops from 0.75 to 0.5, but it's still O(n)."),
+I("search", "A hash table with 100 keys spread evenly into 20 clusters (c = 5). Using 3c/4, how many comparisons on average?", ["3.75"], "Technically still O(n), but the constant is tiny (0.0375n)."),
+M("search", "In the hash-table search formulas, the key ratio n/M represents…", ["How full the table is (items ÷ table size)", "Collisions per key", "Bucket length", "Probe count"], 0),
+I("search", "Binary search on `3 8 12 15 20 21 29 37 39 42` (indices 0–9). Which index is examined first?", ["4"], "look = (0 + 9) / 2 = 4 (integer division truncates)."),
+I("search", "Same list, searching for 29. List the indices examined, in order.", ["4 7 5 6"], "20 at 4 → go right (5–9). 37 at 7 → go left (5–6). 21 at 5 → go right (6–6). 29 at 6 found. Four comparisons is the worst case for 10 items."),
+I("search", "Worst-case comparisons for a binary search of 1 000 000 items?", ["20"], "log₂(10⁶) ≈ 20, vs 500 000 on average for sequential search."),
+M("search", "Binary search recurrence: C_n = C_{n/2} + 1, C_1 = 1. The solution is…", ["C_n = log₂n + 1", "C_n = n log₂n", "C_n = n/2", "C_n = 2ⁿ"], 0),
+M("search", "In the do-while binary search, when does the loop stop if the item isn't present?", ["When look == 0", "When left > right (the indices cross over)", "After log n iterations exactly", "When list[look] is null"], 1),
+M("search", "Joshua Bloch's binary search bug is…", ["`(left + right) / 2` can overflow for huge arrays; use `left + (right - left) / 2` (or `>>> 1`)", "Off-by-one on right", "Wrong comparison operator", "Not handling duplicates"], 0),
+M("search", "Interpolated binary search improves on binary search by…", ["Choosing `look` in proportion to where the item's value sits between list[left] and list[right]", "Searching from both ends", "Using hashing", "Splitting into thirds"], 0, "Like opening a phone book near the end for 'Wells'."),
+M("search", "Complexity of interpolated binary search with evenly distributed keys?", ["O(log n)", "O(log log n)", "O(1)", "O(√n)"], 1, "Experiment with 1000 items: binary 9.8 comparisons, interpolated 3.1."),
+I("search", "Interpolation: looking for 765 with list[left] = 13 and list[right] = 987. What fraction of the way from left to right is `look` placed? Give the fraction as `a/b`.", ["752/974", "(765-13)/(987-13)", "376/487"]),
+M("search", "What does interpolated search require of the keys?", ["That they have numeric values (or the interpolation must be adapted)", "That they're Strings", "That they're unique primes", "Nothing"], 0),
+M("search", "The binary search on an array behaves exactly like searching…", ["A hash table", "An equivalent balanced binary search tree whose root is the middle element", "A linked list", "A heap"], 1, "The max depth of that tree (4 for 10 items) equals the max comparisons."),
+
+// ---------------- Chapter 10 ----------------
+I("sort", "Bubble Sort on `3 10 7 2 5 11 4 6`. What is the list after the **first pass**?", ["3 7 2 5 10 4 6 11"], "11 'bubbles up' to the end."),
+I("sort", "After the **second** Bubble Sort pass?", ["3 2 5 7 4 6 10 11"]),
+M("sort", "How does the notes' Bubble Sort know it can stop early?", ["A pass makes no swaps (the madeSwap flag stays false)", "After n/2 passes", "When the first element is smallest", "It can't. It always does n passes"], 0),
+M("sort", "Bubble Sort's best case (already sorted) is…", ["O(1)", "O(n): n−1 comparisons, no swaps", "O(n log n)", "O(n²)"], 1),
+I("sort", "Bubble Sort worst case (reverse order): number of comparisons for n = 8?", ["28"], "n(n−1)/2 = 8·7/2 = 28, and every comparison is a swap."),
+M("sort", "Why is Bubble Sort so inefficient?", ["It uses recursion", "Each item moves only one position at a time", "It needs extra memory", "It compares every pair twice"], 1),
+M("sort", "The notes' Insertion Sort builds the sorted sublist starting from…", ["The left end", "The right end, working back to the left", "The middle", "A random point"], 1, "The last item counts as a sorted sublist of one. Each earlier item is inserted into the sorted part on its right.", `for (int k = list.length-2; k >= 0; k--)
+{ T tmp = list[k];
+  int j = k+1;
+  while (j < list.length && tmp.compareTo(list[j]) > 0)
+  { list[j-1] = list[j];
+    j++;
+  }
+  list[j-1] = tmp;
+}`),
+I("sort", "Insertion Sort (notes' version) on `3 10 7 2 5 11 4 6`. After inserting 11, 5 and 2, then **inserting 7**, what is the list?", ["3 10 2 4 5 6 7 11"], "Sequence: … 3 10 7 2 4 5 6 11 → insert 7 → 3 10 2 4 5 6 7 11."),
+M("sort", "Insertion Sort's best case is O(n) when…", ["The list is already sorted (the inner loop never runs)", "The list is reversed", "All values are equal and n is even", "Never"], 0),
+M("sort", "Which sort do the notes recommend for sorting data **as it is read in**, and for **linked lists**?", ["Selection Sort", "Insertion Sort", "Quick Sort", "Bubble Sort"], 1, "ListDictionary's findNode actually uses a form of Insertion Sort."),
+I("sort", "Selection Sort on `3 10 7 2 5 11 4 6`. What is the list after the first **two** swaps?", ["2 3 7 10 5 11 4 6"], "Swap 2↔3 → 2 10 7 3 5 11 4 6; then swap 3↔10 → 2 3 7 10 5 11 4 6."),
+M("sort", "Selection Sort's number of comparisons…", ["Is the same, n(n−1)/2, for any input order", "Is n−1 when sorted", "Depends on the data", "Is n log n"], 0),
+M("sort", "Selection Sort's big advantage is…", ["O(n) best case", "Only n−1 swaps, which is good for large records", "Stable sort", "Uses no comparisons"], 1),
+I("sort", "Bubble Sort average number of swaps, as a formula in n?", ["n/4(n-1)", "n(n-1)/4", "(n/4)(n-1)", "n*(n-1)/4"], "Average comparisons: ¼(n−1)(n+2). Both are O(n²)."),
+M("sort", "**Indirect sorting** means…", ["Sorting a secondary array of subscripts by comparing the records they refer to, without moving the large records", "Sorting with recursion", "Sorting a copy of the data", "Sorting by hashing"], 0),
+I("sort", "Indirect sort of student numbers [618G1234, 616W4567, 617C9823, 619B3465, 617A9182]. Give the sorted index array.", ["1 4 2 0 3"], "616W… (1), 617A… (4), 617C… (2), 618G… (0), 619B… (3)."),
+M("sort", "Who invented Quick Sort, and when?", ["Knuth, 1968", "C.A.R. Hoare, 1960", "Dijkstra, 1959", "von Neumann, 1945"], 1),
+I("sort", "Quick Sort with the first element as pivot: after the first partition of `3 10 7 2 5 11 4 6`, what is the list?", ["2 3 7 10 5 11 4 6"], "right moves down to 2 (index 3), left stops at 10 (index 1), swap → 3 2 7 10 …; then indices meet at 1 and pivot 3 swaps with 2.", `while (left < right)
+{ while (list[right].compareTo(list[start]) > 0)
+    right--;
+  while (left < right && list[left].compareTo(list[start]) <= 0)
+    left++;
+  if (left < right)
+    swap(list, left, right);
+}
+swap(list, start, right);
+return right;`),
+I("sort", "Same partition: what index does partition() return?", ["1"]),
+M("sort", "After partitioning, the partition element…", ["Is in its final, correct position", "Is at index 0", "Must be compared again", "Is removed"], 0, "Also, nothing in the left sublist ever needs comparing with the right sublist."),
+M("sort", "Quick Sort best-case recurrence: C_n = 2C_{n/2} + n, C₁ = 0. Solution?", ["n log₂n", "n²/2", "log₂n", "2ⁿ"], 0),
+M("sort", "Quick Sort average-case comparisons ≈ ?", ["1.38 n log₂n", "n²/4", "2n", "n log₂n / 2"], 0),
+M("sort", "When does the notes' Quick Sort (first element as pivot) hit its O(n²) worst case?", ["Random data", "Data that is already sorted (or in reverse order)", "All different values", "Lists of even length"], 1),
+M("sort", "Which is **not** one of the Quick Sort improvements suggested in the exercises?", ["Median of first, middle and last as the pivot", "Random pivot", "Switch to Selection Sort below a threshold (e.g. 10)", "Always choose the last element as pivot"], 3),
+M("sort", "The iterative Quick Sort uses a ____ to remember sublists still to be sorted.", ["Queue", "Stack (each sublist stored as a record of start and end)", "Hash table", "Tree"], 1, "To limit stack growth, push the smaller sublist and work on the larger (Ex 10.6)."),
+M("sort", "Merge Sort's time complexity is…", ["O(n log n) always: best, average and worst", "O(n²) worst", "O(n) best", "O(log n)"], 0),
+M("sort", "Why is Quick Sort used more than Merge Sort in practice?", ["Merge Sort is O(n²)", "Merge Sort needs temporary arrays, about twice the memory; Quick Sort's bad case is rare and avoidable", "Quick Sort is stable", "Merge Sort can't be recursive"], 1),
+M("sort", "In merge(), after the main `while (i <= mid && j <= last)` loop, how many of the two 'copy the remnant' loops actually run?", ["Both", "Exactly one (whichever sublist still has items)", "Neither", "It depends on n"], 1),
+M("sort", "The **Tree Sort**…", ["Builds a BST from the data then does an in-order traversal", "Uses a heap", "Is O(n²) always", "Sorts trees"], 0),
+M("sort", "Shell Sort (Ex 10.17) compares and swaps pairs that are…", ["Adjacent", "A 'gap' apart; the gap starts at n/2 and halves after a pass with no swaps", "At random", "At opposite ends"], 1),
+C("sort", "Table 10.1: simple sorts (worst / average / best)", "Bubble comps: n/2(n−1) / ¼(n−1)(n+2) / n−1; swaps: n/2(n−1) / n/4(n−1) / 0\nInsertion comps & moves: n/2(n−1) / n/4(n−1) / n−1\nSelection comps: n/2(n−1) always; swaps: n−1 always"),
+];
+
+const NOTES = `
+<h2 style="margin-top:0">Advanced Programming: one-page cheat sheet</h2>
+<h3>1 · Program quality</h3>
+<ul><li>Criteria: correctness, ease of use, generality, efficiency, portability, clarity, ease of coding/testing, ease of modification.</li>
+<li>One-shot → ease of coding first. Production → correctness, ease of use, clarity… Service routines → efficiency critical.</li>
+<li>Pre/postconditions as comments. <code>assert cond;</code> / <code>assert cond : msg;</code> throws <code>AssertionError</code>. Off by default (enable at runtime). Public methods: throw exceptions for preconditions.</li>
+<li>Javadoc: <code>/** … */</code>, <code>@author @version @param @return @throws</code>.</li></ul>
+<h3>2 · Recursion & interfaces</h3>
+<ul><li>Recursion = simpler version of the same problem + a stop case. Each call gets its own locals.</li>
+<li>Hanoi: move n−1 A→C, move disk n A→B, move n−1 C→B. 2ⁿ−1 moves.</li>
+<li>Java has single inheritance. Interfaces give shared behaviour; an interface-typed variable only sees the interface methods (use instanceof + cast).</li></ul>
+<h3>3 · Abstraction</h3>
+<ul><li>Levels: quantum → circuits → microcode → machine code (1GL, conventional machine level) → OS → assembly (2GL) → HLL (3GL; FORTRAN first) → 4GL → 5GL.</li>
+<li>ADT = &lt;V, O&gt;. Procedural vs data abstraction. Client vs implementor view.</li></ul>
+<h3>4 · Vectors & lists</h3>
+<ul><li>IntegerVector: <code>data[]</code> + <code>numElements</code>; default size 100; get/set O(1); insert/remove shift elements.</li>
+<li>IntegerList: private inner <code>ListNode{data,next}</code>, <code>first</code>; get/set walk the list (O(n)); special case when changing the first node.</li>
+<li>ObjectList (polymorphism: casts, no compile-time checks, uses <code>.equals</code>) vs <code>GenericList&lt;T&gt;</code> (compile-time checks, no casts). Diamond <code>&lt;&gt;</code>; raw types give a warning.</li></ul>
+<h3>5 · Stacks, queues, deques</h3>
+<ul><li>Stack LIFO: push/pop/top/isEmpty. Array: topIndex −1 when empty, <code>data[++top]=x</code>, <code>return data[top--]</code>. Linked: <code>node.next=top; top=node;</code></li>
+<li>Queue FIFO: add/remove/head/isEmpty. Travelling queue problem → circular queue <code>tl=(tl+1)%len</code>; full when tl catches hd; hd=tl=−1 when empty.</li>
+<li>Maze: queue = breadth-first (shortest path); stack = depth-first. beenThere matrix.</li>
+<li>Deque: addLeft/addRight/removeLeft/removeRight; doubly + circularly linked with a header node; empty when <code>header.rt == header</code>.</li></ul>
+<h3>6 · Trees & graphs</h3>
+<ul><li>Terms: root, leaf, parent/child, siblings, depth, outdegree, indegree (0 root / 1 others). Proper binary tree: 0 or 2 children.</li>
+<li>General → binary: left = left-most child, right = right sibling.</li>
+<li>Traversals: LNR in-order, NLR pre-order, LRN post-order, breadth (queue).</li>
+<li>BST: left &lt; node ≤ right; insert as a leaf; delete with 2 children → replace with min of right subtree (deleteMin). <code>&lt;T extends Comparable&gt;</code>. Iterator: get/next/atEnd.</li>
+<li>Graph G=(V,E); directed/weighted; adjacency matrix (diagonal 1s, symmetric if undirected) vs edge lists (sparse graphs).</li></ul>
+<h3>7 · Hashing</h3>
+<ul><li>Dictionary: unique keys. ListDictionary is sorted; <code>get</code> creates a missing entry.</li>
+<li>hash: <code>h = h*26 + ch</code>; <code>(h &amp; 0x7FFFFFFF) % SIZE</code>. Collisions; perfect (minimal) hashing for limited domains only.</li>
+<li>Internal/open addressing with linear probing; states empty/occupied/deleted; search stops only at empty; primary vs secondary clustering; keep one slot empty; default size 101.</li>
+<li>External: buckets of linked lists; insert at the front of the bucket; unlimited size.</li></ul>
+<h3>8 · Big-O</h3>
+<ul><li>t ≤ c·f(n) for n &gt; n₀. 1 &lt; log n &lt; n &lt; n log n &lt; n² &lt; nᵐ &lt; 2ⁿ &lt; n!. Tractable = polynomial or better.</li>
+<li>Million-times faster machine: O(n) → 10⁶n, O(n²) → 1000n, O(2ⁿ) → n+20.</li>
+<li>Σ i = n(n+1)/2 → O(n²). Sequential search: n/2 found, 3n/4 if found half the time.</li></ul>
+<h3>9 · Searching</h3>
+<ul><li>Sorted sequential: n/2. Binary: look=(left+right)/2, C_n = log₂n + 1 → O(log n); 10 items → 4, 10⁶ → 20. Overflow bug: use left+(right−left)/2.</li>
+<li>Interpolated: O(log log n) for even keys (≈3 comparisons for 1000 items).</li></ul>
+<h3>10 · Sorting</h3>
+<table><tr><th>Sort</th><th>Best</th><th>Average</th><th>Worst</th><th>Note</th></tr>
+<tr><td>Bubble</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>madeSwap flag; items move 1 place per step</td></tr>
+<tr><td>Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>good for linked lists / data being read in</td></tr>
+<tr><td>Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>only n−1 swaps</td></tr>
+<tr><td>Quick</td><td>n log n</td><td>1.38 n log n</td><td>O(n²) (sorted input)</td><td>Hoare 1960; pivot = first; median-of-3 / random</td></tr>
+<tr><td>Merge</td><td>n log n</td><td>n log n</td><td>n log n</td><td>needs about 2× memory</td></tr></table>
+`;
+
+
+// ---------- state ----------
+const LS = "practice:" + BANK_ID;
+let store = {};
+try { store = JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { store = {}; }
+store.hist = store.hist || {};      // qid -> {right, wrong, last}
+store.topics = store.topics || TOPICS.map(t => t.id);
+const save = () => { try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) {} };
+let mode = "all";
+
+QUESTIONS.forEach((q, i) => { q.id = q.id || (q.t + ":" + i); });
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// minimal markup: `code`, **bold**, and ```block```
+function md(s) {
+  if (s == null) return "";
+  const parts = String(s).split("```");
+  return parts.map((p, i) => {
+    if (i % 2) return "<pre><code>" + esc(p.replace(/^\n/, "")) + "</code></pre>";
+    return esc(p).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>");
+  }).join("");
+}
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+// commas/semicolons/whitespace all count as one separator; then a second, space-free form for loose matching
+const norm = s => String(s).toLowerCase().replace(/[−–]/g, "-").replace(/[\s,;]+/g, " ").trim();
+const squash = s => norm(s).replace(/\s+/g, "").replace(/^\$/, "");
+
+function pool() {
+  return QUESTIONS.filter(q => store.topics.includes(q.t)).filter(q => {
+    const h = store.hist[q.id];
+    if (mode === "weak") return h && h.wrong > 0 && (h.lastOk !== true);
+    if (mode === "new") return !h;
+    return true;
+  });
+}
+
+// ---------- filters ----------
+const chipsEl = document.getElementById("topicChips");
+function renderChips() {
+  chipsEl.innerHTML = TOPICS.map(t => {
+    const n = QUESTIONS.filter(q => q.t === t.id).length;
+    return `<button class="chip ${store.topics.includes(t.id) ? "on" : ""}" data-t="${t.id}">${esc(t.name)} <span class="meta">${n}</span></button>`;
+  }).join("");
+  document.getElementById("poolInfo").textContent = pool().length + " questions in pool";
+}
+chipsEl.onclick = e => {
+  const b = e.target.closest("[data-t]"); if (!b) return;
+  const id = b.dataset.t;
+  store.topics = store.topics.includes(id) ? store.topics.filter(x => x !== id) : store.topics.concat(id);
+  save(); renderChips(); restart();
+};
+document.getElementById("allOn").onclick = () => { store.topics = TOPICS.map(t => t.id); save(); renderChips(); restart(); };
+document.getElementById("allOff").onclick = () => { store.topics = []; save(); renderChips(); restart(); };
+document.getElementById("modeChips").onclick = e => {
+  const b = e.target.closest("[data-m]"); if (!b) return;
+  mode = b.dataset.m;
+  document.querySelectorAll("#modeChips .chip").forEach(c => c.classList.toggle("on", c === b));
+  renderChips(); restart();
+};
+
+// ---------- tabs ----------
+let view = "quiz";
+document.getElementById("tabs").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  view = b.dataset.v;
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
+  ["quiz", "cards", "notes", "stats"].forEach(v => document.getElementById("v-" + v).classList.toggle("hidden", v !== view));
+  document.getElementById("filters").classList.toggle("hidden", view === "notes" || view === "stats");
+  if (view === "stats") renderStats();
+  if (view === "cards") renderCard();
+};
+
+// ---------- quiz ----------
+let deck = [], idx = 0, score = 0, answered = false;
+const qEl = document.getElementById("v-quiz");
+function restart() {
+  deck = shuffle(pool().filter(q => q.type !== "card"));
+  idx = 0; score = 0; answered = false;
+  cardDeck = shuffle(pool()); cardIdx = 0;
+  renderQ(); if (view === "cards") renderCard();
+}
+function record(q, ok) {
+  const h = store.hist[q.id] || { right: 0, wrong: 0 };
+  ok ? h.right++ : h.wrong++;
+  h.lastOk = ok; h.last = Date.now();
+  store.hist[q.id] = h; save();
+}
+function topicName(id) { const t = TOPICS.find(t => t.id === id); return t ? t.name : id; }
+
+function renderQ() {
+  if (!deck.length) {
+    qEl.innerHTML = `<div class="card"><p>No questions match. Pick some topics above${mode !== "all" ? ", or switch Mode back to <b>Everything</b>" : ""}.</p></div>`;
+    return;
+  }
+  if (idx >= deck.length) {
+    const pct = Math.round(100 * score / deck.length);
+    qEl.innerHTML = `<div class="card"><h2 style="margin-top:0">Round done: ${score} / ${deck.length} (${pct}%)</h2>
+      <p class="meta">Wrong answers are saved. Switch Mode to “Ones I got wrong” to drill just those.</p>
+      <div class="row"><button class="btn" id="again">New round</button></div></div>`;
+    document.getElementById("again").onclick = restart;
+    return;
+  }
+  const q = deck[idx]; answered = false;
+  let body = "";
+  if (q.type === "input") {
+    body = `<input class="ans" id="ans" autocomplete="off" spellcheck="false" placeholder="Type your answer, then Enter">
+      <div class="row" style="margin-top:10px"><button class="btn" id="check">Check</button><button class="btn ghost" id="reveal">Show answer</button></div>`;
+  } else {
+    const opts = q.noShuffle ? q.o.map((t, i) => [t, i]) : shuffle(q.o.map((t, i) => [t, i]));
+    body = `<div class="opts">${opts.map(([t, i], k) => `<button class="opt" data-i="${i}"><span class="k">${"ABCDEFG"[k]}</span><span>${md(t)}</span></button>`).join("")}</div>`;
+  }
+  qEl.innerHTML = `<div class="card">
+    <div class="row" style="justify-content:space-between"><span><span class="tag">${esc(topicName(q.t))}</span><span class="tag">${q.type === "input" ? "type answer" : "multiple choice"}</span></span>
+    <span class="meta">Q ${idx + 1} / ${deck.length} · score ${score}</span></div>
+    <div class="progress"><i style="width:${100 * idx / deck.length}%"></i></div>
+    <div class="q">${md(q.q)}</div>${q.code ? `<pre><code>${esc(q.code)}</code></pre>` : ""}
+    ${body}<div id="fb"></div>
+    <div class="row" style="margin-top:14px;justify-content:space-between"><span class="meta">Keys: <span class="kbd">1</span>–<span class="kbd">5</span> pick · <span class="kbd">Enter</span> next</span>
+    <button class="btn hidden" id="next">Next →</button></div></div>`;
+  if (q.type === "input") {
+    const inp = document.getElementById("ans"); inp.focus();
+    const check = () => {
+      if (answered) return;
+      const val = norm(inp.value); if (!val) return;
+      const accepted = (Array.isArray(q.a) ? q.a : [q.a]);
+      const ok = accepted.some(a => norm(a) === val || squash(a) === squash(val));
+      finish(q, ok, true);
+    };
+    document.getElementById("check").onclick = check;
+    document.getElementById("reveal").onclick = () => { if (!answered) finish(q, false, true); };
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.stopPropagation(); answered ? next() : check(); } });
+  } else {
+    qEl.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      if (answered) return;
+      const ok = +b.dataset.i === q.a;
+      qEl.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (+x.dataset.i === q.a) x.classList.add("right"); });
+      if (!ok) b.classList.add("wrong");
+      finish(q, ok, false);
+    });
+  }
+  document.getElementById("next").onclick = next;
+}
+function finish(q, ok, isInput) {
+  answered = true; if (ok) score++; record(q, ok);
+  const ansTxt = isInput ? `<div style="margin-top:4px">Answer: <code>${esc(Array.isArray(q.a) ? q.a[0] : q.a)}</code></div>` : "";
+  document.getElementById("fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><b>${ok ? "Correct." : "Not quite."}</b>${ansTxt}${q.e ? `<div style="margin-top:6px">${md(q.e)}</div>` : ""}</div>`;
+  if (isInput && !ok && q.a) {
+    document.getElementById("fb").insertAdjacentHTML("beforeend", `<div class="row" style="margin-top:8px"><button class="btn ghost" id="override">I had it right (count as correct)</button></div>`);
+    document.getElementById("override").onclick = () => {
+      const h = store.hist[q.id]; h.wrong--; h.right++; h.lastOk = true; save(); score++;
+      document.getElementById("override").remove();
+      document.querySelector("#fb .fb").className = "fb ok";
+    };
+  }
+  document.getElementById("next").classList.remove("hidden");
+}
+function next() { if (!answered) return; idx++; renderQ(); window.scrollTo({ top: 0 }); }
+document.addEventListener("keydown", e => {
+  if (view !== "quiz") return;
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "Enter" && answered) { next(); return; }
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= 7) { const b = qEl.querySelectorAll(".opt")[n - 1]; if (b && !answered) b.click(); }
+});
+
+// ---------- flashcards ----------
+let cardDeck = [], cardIdx = 0, flipped = false;
+const cEl = document.getElementById("v-cards");
+function cardFace(q) {
+  if (q.type === "card") return { f: q.q, b: q.a, code: q.code };
+  if (q.type === "input") return { f: q.q, b: "`" + (Array.isArray(q.a) ? q.a[0] : q.a) + "`" + (q.e ? "\n\n" + q.e : ""), code: q.code };
+  return { f: q.q, b: "**" + q.o[q.a] + "**" + (q.e ? "\n\n" + q.e : ""), code: q.code };
+}
+function renderCard() {
+  if (!cardDeck.length) { cEl.innerHTML = `<div class="card"><p>No cards match the selected topics.</p></div>`; return; }
+  if (cardIdx >= cardDeck.length) { cardDeck = shuffle(cardDeck); cardIdx = 0; }
+  const q = cardDeck[cardIdx], c = cardFace(q); flipped = false;
+  cEl.innerHTML = `<div class="card flash" id="flash">
+      <div class="meta">${esc(topicName(q.t))} · card ${cardIdx + 1} / ${cardDeck.length}</div>
+      <div class="front" style="margin-top:10px">${md(c.f)}</div>${c.code ? `<pre style="text-align:left"><code>${esc(c.code)}</code></pre>` : ""}
+      <div class="back hidden" id="back">${md(c.b)}</div>
+      <div class="meta" id="tapHint" style="margin-top:14px">Click or press <span class="kbd">Space</span> to flip</div>
+    </div>
+    <div class="row" style="justify-content:center">
+      <button class="btn ghost" id="cPrev">← Prev</button>
+      <button class="btn ghost" id="cMiss" style="border-color:var(--bad);color:var(--bad)">Didn't know</button>
+      <button class="btn ghost" id="cGot" style="border-color:var(--good);color:var(--good)">Knew it</button>
+      <button class="btn ghost" id="cNext">Next →</button>
+    </div>`;
+  document.getElementById("flash").onclick = flip;
+  document.getElementById("cPrev").onclick = () => { cardIdx = Math.max(0, cardIdx - 1); renderCard(); };
+  document.getElementById("cNext").onclick = () => { cardIdx++; renderCard(); };
+  document.getElementById("cGot").onclick = () => { record(q, true); cardIdx++; renderCard(); };
+  document.getElementById("cMiss").onclick = () => { record(q, false); cardIdx++; renderCard(); };
+}
+function flip() { flipped = !flipped; document.getElementById("back").classList.toggle("hidden", !flipped); document.getElementById("tapHint").classList.toggle("hidden", flipped); }
+document.addEventListener("keydown", e => {
+  if (view !== "cards") return;
+  if (e.key === " ") { e.preventDefault(); flip(); }
+  if (e.key === "ArrowRight") { cardIdx++; renderCard(); }
+  if (e.key === "ArrowLeft") { cardIdx = Math.max(0, cardIdx - 1); renderCard(); }
+});
+
+// ---------- notes ----------
+document.getElementById("v-notes").innerHTML = `<div class="card notes">${NOTES}</div>`;
+
+// ---------- stats ----------
+function renderStats() {
+  const rows = TOPICS.map(t => {
+    const qs = QUESTIONS.filter(q => q.t === t.id);
+    let seen = 0, r = 0, w = 0, mastered = 0;
+    qs.forEach(q => { const h = store.hist[q.id]; if (h) { seen++; r += h.right; w += h.wrong; if (h.lastOk) mastered++; } });
+    const acc = r + w ? Math.round(100 * r / (r + w)) : null;
+    return { t, n: qs.length, seen, acc, mastered };
+  });
+  const tot = rows.reduce((a, x) => ({ n: a.n + x.n, seen: a.seen + x.seen, m: a.m + x.mastered }), { n: 0, seen: 0, m: 0 });
+  document.getElementById("v-stats").innerHTML = `<div class="card">
+    <div class="grid">
+      <div class="stat"><span class="meta">Questions seen</span><b>${tot.seen} / ${tot.n}</b></div>
+      <div class="stat"><span class="meta">Last answer correct</span><b>${tot.m}</b></div>
+      <div class="stat"><span class="meta">Still to fix</span><b>${tot.seen - tot.m}</b></div>
+    </div>
+    <table style="margin-top:16px"><tr><th>Topic</th><th>Seen</th><th>Accuracy</th><th>Mastered</th></tr>
+    ${rows.map(x => `<tr><td>${esc(x.t.name)}</td><td>${x.seen}/${x.n}</td><td>${x.acc == null ? "–" : x.acc + "%"}</td>
+      <td><div class="progress" style="width:140px"><i style="width:${100 * x.mastered / x.n}%"></i></div></td></tr>`).join("")}
+    </table>
+    <div class="row" style="margin-top:14px"><button class="btn ghost" id="reset">Reset progress</button></div></div>`;
+  document.getElementById("reset").onclick = () => { if (confirm("Clear all saved progress for this page?")) { store.hist = {}; save(); renderStats(); renderChips(); } };
+}
+
+renderChips(); restart();
+</script>
+</body>
+</html>

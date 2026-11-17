@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+:root{
+  --bg:#f6f5f1;--panel:#ffffff;--ink:#1d1d1b;--muted:#6b6a65;--line:#e3e1da;
+  --accent:#2f5d8a;--accent-soft:#e6eef6;--good:#2e7d4f;--good-soft:#e5f3ea;--bad:#b3402f;--bad-soft:#f8e6e2;
+  --code-bg:#f1efe8;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#17181a;--panel:#212226;--ink:#ecebe6;--muted:#9a9993;--line:#34353a;
+  --accent:#7fb0e0;--accent-soft:#25313d;--good:#6fcf97;--good-soft:#1f3328;--bad:#f08a78;--bad-soft:#3a2420;--code-bg:#1b1c1f;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line)}
+.bar{max-width:980px;margin:0 auto;padding:12px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+h1{font-size:18px;margin:0;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px}
+nav.tabs{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+nav.tabs button{border:1px solid var(--line);background:transparent;color:var(--ink);padding:6px 12px;border-radius:8px;cursor:pointer;font:inherit;font-size:14px}
+nav.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+main{max-width:980px;margin:0 auto;padding:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:4px 11px;font-size:13px;cursor:pointer;font:inherit;font-size:13px}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.btn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:8px 16px;cursor:pointer;font:inherit;font-size:14px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:default}
+.meta{color:var(--muted);font-size:13px}
+.tag{display:inline-block;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin-right:6px}
+.q{font-size:17px;font-weight:550;margin:8px 0 12px}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:12px 14px;overflow:auto;font:13.5px/1.5 var(--mono);margin:10px 0}
+code{font-family:var(--mono);font-size:.92em;background:var(--code-bg);padding:1px 4px;border-radius:4px}
+pre code{background:none;padding:0}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:10px 13px;cursor:pointer;font:inherit;display:flex;gap:10px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt .k{font-weight:700;color:var(--muted);min-width:18px}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+input.ans{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:15px var(--mono)}
+.fb{margin-top:12px;padding:11px 14px;border-radius:9px;font-size:15px}
+.fb.ok{background:var(--good-soft);border-left:4px solid var(--good)}
+.fb.no{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.fb.info{background:var(--accent-soft);border-left:4px solid var(--accent)}
+.progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0 2px}
+.progress>i{display:block;height:100%;background:var(--accent);width:0}
+.flash{min-height:230px;display:flex;flex-direction:column;justify-content:center;cursor:pointer;text-align:center;user-select:none}
+.flash .front{font-size:20px;font-weight:600}
+.flash .back{margin-top:16px;text-align:left;border-top:1px dashed var(--line);padding-top:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:12px}
+.stat b{font-size:22px;display:block}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+.notes h3{margin:18px 0 6px;font-size:16px}
+.notes ul{margin:4px 0 8px;padding-left:20px}
+.notes li{margin:3px 0}
+.kbd{font:12px var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <div><h1>__TITLE__</h1><div class="sub">__SUBTITLE__</div></div>
+  <nav class="tabs" id="tabs">
+    <button data-v="quiz" class="on">Quiz</button>
+    <button data-v="cards">Flashcards</button>
+    <button data-v="notes">Cheat sheet</button>
+    <button data-v="stats">Progress</button>
+  </nav>
+</div></header>
+<main>
+  <section class="card" id="filters">
+    <div class="row" style="justify-content:space-between">
+      <b>Topics</b>
+      <span class="row"><button class="chip" id="allOn">All</button><button class="chip" id="allOff">None</button></span>
+    </div>
+    <div class="chips" id="topicChips" style="margin-top:8px"></div>
+    <div class="row" style="margin-top:12px">
+      <span class="meta">Mode:</span>
+      <div class="chips" id="modeChips">
+        <button class="chip on" data-m="all">Everything</button>
+        <button class="chip" data-m="weak">Ones I got wrong</button>
+        <button class="chip" data-m="new">Not seen yet</button>
+      </div>
+      <span class="meta" id="poolInfo" style="margin-left:auto"></span>
+    </div>
+  </section>
+
+  <section id="v-quiz"></section>
+  <section id="v-cards" class="hidden"></section>
+  <section id="v-notes" class="hidden"></section>
+  <section id="v-stats" class="hidden"></section>
+</main>
+<script>
+const BANK_ID = "__BANKID__";
+/*DATA*/
+
+// ---------- state ----------
+const LS = "practice:" + BANK_ID;
+let store = {};
+try { store = JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { store = {}; }
+store.hist = store.hist || {};      // qid -> {right, wrong, last}
+store.topics = store.topics || TOPICS.map(t => t.id);
+const save = () => { try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) {} };
+let mode = "all";
+
+QUESTIONS.forEach((q, i) => { q.id = q.id || (q.t + ":" + i); });
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// minimal markup: `code`, **bold**, and ```block```
+function md(s) {
+  if (s == null) return "";
+  const parts = String(s).split("```");
+  return parts.map((p, i) => {
+    if (i % 2) return "<pre><code>" + esc(p.replace(/^\n/, "")) + "</code></pre>";
+    return esc(p).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>");
+  }).join("");
+}
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+// commas/semicolons/whitespace all count as one separator; then a second, space-free form for loose matching
+const norm = s => String(s).toLowerCase().replace(/[−–]/g, "-").replace(/[\s,;]+/g, " ").trim();
+const squash = s => norm(s).replace(/\s+/g, "").replace(/^\$/, "");
+
+function pool() {
+  return QUESTIONS.filter(q => store.topics.includes(q.t)).filter(q => {
+    const h = store.hist[q.id];
+    if (mode === "weak") return h && h.wrong > 0 && (h.lastOk !== true);
+    if (mode === "new") return !h;
+    return true;
+  });
+}
+
+// ---------- filters ----------
+const chipsEl = document.getElementById("topicChips");
+function renderChips() {
+  chipsEl.innerHTML = TOPICS.map(t => {
+    const n = QUESTIONS.filter(q => q.t === t.id).length;
+    return `<button class="chip ${store.topics.includes(t.id) ? "on" : ""}" data-t="${t.id}">${esc(t.name)} <span class="meta">${n}</span></button>`;
+  }).join("");
+  document.getElementById("poolInfo").textContent = pool().length + " questions in pool";
+}
+chipsEl.onclick = e => {
+  const b = e.target.closest("[data-t]"); if (!b) return;
+  const id = b.dataset.t;
+  store.topics = store.topics.includes(id) ? store.topics.filter(x => x !== id) : store.topics.concat(id);
+  save(); renderChips(); restart();
+};
+document.getElementById("allOn").onclick = () => { store.topics = TOPICS.map(t => t.id); save(); renderChips(); restart(); };
+document.getElementById("allOff").onclick = () => { store.topics = []; save(); renderChips(); restart(); };
+document.getElementById("modeChips").onclick = e => {
+  const b = e.target.closest("[data-m]"); if (!b) return;
+  mode = b.dataset.m;
+  document.querySelectorAll("#modeChips .chip").forEach(c => c.classList.toggle("on", c === b));
+  renderChips(); restart();
+};
+
+// ---------- tabs ----------
+let view = "quiz";
+document.getElementById("tabs").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  view = b.dataset.v;
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("on", x === b));
+  ["quiz", "cards", "notes", "stats"].forEach(v => document.getElementById("v-" + v).classList.toggle("hidden", v !== view));
+  document.getElementById("filters").classList.toggle("hidden", view === "notes" || view === "stats");
+  if (view === "stats") renderStats();
+  if (view === "cards") renderCard();
+};
+
+// ---------- quiz ----------
+let deck = [], idx = 0, score = 0, answered = false;
+const qEl = document.getElementById("v-quiz");
+function restart() {
+  deck = shuffle(pool().filter(q => q.type !== "card"));
+  idx = 0; score = 0; answered = false;
+  cardDeck = shuffle(pool()); cardIdx = 0;
+  renderQ(); if (view === "cards") renderCard();
+}
+function record(q, ok) {
+  const h = store.hist[q.id] || { right: 0, wrong: 0 };
+  ok ? h.right++ : h.wrong++;
+  h.lastOk = ok; h.last = Date.now();
+  store.hist[q.id] = h; save();
+}
+function topicName(id) { const t = TOPICS.find(t => t.id === id); return t ? t.name : id; }
+
+function renderQ() {
+  if (!deck.length) {
+    qEl.innerHTML = `<div class="card"><p>No questions match. Pick some topics above${mode !== "all" ? ", or switch Mode back to <b>Everything</b>" : ""}.</p></div>`;
+    return;
+  }
+  if (idx >= deck.length) {
+    const pct = Math.round(100 * score / deck.length);
+    qEl.innerHTML = `<div class="card"><h2 style="margin-top:0">Round done: ${score} / ${deck.length} (${pct}%)</h2>
+      <p class="meta">Wrong answers are saved. Switch Mode to “Ones I got wrong” to drill just those.</p>
+      <div class="row"><button class="btn" id="again">New round</button></div></div>`;
+    document.getElementById("again").onclick = restart;
+    return;
+  }
+  const q = deck[idx]; answered = false;
+  let body = "";
+  if (q.type === "input") {
+    body = `<input class="ans" id="ans" autocomplete="off" spellcheck="false" placeholder="Type your answer, then Enter">
+      <div class="row" style="margin-top:10px"><button class="btn" id="check">Check</button><button class="btn ghost" id="reveal">Show answer</button></div>`;
+  } else {
+    const opts = q.noShuffle ? q.o.map((t, i) => [t, i]) : shuffle(q.o.map((t, i) => [t, i]));
+    body = `<div class="opts">${opts.map(([t, i], k) => `<button class="opt" data-i="${i}"><span class="k">${"ABCDEFG"[k]}</span><span>${md(t)}</span></button>`).join("")}</div>`;
+  }
+  qEl.innerHTML = `<div class="card">
+    <div class="row" style="justify-content:space-between"><span><span class="tag">${esc(topicName(q.t))}</span><span class="tag">${q.type === "input" ? "type answer" : "multiple choice"}</span></span>
+    <span class="meta">Q ${idx + 1} / ${deck.length} · score ${score}</span></div>
+    <div class="progress"><i style="width:${100 * idx / deck.length}%"></i></div>
+    <div class="q">${md(q.q)}</div>${q.code ? `<pre><code>${esc(q.code)}</code></pre>` : ""}
+    ${body}<div id="fb"></div>
+    <div class="row" style="margin-top:14px;justify-content:space-between"><span class="meta">Keys: <span class="kbd">1</span>–<span class="kbd">5</span> pick · <span class="kbd">Enter</span> next</span>
+    <button class="btn hidden" id="next">Next →</button></div></div>`;
+  if (q.type === "input") {
+    const inp = document.getElementById("ans"); inp.focus();
+    const check = () => {
+      if (answered) return;
+      const val = norm(inp.value); if (!val) return;
+      const accepted = (Array.isArray(q.a) ? q.a : [q.a]);
+      const ok = accepted.some(a => norm(a) === val || squash(a) === squash(val));
+      finish(q, ok, true);
+    };
+    document.getElementById("check").onclick = check;
+    document.getElementById("reveal").onclick = () => { if (!answered) finish(q, false, true); };
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") { e.stopPropagation(); answered ? next() : check(); } });
+  } else {
+    qEl.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+      if (answered) return;
+      const ok = +b.dataset.i === q.a;
+      qEl.querySelectorAll(".opt").forEach(x => { x.disabled = true; if (+x.dataset.i === q.a) x.classList.add("right"); });
+      if (!ok) b.classList.add("wrong");
+      finish(q, ok, false);
+    });
+  }
+  document.getElementById("next").onclick = next;
+}
+function finish(q, ok, isInput) {
+  answered = true; if (ok) score++; record(q, ok);
+  const ansTxt = isInput ? `<div style="margin-top:4px">Answer: <code>${esc(Array.isArray(q.a) ? q.a[0] : q.a)}</code></div>` : "";
+  document.getElementById("fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><b>${ok ? "Correct." : "Not quite."}</b>${ansTxt}${q.e ? `<div style="margin-top:6px">${md(q.e)}</div>` : ""}</div>`;
+  if (isInput && !ok && q.a) {
+    document.getElementById("fb").insertAdjacentHTML("beforeend", `<div class="row" style="margin-top:8px"><button class="btn ghost" id="override">I had it right (count as correct)</button></div>`);
+    document.getElementById("override").onclick = () => {
+      const h = store.hist[q.id]; h.wrong--; h.right++; h.lastOk = true; save(); score++;
+      document.getElementById("override").remove();
+      document.querySelector("#fb .fb").className = "fb ok";
+    };
+  }
+  document.getElementById("next").classList.remove("hidden");
+}
+function next() { if (!answered) return; idx++; renderQ(); window.scrollTo({ top: 0 }); }
+document.addEventListener("keydown", e => {
+  if (view !== "quiz") return;
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "Enter" && answered) { next(); return; }
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= 7) { const b = qEl.querySelectorAll(".opt")[n - 1]; if (b && !answered) b.click(); }
+});
+
+// ---------- flashcards ----------
+let cardDeck = [], cardIdx = 0, flipped = false;
+const cEl = document.getElementById("v-cards");
+function cardFace(q) {
+  if (q.type === "card") return { f: q.q, b: q.a, code: q.code };
+  if (q.type === "input") return { f: q.q, b: "`" + (Array.isArray(q.a) ? q.a[0] : q.a) + "`" + (q.e ? "\n\n" + q.e : ""), code: q.code };
+  return { f: q.q, b: "**" + q.o[q.a] + "**" + (q.e ? "\n\n" + q.e : ""), code: q.code };
+}
+function renderCard() {
+  if (!cardDeck.length) { cEl.innerHTML = `<div class="card"><p>No cards match the selected topics.</p></div>`; return; }
+  if (cardIdx >= cardDeck.length) { cardDeck = shuffle(cardDeck); cardIdx = 0; }
+  const q = cardDeck[cardIdx], c = cardFace(q); flipped = false;
+  cEl.innerHTML = `<div class="card flash" id="flash">
+      <div class="meta">${esc(topicName(q.t))} · card ${cardIdx + 1} / ${cardDeck.length}</div>
+      <div class="front" style="margin-top:10px">${md(c.f)}</div>${c.code ? `<pre style="text-align:left"><code>${esc(c.code)}</code></pre>` : ""}
+      <div class="back hidden" id="back">${md(c.b)}</div>
+      <div class="meta" id="tapHint" style="margin-top:14px">Click or press <span class="kbd">Space</span> to flip</div>
+    </div>
+    <div class="row" style="justify-content:center">
+      <button class="btn ghost" id="cPrev">← Prev</button>
+      <button class="btn ghost" id="cMiss" style="border-color:var(--bad);color:var(--bad)">Didn't know</button>
+      <button class="btn ghost" id="cGot" style="border-color:var(--good);color:var(--good)">Knew it</button>
+      <button class="btn ghost" id="cNext">Next →</button>
+    </div>`;
+  document.getElementById("flash").onclick = flip;
+  document.getElementById("cPrev").onclick = () => { cardIdx = Math.max(0, cardIdx - 1); renderCard(); };
+  document.getElementById("cNext").onclick = () => { cardIdx++; renderCard(); };
+  document.getElementById("cGot").onclick = () => { record(q, true); cardIdx++; renderCard(); };
+  document.getElementById("cMiss").onclick = () => { record(q, false); cardIdx++; renderCard(); };
+}
+function flip() { flipped = !flipped; document.getElementById("back").classList.toggle("hidden", !flipped); document.getElementById("tapHint").classList.toggle("hidden", flipped); }
+document.addEventListener("keydown", e => {
+  if (view !== "cards") return;
+  if (e.key === " ") { e.preventDefault(); flip(); }
+  if (e.key === "ArrowRight") { cardIdx++; renderCard(); }
+  if (e.key === "ArrowLeft") { cardIdx = Math.max(0, cardIdx - 1); renderCard(); }
+});
+
+// ---------- notes ----------
+document.getElementById("v-notes").innerHTML = `<div class="card notes">${NOTES}</div>`;
+
+// ---------- stats ----------
+function renderStats() {
+  const rows = TOPICS.map(t => {
+    const qs = QUESTIONS.filter(q => q.t === t.id);
+    let seen = 0, r = 0, w = 0, mastered = 0;
+    qs.forEach(q => { const h = store.hist[q.id]; if (h) { seen++; r += h.right; w += h.wrong; if (h.lastOk) mastered++; } });
+    const acc = r + w ? Math.round(100 * r / (r + w)) : null;
+    return { t, n: qs.length, seen, acc, mastered };
+  });
+  const tot = rows.reduce((a, x) => ({ n: a.n + x.n, seen: a.seen + x.seen, m: a.m + x.mastered }), { n: 0, seen: 0, m: 0 });
+  document.getElementById("v-stats").innerHTML = `<div class="card">
+    <div class="grid">
+      <div class="stat"><span class="meta">Questions seen</span><b>${tot.seen} / ${tot.n}</b></div>
+      <div class="stat"><span class="meta">Last answer correct</span><b>${tot.m}</b></div>
+      <div class="stat"><span class="meta">Still to fix</span><b>${tot.seen - tot.m}</b></div>
+    </div>
+    <table style="margin-top:16px"><tr><th>Topic</th><th>Seen</th><th>Accuracy</th><th>Mastered</th></tr>
+    ${rows.map(x => `<tr><td>${esc(x.t.name)}</td><td>${x.seen}/${x.n}</td><td>${x.acc == null ? "–" : x.acc + "%"}</td>
+      <td><div class="progress" style="width:140px"><i style="width:${100 * x.mastered / x.n}%"></i></div></td></tr>`).join("")}
+    </table>
+    <div class="row" style="margin-top:14px"><button class="btn ghost" id="reset">Reset progress</button></div></div>`;
+  document.getElementById("reset").onclick = () => { if (confirm("Clear all saved progress for this page?")) { store.hist = {}; save(); renderStats(); renderChips(); } };
+}
+
+renderChips(); restart();
+</script>
+</body>
+</html>
